@@ -6,6 +6,6 @@ import (
 	"net/url"
 )
 
-func GetAdvice[E runtime.ErrorHandler](ctx context.Context, url *url.URL) ([]byte, *runtime.Status) {
+func GetAction[E runtime.ErrorHandler](ctx context.Context, url *url.URL) ([]byte, *runtime.Status) {
 	return nil, runtime.NewStatusOK()
 }
