@@ -1,4 +1,4 @@
-package accesslog
+package timeseries
 
 import (
 	"context"
