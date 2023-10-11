@@ -16,7 +16,7 @@ type Entry struct {
 	InstanceId string
 
 	Uri         string // {scheme}://{host}/{path}
-	RouteName   string // primary|secondary
+	Route       string // primary|secondary
 	Method      string
 	StatusCode  int32
 	StatusFlags string
