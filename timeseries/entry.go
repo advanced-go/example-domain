@@ -10,11 +10,6 @@ import "time"
 //      2. Traffic Analytics - Provide real time diagnostics of a distributed ecosystem, and affect
 //                                      appropriate changes to keep ecosystem resilient and highly available.
 //                                      Can routing be changed to avoid failures?
-//      3. Traffic Triage - Analyze routing from the perspective of a request ID. Provide answers to the
-//                          following questions:
-//                          When, where, why did a request fail?
-//                          Can this kind of failure be mitigated?
-//                          Are multiple requests related?
 //
 // Notes:
 
@@ -31,10 +26,8 @@ type Entry struct {
 	Service    string
 	InstanceId string
 
-	// Header field attributes
-	// Anymore use cases??
+	// Need this ??
 	RequestId string
-	RelatesTo string // Allows further segmentation of requests by topic/entity such as a customer ID
 
 	// Request attributes
 	Url         string // {scheme}://{host}/{path} No query
