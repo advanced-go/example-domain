@@ -1,6 +1,9 @@
 package timeseries
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // Research - https://www.faa.gov/nextgen
 
@@ -47,4 +50,14 @@ type Entry struct {
 	RoutePct  int32 // A -1 value is for a disabled controller, everything else is the percentage of
 	// traffic routed to secondary
 
+}
+
+var list []Entry
+
+func GetEntries() ([]byte, error) {
+	return json.Marshal(list)
+}
+
+func AddEntry(e Entry) {
+	list = append(list, e)
 }

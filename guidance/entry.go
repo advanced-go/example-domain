@@ -1,5 +1,7 @@
 package guidance
 
+import "encoding/json"
+
 type SLO struct {
 	// What does this apply to
 	Controller string
@@ -14,7 +16,7 @@ type SLO struct {
 
 type Update struct {
 	Controller string
-	Behavior   string // Maybe properties, actions? Can be empty
+	Behavior   string // Maybe properties, action? Can be empty
 	Action     string // SQL set statement
 }
 
@@ -31,4 +33,29 @@ type Guidance struct {
 //  1. No re-routing during the following time duration
 type Constraint struct {
 	Agent string
+}
+
+var list []SLO
+
+func GetSLOs() ([]byte, error) {
+	return json.Marshal(list)
+}
+
+func GetSLOByController(ctrl string) *SLO {
+	for i := len(list) - 1; i >= 0; i-- {
+		if list[i].Controller == ctrl {
+			return &list[i]
+		}
+	}
+	return nil
+}
+
+func PutSLO(s SLO) {
+	for i, _ := range list {
+		if list[i].Controller == s.Controller {
+			list[i] = s
+			return
+		}
+	}
+	list = append(list, s)
 }
