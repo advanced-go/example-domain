@@ -2,11 +2,15 @@ package activity
 
 import (
 	"encoding/json"
+	"time"
 )
 
 type Entry struct {
+	CreatedTS  time.Time
+	ActivityID string // Some form of UUID
 	Agent      string
 	Assignment string
+	FrameUri   string // {host}:{frame-name}
 	Action     string
 }
 

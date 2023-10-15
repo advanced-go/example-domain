@@ -6,8 +6,10 @@ import (
 
 func Example_AddEntry() {
 
-	AddEntry(Entry{Agent: "controller",
-		Assignment: "region:zone:sub-zone:service:instanceID",
+	AddEntry(Entry{ActivityID: "uuid",
+		Agent:      "agent-controller",
+		Assignment: "usa:west::test-service:0123456789",
+		FrameUri:   "host-frame",
 		Action:     "Analyzing observation",
 	},
 	)
@@ -15,6 +17,6 @@ func Example_AddEntry() {
 	fmt.Printf("test: AddEntry() -> %v\n", list)
 
 	//Output:
-	//test: AddEntry() -> [{controller region:zone:sub-zone:service:instanceID Analyzing observation}]
+	//test: AddEntry() -> [{0001-01-01 00:00:00 +0000 UTC uuid agent-controller usa:west::test-service:0123456789 host-frame Analyzing observation}]
 
 }
