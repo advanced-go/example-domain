@@ -61,3 +61,18 @@ func GetEntries() ([]byte, error) {
 func AddEntry(e Entry) {
 	list = append(list, e)
 }
+
+func GetEntriesByController(ctrl string) []*Entry {
+	var e []*Entry
+
+	for i, _ := range list {
+		if list[i].Controller == ctrl {
+			e = append(e, &list[i])
+		}
+	}
+	return e
+}
+
+func deleteEntries() {
+	list = []Entry{}
+}
