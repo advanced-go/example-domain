@@ -6,12 +6,15 @@ import (
 )
 
 type Entry struct {
-	CreatedTS  time.Time
-	ActivityID string // Some form of UUID
-	Agent      string
-	Assignment string
-	FrameUri   string // {host}:{frame-name}
-	Action     string
+	CreatedTS    time.Time
+	ActivityID   string // Some form of UUID
+	ActivityType string // trace|action
+	Agent        string
+	Assignment   string
+	FrameUri     string // {host}:{frame-name}
+	Controller   string
+	Behavior     string
+	Description  string
 }
 
 var list []Entry
