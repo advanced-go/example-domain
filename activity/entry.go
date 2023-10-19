@@ -10,11 +10,13 @@ type Entry struct {
 	ActivityID   string // Some form of UUID
 	ActivityType string // trace|action
 	Agent        string
-	Assignment   string
-	FrameUri     string // {host}:{frame-name}
-	Controller   string
-	Behavior     string
-	Description  string
+	AgentUri     string // {host}:{agent}
+
+	Assignment  string
+	FrameUri    string // {host}:{frame-name}
+	Controller  string
+	Behavior    string
+	Description string
 }
 
 // GetConstraints - interface defining constraints for the Get function
