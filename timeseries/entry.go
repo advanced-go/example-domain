@@ -29,7 +29,7 @@ type Entry struct {
 	Service    string
 	InstanceId string
 
-	// Need this ??
+	// Use for ecosystem triage, not application triage.
 	RequestId string
 
 	// Request attributes
