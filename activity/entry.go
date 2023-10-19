@@ -20,6 +20,10 @@ type Entry struct {
 }
 
 // GetConstraints - interface defining constraints for the Get function
+// This could also be a representation that facilitates querying. Things like
+// 1. What time did this occur?
+// 2. Did this involve a specific entity?
+// 3. ...
 type GetConstraints interface {
 	[]Entry | []byte
 }
