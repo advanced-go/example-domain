@@ -2,7 +2,12 @@ package timeseries
 
 import (
 	"encoding/json"
+	"github.com/go-ai-agent/core/runtime"
 	"time"
+)
+
+var (
+	ConrollerName = "ctrl"
 )
 
 // Research - https://www.faa.gov/nextgen
@@ -34,7 +39,7 @@ type Entry struct {
 
 	// Request attributes
 	Url         string // {scheme}://{host}/{path} No query
-	Route       string // primary|secondary
+	Route       string // primary|secondary Need routing groups
 	Protocol    string // From timeseries
 	Host        string // From timeseries
 	Path        string // From timeseries
@@ -54,20 +59,43 @@ type Entry struct {
 
 var list []Entry
 
-func GetEntries() ([]byte, error) {
-	return json.Marshal(list)
+func MarshalEntry[E runtime.ErrorHandler](entry []Entry) ([]byte, *runtime.Status) {
+	buf, err := json.Marshal(entry)
+	if err != nil {
+		var e E
+		return nil, e.Handle(nil, "marshal", err)
+	}
+	return buf, runtime.NewStatusOK()
 }
 
-func AddEntry(e Entry) {
-	list = append(list, e)
+func UnmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]Entry, *runtime.Status) {
+	var entry []Entry
+
+	err := json.Unmarshal(buf, &entry)
+	if err != nil {
+		var e E
+		return nil, e.Handle(nil, "unmarshal", err)
+
+	}
+	return entry, runtime.NewStatusOK()
 }
 
-func GetEntriesByController(ctrl string) []*Entry {
-	var e []*Entry
+func GetEntries() []Entry {
+	return list
+}
+
+func AddEntry(e []Entry) {
+	for _, item := range e {
+		list = append(list, item)
+	}
+}
+
+func GetEntriesByController(ctrl string) []Entry {
+	var e []Entry
 
 	for i, _ := range list {
 		if list[i].Controller == ctrl {
-			e = append(e, &list[i])
+			e = append(e, list[i])
 		}
 	}
 	return e

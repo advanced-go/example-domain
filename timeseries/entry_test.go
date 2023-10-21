@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-func createEntry(ctrl string) Entry {
-	return Entry{Traffic: "ingress",
+func createEntry(ctrl string) []Entry {
+	return []Entry{{Traffic: "ingress",
 		Start:       time.Now().UTC(),
 		Duration:    time.Millisecond * 500,
 		Controller:  ctrl,
@@ -28,7 +28,7 @@ func createEntry(ctrl string) Entry {
 		RateLimit:   500,
 		RateBurst:   100,
 		RoutePct:    0,
-	}
+	}}
 }
 
 func Example_AddEntry() {
@@ -37,6 +37,7 @@ func Example_AddEntry() {
 	fmt.Printf("test: AddEntry() -> %v\n", list)
 
 	//Output:
+	//test: AddEntry() -> [{ingress 2023-10-21 19:01:59.1121739 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }
 

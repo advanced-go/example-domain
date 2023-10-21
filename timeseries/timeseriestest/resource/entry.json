@@ -1,0 +1,26 @@
+[
+  {
+    "Traffic":"ingress",
+    "Start":"2023-10-21T19:30:01.2518475Z",
+    "Duration":500000000,
+    "Controller":"host",
+    "Region":"us",
+    "Zone":"west",
+    "SubZone":"",
+    "Service":"test-service",
+    "InstanceId":"123-456-789",
+    "RequestId":"request-id",
+    "Url":"https://service.com/path",
+    "Route":"primary",
+    "Protocol":"http",
+    "Host":"service.com",
+    "Path":"/path",
+    "Method":"GET",
+    "StatusCode":200,
+    "StatusFlags":"",
+    "Timeout":500,
+    "RateLimit":500,
+    "RateBurst":100,
+    "RoutePct":0
+  }
+]
