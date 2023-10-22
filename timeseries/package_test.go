@@ -41,7 +41,6 @@ func Example_entryHandler() {
 	entryHandler[runtime.DebugError](rec, req)
 
 	//resp := exchange.R
-
 	fmt.Printf("test: Response() %v\n", rec)
 
 	//Output:
