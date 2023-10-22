@@ -8,12 +8,15 @@ import (
 )
 
 func Example_EntryHandler_PUT() {
+	fmt.Printf("test: list %v\n", list)
+
 	s := "file://[cwd]/timeseriestest/resource/timeseries-entry-put-req.txt"
 	req, err := exchange.ReadRequest(runtime.ParseRaw(s))
 	fmt.Printf("test: ReadRequest(%v) [err:%v] %v\n", s, err, req)
 
 	rec := httptest.NewRecorder()
 	EntryHandler(rec, req)
+	fmt.Printf("test: list %v\n", list)
 
 	s1 := "file://[cwd]/timeseriestest/resource/timeseries-entry-put-resp.txt"
 	target, err1 := exchange.ReadResponse(runtime.ParseRaw(s1))
