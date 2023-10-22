@@ -1,3 +1,6 @@
+PUT /example-domain/timeseries/entry HTTP/1.1
+Host: example-domain.com
+
 [
   {
     "Traffic":     "ingress",
@@ -46,3 +49,4 @@
     "RoutePct":    0
   }
 ]
+
