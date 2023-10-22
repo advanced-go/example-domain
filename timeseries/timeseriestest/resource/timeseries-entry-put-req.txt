@@ -1,5 +1,6 @@
 PUT /example-domain/timeseries/entry HTTP/1.1
-Host: example-domain.com
+Host: access-log.com
+Content-Type: application/json
 
 [
   {
@@ -49,4 +50,3 @@ Host: example-domain.com
     "RoutePct":    0
   }
 ]
-
