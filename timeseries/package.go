@@ -2,6 +2,7 @@ package timeseries
 
 import (
 	"github.com/go-ai-agent/core/exchange"
+	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -22,7 +23,7 @@ func IsPkgStarted() bool {
 }
 
 func DoHandler(req *http.Request) (*http.Response, error) {
-	recorder := exchange.NewRecorder()
+	recorder := httpx.NewRecorder()
 	status := entryHandler[runtime.BypassError](recorder, req)
 	var err error
 	if status.IsErrors() {
@@ -57,7 +58,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		exchange.WriteResponse[E](w, buf, status)
 		return status
 	case "PUT":
-		buf, status := exchange.ReadAll[E](r.Body)
+		buf, status := httpx.ReadAll[E](r.Body)
 		if !status.OK() {
 			exchange.WriteResponse[E](w, nil, status)
 			return status
