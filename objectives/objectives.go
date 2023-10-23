@@ -1,4 +1,4 @@
-package guidance
+package objectives
 
 // Guidance
 // Examples:
@@ -28,7 +28,7 @@ type Constraint struct {
 
 var clist []Constraint
 
-func GetConstraints() []Constraint {
+func GetConstraint() []Constraint {
 	return clist
 }
 

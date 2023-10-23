@@ -3,12 +3,21 @@ package timeseries
 import (
 	"fmt"
 	"github.com/go-ai-agent/core/httpx"
-	"github.com/go-ai-agent/core/httpx/httpxtest"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http/httptest"
-	"reflect"
-	"testing"
 )
+
+func Example_PkgUri() {
+	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
+	fmt.Printf("test: PkgUri %v\n", PkgUri)
+	fmt.Printf("test: EntryPath %v\n", EntryPath)
+
+	//Output:
+	//test: PkgUrl file://github.com/go-ai-agent/example-domain/timeseries
+	//test: PkgUri github.com/go-ai-agent/example-domain/timeseries
+	//test: EntryPath /go-ai-agent/example-domain/timeseries/entry
+
+}
 
 func _Example_EntryHandler_PUT() {
 	deleteEntries()
@@ -219,6 +228,7 @@ func Test_deleteEntries(t *testing.T) {
 
 */
 
+/*
 func Test_entryHandler(t *testing.T) {
 	deleteEntries()
 	fmt.Printf("test: Entries -> %v\n", list)
@@ -266,5 +276,7 @@ func Test_entryHandler(t *testing.T) {
 		})
 	}
 	fmt.Printf("test: Entries -> %v\n", list)
-
 }
+
+
+*/

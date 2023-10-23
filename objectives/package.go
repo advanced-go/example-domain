@@ -1,4 +1,4 @@
-package guidance
+package objectives
 
 import (
 	"encoding/json"
@@ -12,8 +12,11 @@ import (
 type pkg struct{}
 
 var (
-	PkgUrl  = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
-	PkgUri  = PkgUrl.Host + PkgUrl.Path
+	PkgUrl         = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
+	PkgUri         = PkgUrl.Host + PkgUrl.Path
+	GuidancePath   = PkgUrl.Path + "/guidance/entry"
+	ConstraintPath = PkgUrl.Path + "/constraint/entry"
+
 	started int64
 )
 
@@ -63,6 +66,46 @@ func marshalGuidance[E runtime.ErrorHandler](entry []Guidance) ([]byte, *runtime
 
 func unmarshalGuidance[E runtime.ErrorHandler](buf []byte) ([]Guidance, *runtime.Status) {
 	var entry []Guidance
+
+	err := json.Unmarshal(buf, &entry)
+	if err != nil {
+		var e E
+		return nil, e.Handle(nil, "unmarshal", err)
+	}
+	return entry, runtime.NewStatusOK()
+}
+
+func ConstraintHandler(w http.ResponseWriter, r *http.Request) {
+	constraintHandler[runtime.LogError](w, r)
+}
+
+func constraintHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+	if r == nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return runtime.NewHttpStatusCode(http.StatusBadRequest)
+	}
+	switch r.Method {
+	case "GET":
+		buf, status := marshalConstraint[E](GetConstraint())
+		httpx.WriteResponse[E](w, buf, status)
+		return status
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	return runtime.NewStatusOK()
+}
+
+func marshalConstraint[E runtime.ErrorHandler](entry []Constraint) ([]byte, *runtime.Status) {
+	buf, err := json.Marshal(entry)
+	if err != nil {
+		var e E
+		return nil, e.Handle(nil, "marshal", err)
+	}
+	return buf, runtime.NewStatusOK()
+}
+
+func unmarshalConstraint[E runtime.ErrorHandler](buf []byte) ([]Constraint, *runtime.Status) {
+	var entry []Constraint
 
 	err := json.Unmarshal(buf, &entry)
 	if err != nil {

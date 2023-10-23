@@ -12,9 +12,10 @@ import (
 type pkg struct{}
 
 var (
-	PkgUrl  = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
-	PkgUri  = PkgUrl.Host + PkgUrl.Path
-	started int64
+	PkgUrl    = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
+	PkgUri    = PkgUrl.Host + PkgUrl.Path
+	EntryPath = PkgUrl.Path + "/entry"
+	started   int64
 )
 
 // IsPkgStarted - returns status of startup

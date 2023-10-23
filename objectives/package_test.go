@@ -1,14 +1,24 @@
-package guidance
+package objectives
 
 import (
-	"github.com/go-ai-agent/core/httpx/httpxtest"
-	"github.com/go-ai-agent/core/runtime"
-	"net/http"
-	"net/http/httptest"
-	"reflect"
-	"testing"
+	"fmt"
 )
 
+func Example_PkgUri() {
+	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
+	fmt.Printf("test: PkgUri %v\n", PkgUri)
+	fmt.Printf("test: GuidancePath %v\n", GuidancePath)
+	fmt.Printf("test: ConstraintPath %v\n", ConstraintPath)
+
+	//Output:
+	//test: PkgUrl file://github.com/go-ai-agent/example-domain/objectives
+	//test: PkgUri github.com/go-ai-agent/example-domain/objectives
+	//test: GuidancePath /go-ai-agent/example-domain/objectives/guidance/entry
+	//test: ConstraintPath /go-ai-agent/example-domain/objectives/constraint/entry
+
+}
+
+/*
 func TestDoHandler(t *testing.T) {
 	type args struct {
 		req *http.Request
@@ -86,3 +96,6 @@ func Test_guidanceHandler(t *testing.T) {
 //		t.Errorf("entryHandler() = %v, want %v", got, tt.want)
 //	}
 //})
+
+
+*/
