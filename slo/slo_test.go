@@ -1,4 +1,4 @@
-package guidance
+package slo
 
 import "fmt"
 

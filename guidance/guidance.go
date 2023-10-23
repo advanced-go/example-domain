@@ -9,9 +9,29 @@ type Guidance struct {
 	// Applies to agent activities
 }
 
+var glist []Guidance
+
+func GetGuidance() []Guidance {
+	return glist
+}
+
+func AddGuidance(src []Guidance) {
+	copy(glist, src)
+}
+
 // Constraint - applies to agent activities
 // Examples:
 //  1. No re-routing during the following time duration
 type Constraint struct {
 	Agent string
+}
+
+var clist []Constraint
+
+func GetConstraints() []Constraint {
+	return clist
+}
+
+func AddConstraint(src []Constraint) {
+	copy(clist, src)
 }

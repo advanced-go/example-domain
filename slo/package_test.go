@@ -1,4 +1,4 @@
-package guidance
+package slo
 
 import (
 	"github.com/go-ai-agent/core/httpx/httpxtest"
@@ -35,7 +35,7 @@ func TestDoHandler(t *testing.T) {
 	}
 }
 
-func Test_guidanceHandler(t *testing.T) {
+func Test_sloHandler(t *testing.T) {
 	type args struct {
 		req  string
 		resp string
@@ -55,7 +55,7 @@ func Test_guidanceHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			guidanceHandler[runtime.BypassError](w, req)
+			sloHandler[runtime.BypassError](w, req)
 
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {
@@ -65,8 +65,8 @@ func Test_guidanceHandler(t *testing.T) {
 			// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 			// test content size and unmarshal types
-			var gotT, wantT []Guidance
-			failures, content, gotT, wantT = httpxtest.Content[[]Guidance](w.Result(), resp)
+			var gotT, wantT []SLO
+			failures, content, gotT, wantT = httpxtest.Content[[]SLO](w.Result(), resp)
 			if failures != nil {
 				t.Errorf("Content() failures = %v", failures)
 			}

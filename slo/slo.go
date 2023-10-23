@@ -1,4 +1,4 @@
-package guidance
+package slo
 
 type SLO struct {
 	// What does this apply to

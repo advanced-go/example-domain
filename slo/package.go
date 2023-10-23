@@ -1,4 +1,4 @@
-package guidance
+package slo
 
 import (
 	"encoding/json"
@@ -24,26 +24,26 @@ func IsPkgStarted() bool {
 
 func DoHandler(req *http.Request) (*http.Response, error) {
 	recorder := httpx.NewRecorder()
-	//status := sloHandler[runtime.BypassError](recorder, req)
-	//var err error
-	//if status.IsErrors() {
-	//	err = status.Errors()[0]
-	//}
-	return recorder.Result(), nil
+	status := sloHandler[runtime.BypassError](recorder, req)
+	var err error
+	if status.IsErrors() {
+		err = status.Errors()[0]
+	}
+	return recorder.Result(), err
 }
 
-func GuidanceHandler(w http.ResponseWriter, r *http.Request) {
-	guidanceHandler[runtime.LogError](w, r)
+func SLOHandler(w http.ResponseWriter, r *http.Request) {
+	sloHandler[runtime.LogError](w, r)
 }
 
-func guidanceHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+func sloHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewHttpStatusCode(http.StatusBadRequest)
 	}
 	switch r.Method {
 	case "GET":
-		buf, status := marshalGuidance[E](GetGuidance())
+		buf, status := marshalSLO[E](GetSLO())
 		httpx.WriteResponse[E](w, buf, status)
 		return status
 	default:
@@ -52,7 +52,7 @@ func guidanceHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Requ
 	return runtime.NewStatusOK()
 }
 
-func marshalGuidance[E runtime.ErrorHandler](entry []Guidance) ([]byte, *runtime.Status) {
+func marshalSLO[E runtime.ErrorHandler](entry []SLO) ([]byte, *runtime.Status) {
 	buf, err := json.Marshal(entry)
 	if err != nil {
 		var e E
@@ -61,8 +61,8 @@ func marshalGuidance[E runtime.ErrorHandler](entry []Guidance) ([]byte, *runtime
 	return buf, runtime.NewStatusOK()
 }
 
-func unmarshalGuidance[E runtime.ErrorHandler](buf []byte) ([]Guidance, *runtime.Status) {
-	var entry []Guidance
+func unmarshalSLO[E runtime.ErrorHandler](buf []byte) ([]SLO, *runtime.Status) {
+	var entry []SLO
 
 	err := json.Unmarshal(buf, &entry)
 	if err != nil {
