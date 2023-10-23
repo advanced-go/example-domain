@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/httpx/httpxtest"
+	"reflect"
 
 	//test2 "github.com/go-ai-agent/core/exchange/httptest"
 	"github.com/go-ai-agent/core/runtime"
@@ -235,7 +236,7 @@ func Test_entryHandler(t *testing.T) {
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/", tt.args.req, tt.args.resp)
 		if failures != nil {
-			t.Errorf("ReadHttp() = %v", failures)
+			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
@@ -245,21 +246,21 @@ func Test_entryHandler(t *testing.T) {
 
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {
-				t.Errorf("StatusCode = %v, want %v", w.Result().StatusCode, resp.StatusCode)
+				t.Errorf("StatusCode got = %v, want %v", w.Result().StatusCode, resp.StatusCode)
 			}
 
 			// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 			// test content size and unmarshal types
-			var gotEntry, wantEntry []Entry
-			failures, gotEntry, wantEntry = httpxtest.Content[[]Entry](w.Result(), resp)
+			var gotT, wantT []Entry
+			failures, gotT, wantT = httpxtest.Content[[]Entry](w.Result(), resp)
 			if failures != nil {
-				t.Errorf("Content = %v", failures)
+				t.Errorf("Content() failures = %v", failures)
 			}
 
 			// test types
-			if gotEntry[0].Host != wantEntry[0].Host {
-				t.Errorf("Entry.Host = %v, want %v", gotEntry[0].Host, wantEntry[0].Host)
+			if !reflect.DeepEqual(gotT, wantT) {
+				t.Errorf("DeepEqual() got = %v, want %v", gotT, wantT)
 			}
 		})
 	}
