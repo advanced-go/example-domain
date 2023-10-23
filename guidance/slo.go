@@ -1,7 +1,5 @@
 package guidance
 
-import "encoding/json"
-
 type SLO struct {
 	// What does this apply to
 	Controller string
@@ -20,37 +18,22 @@ type Update struct {
 	Action     string // SQL set statement
 }
 
-// Guidance
-// Examples:
-//  1. Apply rate limiting before routing for a given controller, or a group of controllers
-type Guidance struct {
-	Agent string
-	// Applies to agent activities
-}
-
-// Constraint - applies to agent activities
-// Examples:
-//  1. No re-routing during the following time duration
-type Constraint struct {
-	Agent string
-}
-
 var list []SLO
 
-func GetSLOs() ([]byte, error) {
-	return json.Marshal(list)
+func GetSLO() []SLO {
+	return list
 }
 
-func GetSLOByController(ctrl string) *SLO {
+func GetSLOByController(ctrl string) SLO {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return &list[i]
+			return list[i]
 		}
 	}
-	return nil
+	return SLO{}
 }
 
-func PutSLO(s SLO) {
+func PatchSLO(s SLO) {
 	for i, _ := range list {
 		if list[i].Controller == s.Controller {
 			list[i] = s
@@ -58,4 +41,8 @@ func PutSLO(s SLO) {
 		}
 	}
 	list = append(list, s)
+}
+
+func AddSLO(src []SLO) {
+	copy(list, src)
 }
