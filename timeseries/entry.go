@@ -1,8 +1,6 @@
 package timeseries
 
 import (
-	"encoding/json"
-	"github.com/go-ai-agent/core/runtime"
 	"time"
 )
 
@@ -58,27 +56,6 @@ type Entry struct {
 }
 
 var list []Entry
-
-func MarshalEntry[E runtime.ErrorHandler](entry []Entry) ([]byte, *runtime.Status) {
-	buf, err := json.Marshal(entry)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "marshal", err)
-	}
-	return buf, runtime.NewStatusOK()
-}
-
-func UnmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]Entry, *runtime.Status) {
-	var entry []Entry
-
-	err := json.Unmarshal(buf, &entry)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "unmarshal", err)
-
-	}
-	return entry, runtime.NewStatusOK()
-}
 
 func GetEntries() []Entry {
 	return list

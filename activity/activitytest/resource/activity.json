@@ -1,0 +1,13 @@
+[
+  {
+    "ActivityID": "123456",
+    "ActivityType": "action",
+    "Agent": "Controller",
+    "AgentUri": "https://somehost.com/id",
+    "Assignment": "case#",
+    "FrameUri": "https://framehost.com/frame-id",
+    "Controller": "egress",
+    "Behavior": "timeout",
+    "Description": "decreased timeout"
+  }
+]

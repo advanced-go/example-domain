@@ -1,4 +1,4 @@
-package timeseries
+package activity
 
 import (
 	"encoding/json"
@@ -43,32 +43,9 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	}
 	switch r.Method {
 	case "GET":
-		var entries []Entry
-
-		name := ""
-		if r.URL.Query() != nil {
-			name = r.URL.Query().Get(ConrollerName)
-		}
-		if len(name) != 0 {
-			entries = GetEntriesByController(name)
-		} else {
-			entries = GetEntries()
-		}
-		buf, status := MarshalEntry[E](entries)
+		buf, status := MarshalEntry[E](GetEntries())
 		httpx.WriteResponse[E](w, buf, status)
 		return status
-	case "PUT":
-		buf, status := httpx.ReadAll[E](r.Body)
-		if !status.OK() {
-			httpx.WriteResponse[E](w, nil, status)
-			return status
-		}
-		entries, status1 := UnmarshalEntry[E](buf)
-		if status.OK() {
-			AddEntry(entries)
-		}
-		httpx.WriteResponse[E](w, nil, status1)
-		return status1
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -91,7 +68,6 @@ func UnmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]Entry, *runtime.Statu
 	if err != nil {
 		var e E
 		return nil, e.Handle(nil, "unmarshal", err)
-
 	}
 	return entry, runtime.NewStatusOK()
 }

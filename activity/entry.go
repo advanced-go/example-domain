@@ -30,8 +30,8 @@ type GetConstraints interface {
 
 var list []Entry
 
-func GetEntries() ([]byte, error) {
-	return json.Marshal(list)
+func GetEntries() []Entry {
+	return list
 }
 
 func GetEntriesByType[T GetConstraints](act string) (T, error) {
