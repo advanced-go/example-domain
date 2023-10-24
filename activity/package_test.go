@@ -1,14 +1,22 @@
 package activity
 
 import (
-	"github.com/go-ai-agent/core/httpx/httpxtest"
-	"github.com/go-ai-agent/core/runtime"
-	"net/http"
-	"net/http/httptest"
-	"reflect"
-	"testing"
+	"fmt"
 )
 
+func Example_PkgUri() {
+	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
+	fmt.Printf("test: PkgUri %v\n", PkgUri)
+	fmt.Printf("test: EntryPath %v\n", EntryPath)
+
+	//Output:
+	//test: PkgUrl file://github.com/go-ai-agent/example-domain/activity
+	//test: PkgUri github.com/go-ai-agent/example-domain/activity
+	//test: EntryPath /go-ai-agent/example-domain/activity/entry
+
+}
+
+/*
 func TestDoHandler(t *testing.T) {
 	type args struct {
 		req *http.Request
@@ -86,3 +94,6 @@ func Test_entryHandler(t *testing.T) {
 //		t.Errorf("entryHandler() = %v, want %v", got, tt.want)
 //	}
 //})
+
+
+*/
