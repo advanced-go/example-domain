@@ -16,6 +16,9 @@ func Example_PkgUri() {
 	fmt.Printf("test: PkgUri %v\n", PkgUri)
 	fmt.Printf("test: EntryPath %v\n", EntryPath)
 
+	//var e []entry
+	//fmt.Printf("test: e [len:%v] [nil:%v]\n ", len(e), e == nil)
+
 	//Output:
 	//test: PkgUrl file://github.com/go-ai-agent/example-domain/timeseries
 	//test: PkgUri github.com/go-ai-agent/example-domain/timeseries
@@ -117,7 +120,7 @@ func TestDoHandler(t *testing.T) {
 
 func Test_entryHandler(t *testing.T) {
 	deleteEntries()
-	fmt.Printf("test: Entries -> %v\n", len(list))
+	//fmt.Printf("test: Entries -> %v\n", len(list))
 	type args struct {
 		req  string
 		resp string
@@ -141,6 +144,9 @@ func Test_entryHandler(t *testing.T) {
 			// ignoring returned status as any errors will be reflected in the response StatusCode
 			entryHandler[runtime.BypassError](w, req)
 
+			// kludge for BUG in response recorder
+			w.Result().Header = w.Header()
+
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {
 				t.Errorf("StatusCode got = %v, want %v", w.Result().StatusCode, resp.StatusCode)
@@ -156,7 +162,7 @@ func Test_entryHandler(t *testing.T) {
 				t.Errorf("Content() failures = %v", failures)
 			}
 
-			// test types
+			// compare types
 			if content {
 				if !reflect.DeepEqual(gotT, wantT) {
 					t.Errorf("DeepEqual() got = %v, want %v", gotT, wantT)
@@ -164,7 +170,7 @@ func Test_entryHandler(t *testing.T) {
 			}
 		})
 	}
-	fmt.Printf("test: Entries -> %v\n", len(list))
+	//fmt.Printf("test: Entries -> %v\n", len(list))
 }
 
 func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []httpxtest.Args {

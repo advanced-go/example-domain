@@ -2,7 +2,7 @@ module github.com/go-ai-agent/example-domain
 
 go 1.20
 
-require github.com/go-ai-agent/core v0.0.0-20231024130956-88c756136da0
+require github.com/go-ai-agent/core v0.0.0-20231024233735-9ce7bcf03714
 
 require (
 	github.com/golang/protobuf v1.5.3 // indirect

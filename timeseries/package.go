@@ -1,7 +1,6 @@
 package timeseries
 
 import (
-	"encoding/json"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -42,46 +41,57 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewHttpStatusCode(http.StatusBadRequest)
 	}
+	requestId := runtime.GetOrCreateRequestId(r)
+	if r.Header.Get(runtime.XRequestId) == "" {
+		r.Header.Set(runtime.XRequestId, requestId)
+	}
 	switch r.Method {
 	case http.MethodGet:
-		var entries []entry
-
-		name := ""
-		if r.URL.Query() != nil {
-			name = r.URL.Query().Get(ConrollerName)
-		}
-		if len(name) != 0 {
-			entries = getEntriesByController(name)
-		} else {
-			entries = getEntries()
-		}
-		buf, status := marshalEntry[E](entries)
-		//if status.OK() {
-		//	status.SetMetadata(runtime.ContentType, runtime.ContentTypeJson)
-		//} else {
-		//	status.SetMetadata(runtime.ContentType, runtime.ContentTypeText)
-		//}
-		httpx.WriteResponse[E](w, buf, status)
-		return status
-	case http.MethodPut:
-		buf, status := httpx.ReadAll[E](r.Body)
-		if !status.OK() {
-			httpx.WriteResponse[E](w, nil, status)
+		buf, status := runtime.MarshalType[E](requestId, queryEntries(r))
+		if !status.OK() || buf == nil {
+			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
 			return status
 		}
-		entries, status1 := unmarshalEntry[E](buf)
+		httpx.WriteResponse[E](w, buf, status.SetRequestId(requestId), runtime.ContentType, runtime.ContentTypeJson)
+		return status
+	case http.MethodPut:
+		var entries []entry
+
+		buf, status := httpx.ReadAll[E](requestId, r.Body)
+		if !status.OK() || buf == nil {
+			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+			return status
+		}
+		entries, status = runtime.UnmarshalType[E, []entry](requestId, buf)
 		if status.OK() {
 			addEntry(entries)
 		}
-		httpx.WriteResponse[E](w, nil, status1)
-		return status1
+		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		return status
 	default:
-		w.WriteHeader(http.StatusBadRequest)
 	}
-	return runtime.NewStatusOK()
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	return runtime.NewHttpStatusCode(http.StatusMethodNotAllowed)
 }
 
+func queryEntries(r *http.Request) []entry {
+	name := ""
+	if r.URL.Query() != nil {
+		name = r.URL.Query().Get(ConrollerName)
+	}
+	if len(name) != 0 {
+		return getEntriesByController(name)
+	} else {
+		return getEntries()
+	}
+	return nil
+}
+
+/*
 func marshalEntry[E runtime.ErrorHandler](entry []entry) ([]byte, *runtime.Status) {
+	if len(entry) == 0 {
+		return nil, runtime.NewStatusOK()
+	}
 	buf, err := json.Marshal(entry)
 	if err != nil {
 		var e E
@@ -101,3 +111,6 @@ func unmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]entry, *runtime.Statu
 	}
 	return e, runtime.NewStatusOK()
 }
+
+
+*/
