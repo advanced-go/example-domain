@@ -14,6 +14,7 @@ type pkg struct{}
 var (
 	PkgUrl  = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
 	PkgUri  = PkgUrl.Host + PkgUrl.Path
+	SLOPath = PkgUrl.Path + "/entry"
 	started int64
 )
 

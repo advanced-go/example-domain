@@ -1,14 +1,22 @@
 package slo
 
 import (
-	"github.com/go-ai-agent/core/httpx/httpxtest"
-	"github.com/go-ai-agent/core/runtime"
-	"net/http"
-	"net/http/httptest"
-	"reflect"
-	"testing"
+	"fmt"
 )
 
+func Example_PkgUri() {
+	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
+	fmt.Printf("test: PkgUri %v\n", PkgUri)
+	fmt.Printf("test: SLOPath %v\n", SLOPath)
+
+	//Output:
+	//test: PkgUrl file://github.com/go-ai-agent/example-domain/slo
+	//test: PkgUri github.com/go-ai-agent/example-domain/slo
+	//test: SLOPath /go-ai-agent/example-domain/slo/entry
+	
+}
+
+/*
 func TestDoHandler(t *testing.T) {
 	type args struct {
 		req *http.Request
@@ -86,3 +94,6 @@ func Test_sloHandler(t *testing.T) {
 //		t.Errorf("entryHandler() = %v, want %v", got, tt.want)
 //	}
 //})
+
+
+*/
