@@ -19,7 +19,7 @@ var (
 //
 // Notes:
 
-type Entry struct {
+type entry struct {
 	Traffic    string
 	Start      time.Time
 	Duration   time.Duration
@@ -55,20 +55,20 @@ type Entry struct {
 
 }
 
-var list []Entry
+var list []entry
 
-func GetEntries() []Entry {
+func getEntries() []entry {
 	return list
 }
 
-func AddEntry(e []Entry) {
+func addEntry(e []entry) {
 	for _, item := range e {
 		list = append(list, item)
 	}
 }
 
-func GetEntriesByController(ctrl string) []Entry {
-	var e []Entry
+func getEntriesByController(ctrl string) []entry {
+	var e []entry
 
 	for i, _ := range list {
 		if list[i].Controller == ctrl {
@@ -79,5 +79,5 @@ func GetEntriesByController(ctrl string) []Entry {
 }
 
 func deleteEntries() {
-	list = []Entry{}
+	list = []entry{}
 }

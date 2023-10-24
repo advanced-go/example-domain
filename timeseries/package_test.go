@@ -3,8 +3,12 @@ package timeseries
 import (
 	"fmt"
 	"github.com/go-ai-agent/core/httpx"
+	"github.com/go-ai-agent/core/httpx/httpxtest"
 	"github.com/go-ai-agent/core/runtime"
+	"net/http"
 	"net/http/httptest"
+	"reflect"
+	"testing"
 )
 
 func Example_PkgUri() {
@@ -23,7 +27,7 @@ func _Example_EntryHandler_PUT() {
 	deleteEntries()
 	prevCnt := len(list)
 
-	s := "file://[cwd]/timeseriestest/resource/timeseries-put-req.txt"
+	s := "file://[cwd]/timeseriestest/resource/put-req.txt"
 	req, _ := httpx.ReadRequest(runtime.ParseRaw(s))
 	//fmt.Printf("test: ReadRequest(%v) [err:%v] %v\n", s, err, req)
 
@@ -32,7 +36,7 @@ func _Example_EntryHandler_PUT() {
 	currCnt := len(list)
 	//fmt.Printf("test: list %v\n", list)
 
-	s1 := "file://[cwd]/timeseriestest/resource/timeseries-put-resp.txt"
+	s1 := "file://[cwd]/timeseriestest/resource/put-resp.txt"
 	target, _ := httpx.ReadResponse(runtime.ParseRaw(s1))
 	//fmt.Printf("test: ReadResponse(%v) [err:%v] %v\n", s1, err1, target)
 
@@ -47,7 +51,7 @@ func _Example_EntryHandler_PUT() {
 func _Example_EntryHandler_GET() {
 	fmt.Printf("test: list %v\n", list)
 
-	s := "file://[cwd]/timeseriestest/resource/timeseries-get-req.txt"
+	s := "file://[cwd]/timeseriestest/resource/get-req.txt"
 	req, err := httpx.ReadRequest(runtime.ParseRaw(s))
 	fmt.Printf("test: ReadRequest(%v) [err:%v] %v\n", s, err, req)
 
@@ -55,7 +59,7 @@ func _Example_EntryHandler_GET() {
 	EntryHandler(rec, req)
 	fmt.Printf("test: list %v\n", list)
 
-	s1 := "file://[cwd]/timeseriestest/resource/timeseries-get-resp.txt"
+	s1 := "file://[cwd]/timeseriestest/resource/get-resp.txt"
 	target, err1 := httpx.ReadResponse(runtime.ParseRaw(s1))
 	fmt.Printf("test: ReadResponse(%v) [err:%v] %v\n", s1, err1, target)
 
@@ -109,129 +113,11 @@ func TestDoHandler(t *testing.T) {
 	}
 }
 
-func TestEntryHandler(t *testing.T) {
-	type args struct {
-		w http.ResponseWriter
-		r *http.Request
-	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			EntryHandler(tt.args.w, tt.args.r)
-		})
-	}
-}
-
-func TestGetEntries(t *testing.T) {
-	tests := []struct {
-		name string
-		want []Entry
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := GetEntries(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetEntries() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestGetEntriesByController(t *testing.T) {
-	type args struct {
-		ctrl string
-	}
-	tests := []struct {
-		name string
-		args args
-		want []Entry
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := GetEntriesByController(tt.args.ctrl); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetEntriesByController() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestMarshalEntry(t *testing.T) {
-	type args struct {
-		entry []Entry
-	}
-	tests := []struct {
-		name  string
-		args  args
-		want  []byte
-		want1 *runtime.Status
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := MarshalEntry(tt.args.entry)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("MarshalEntry() got = %v, want %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("MarshalEntry() got1 = %v, want %v", got1, tt.want1)
-			}
-		})
-	}
-}
-
-func TestUnmarshalEntry(t *testing.T) {
-	type args struct {
-		buf []byte
-	}
-	tests := []struct {
-		name  string
-		args  args
-		want  []Entry
-		want1 *runtime.Status
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, got1 := UnmarshalEntry(tt.args.buf)
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UnmarshalEntry() got = %v, want %v", got, tt.want)
-			}
-			if !reflect.DeepEqual(got1, tt.want1) {
-				t.Errorf("UnmarshalEntry() got1 = %v, want %v", got1, tt.want1)
-			}
-		})
-	}
-}
-
-func Test_deleteEntries(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			deleteEntries()
-		})
-	}
-}
-
 */
 
-/*
 func Test_entryHandler(t *testing.T) {
 	deleteEntries()
-	fmt.Printf("test: Entries -> %v\n", list)
+	fmt.Printf("test: Entries -> %v\n", len(list))
 	type args struct {
 		req  string
 		resp string
@@ -240,7 +126,9 @@ func Test_entryHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put entries", args{req: "timeseries-put-req.txt", resp: "timeseries-put-resp.txt"}},
+		{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
+		{"get-entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
+		{"get-ctrl-entries", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/", tt.args.req, tt.args.resp)
@@ -261,8 +149,9 @@ func Test_entryHandler(t *testing.T) {
 			// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 			// test content size and unmarshal types
-			var gotT, wantT []Entry
-			failures, content, gotT, wantT = httpxtest.Content[[]Entry](w.Result(), resp)
+			var gotT, wantT []entry
+			var content bool
+			failures, content, gotT, wantT = httpxtest.Content[[]entry](w.Result(), resp, testBytes)
 			if failures != nil {
 				t.Errorf("Content() failures = %v", failures)
 			}
@@ -275,8 +164,11 @@ func Test_entryHandler(t *testing.T) {
 			}
 		})
 	}
-	fmt.Printf("test: Entries -> %v\n", list)
+	fmt.Printf("test: Entries -> %v\n", len(list))
 }
 
-
-*/
+func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []httpxtest.Args {
+	//fmt.Printf("got = %v\n[len:%v]\n", string(gotBytes), len(gotBytes))
+	//fmt.Printf("want = %v\n[len:%v]\n", string(wantBytes), len(wantBytes))
+	return nil
+}

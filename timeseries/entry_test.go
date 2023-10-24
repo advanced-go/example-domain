@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-func createEntry(ctrl string) []Entry {
-	return []Entry{{Traffic: "ingress",
+func createEntry(ctrl string) []entry {
+	return []entry{{Traffic: "ingress",
 		Start:       time.Now().UTC(),
 		Duration:    time.Millisecond * 500,
 		Controller:  ctrl,
@@ -31,30 +31,30 @@ func createEntry(ctrl string) []Entry {
 	}}
 }
 
-func Example_AddEntry() {
+func Example_addEntry() {
 
-	AddEntry(createEntry("host"))
-	fmt.Printf("test: AddEntry() -> %v\n", list)
+	addEntry(createEntry("host"))
+	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//test: AddEntry() -> [{ingress 2023-10-21 19:01:59.1121739 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: addEntry() -> [{ingress 2023-10-21 19:01:59.1121739 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }
 
-func Example_GetEntriesByController() {
+func Example_getEntriesByController() {
 	deleteEntries()
 
-	e := GetEntriesByController("host")
-	fmt.Printf("test: GetEntriesByController() -> %v\n", e)
+	e := getEntriesByController("host")
+	fmt.Printf("test: getEntriesByController() -> %v\n", e)
 
-	AddEntry(createEntry("host"))
-	AddEntry(createEntry("ingress"))
-	AddEntry(createEntry("egress"))
-	AddEntry(createEntry("host"))
-	fmt.Printf("test: List() -> %v\n", list)
+	addEntry(createEntry("host"))
+	addEntry(createEntry("ingress"))
+	addEntry(createEntry("egress"))
+	addEntry(createEntry("host"))
+	fmt.Printf("test: list() -> %v\n", list)
 
-	e = GetEntriesByController("host")
-	fmt.Printf("test: GetEntriesByController() -> %v\n", e)
+	e = getEntriesByController("host")
+	fmt.Printf("test: getEntriesByController() -> %v\n", e)
 
 	//Output:
 

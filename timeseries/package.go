@@ -43,30 +43,35 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		return runtime.NewHttpStatusCode(http.StatusBadRequest)
 	}
 	switch r.Method {
-	case "GET":
-		var entries []Entry
+	case http.MethodGet:
+		var entries []entry
 
 		name := ""
 		if r.URL.Query() != nil {
 			name = r.URL.Query().Get(ConrollerName)
 		}
 		if len(name) != 0 {
-			entries = GetEntriesByController(name)
+			entries = getEntriesByController(name)
 		} else {
-			entries = GetEntries()
+			entries = getEntries()
 		}
-		buf, status := MarshalEntry[E](entries)
+		buf, status := marshalEntry[E](entries)
+		//if status.OK() {
+		//	status.SetMetadata(runtime.ContentType, runtime.ContentTypeJson)
+		//} else {
+		//	status.SetMetadata(runtime.ContentType, runtime.ContentTypeText)
+		//}
 		httpx.WriteResponse[E](w, buf, status)
 		return status
-	case "PUT":
+	case http.MethodPut:
 		buf, status := httpx.ReadAll[E](r.Body)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status)
 			return status
 		}
-		entries, status1 := UnmarshalEntry[E](buf)
+		entries, status1 := unmarshalEntry[E](buf)
 		if status.OK() {
-			AddEntry(entries)
+			addEntry(entries)
 		}
 		httpx.WriteResponse[E](w, nil, status1)
 		return status1
@@ -76,7 +81,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	return runtime.NewStatusOK()
 }
 
-func MarshalEntry[E runtime.ErrorHandler](entry []Entry) ([]byte, *runtime.Status) {
+func marshalEntry[E runtime.ErrorHandler](entry []entry) ([]byte, *runtime.Status) {
 	buf, err := json.Marshal(entry)
 	if err != nil {
 		var e E
@@ -85,14 +90,14 @@ func MarshalEntry[E runtime.ErrorHandler](entry []Entry) ([]byte, *runtime.Statu
 	return buf, runtime.NewStatusOK()
 }
 
-func UnmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]Entry, *runtime.Status) {
-	var entry []Entry
+func unmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]entry, *runtime.Status) {
+	var e []entry
 
-	err := json.Unmarshal(buf, &entry)
+	err := json.Unmarshal(buf, &e)
 	if err != nil {
 		var e E
 		return nil, e.Handle(nil, "unmarshal", err)
 
 	}
-	return entry, runtime.NewStatusOK()
+	return e, runtime.NewStatusOK()
 }
