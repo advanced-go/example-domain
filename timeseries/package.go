@@ -24,7 +24,7 @@ func IsPkgStarted() bool {
 
 func DoHandler(req *http.Request) (*http.Response, error) {
 	recorder := httpx.NewRecorder()
-	status := entryHandler[runtime.DebugError](recorder, req)
+	status := entryHandler[runtime.BypassError](recorder, req)
 	var err error
 	if status.IsErrors() {
 		err = status.Errors()[0]

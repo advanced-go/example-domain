@@ -142,7 +142,7 @@ func Test_entryHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			entryHandler[runtime.DebugError](w, req)
+			entryHandler[runtime.BypassError](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
