@@ -1,11 +1,14 @@
 package activity
 
 import (
-	"encoding/json"
 	"time"
 )
 
-type Entry struct {
+const (
+	Type = "type"
+)
+
+type entry struct {
 	CreatedTS    time.Time
 	ActivityID   string // Some form of UUID
 	ActivityType string // trace|action
@@ -24,44 +27,37 @@ type Entry struct {
 // 1. What time did this occur?
 // 2. Did this involve a specific entity?
 // 3. ...
-type GetConstraints interface {
-	[]Entry | []byte
-}
+//type GetConstraints interface {
+//	[]Entry | []byte
+//}
 
-var list []Entry
+var list []entry
 
-func GetEntries() []Entry {
+func getEntries() []entry {
 	return list
 }
 
-func GetEntriesByType[T GetConstraints](act string) (T, error) {
-	var l []Entry
-	var t T
-	var err error
+func getEntriesByType(act string) []entry {
+	var l []entry
 
 	for _, v := range list {
+		if act == "" {
+			l = append(l, v)
+			continue
+		}
 		if v.ActivityType == act {
 			l = append(l, v)
 		}
 	}
-	switch ptr := any(&t).(type) {
-	case *[]Entry:
-		*ptr = l
-	case *[]byte:
-		buf, err2 := json.Marshal(l)
-		if err2 == nil {
-			*ptr = buf
-		} else {
-			err = err2
-		}
-	}
-	return t, err
+	return l
 }
 
-func AddEntry(e Entry) {
-	list = append(list, e)
+func addEntry(e []entry) {
+	for _, item := range e {
+		list = append(list, item)
+	}
 }
 
 func deleteEntries() {
-	list = []Entry{}
+	list = []entry{}
 }

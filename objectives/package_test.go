@@ -54,7 +54,7 @@ func Test_guidanceHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"get entries", args{req: "activity-get-req.txt", resp: "activity-get-resp.txt"}},
+		{"get entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/activitytest/resource/", tt.args.req, tt.args.resp)

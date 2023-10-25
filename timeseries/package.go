@@ -46,13 +46,18 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
 	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	//r2 := http.New
-
-	switch r.Method {
+	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
+	switch rc.Method {
 	case http.MethodGet:
-		buf, status := runtime.MarshalType(queryEntries(r))
+		e := queryEntries(rc)
+		if len(e) == 0 {
+			status := runtime.NewStatusCode(runtime.StatusNotFound)
+			httpx.WriteMinResponse[E](w, status)
+			return status
+		}
+		buf, status := runtime.MarshalType(e)
 		status.SetRequestId(requestId)
-		if !status.OK() || buf == nil {
+		if !status.OK() {
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
@@ -61,7 +66,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	case http.MethodPut:
 		var entries []entry
 
-		buf, status := httpx.ReadAll(r.Body)
+		buf, status := httpx.ReadAll(rc.Body)
 		if !status.OK() || buf == nil {
 			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
 			return status
@@ -70,6 +75,11 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		if status.OK() {
 			addEntry(entries)
 		}
+		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		return status
+	case http.MethodDelete:
+		deleteEntries()
+		status := runtime.NewStatusOK()
 		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
 		return status
 	default:

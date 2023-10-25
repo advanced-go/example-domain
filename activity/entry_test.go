@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-func Example_AddEntry() {
+func Example_addEntry() {
 
-	AddEntry(Entry{ActivityID: "activity-uuid",
+	addEntry([]entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -15,19 +15,19 @@ func Example_AddEntry() {
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Analyzing observation",
-	},
+	}},
 	)
 
-	fmt.Printf("test: AddEntry() -> %v\n", list)
+	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//test: AddEntry() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 
 }
 
-func Example_GetEntriesByType() {
+func Example_getEntriesByType() {
 
-	AddEntry(Entry{ActivityID: "urn:uuid:1",
+	addEntry([]entry{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -36,10 +36,10 @@ func Example_GetEntriesByType() {
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Analyzing observation",
-	},
+	}},
 	)
 
-	AddEntry(Entry{ActivityID: "urn:uuid:2",
+	addEntry([]entry{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -48,10 +48,10 @@ func Example_GetEntriesByType() {
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Reduced rate limit",
-	},
+	}},
 	)
 
-	AddEntry(Entry{ActivityID: "urn:uuid:3",
+	addEntry([]entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-service:0123456789",
@@ -59,32 +59,36 @@ func Example_GetEntriesByType() {
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Reduced rate burst",
-	},
+	}},
 	)
-	e, err := GetEntriesByType[[]Entry]("activity")
-	fmt.Printf("test: GetEntriesByType[[]Entry](activity) [err:%v] [entry:%v]\n", err, e)
+	e := getEntriesByType("invalid")
+	fmt.Printf("test: getEntriesByType() %v\n", e)
 
-	buf, err2 := GetEntriesByType[[]byte]("activity")
-	fmt.Printf("test: GetEntriesByType[[]byte](activity) [err:%v] [entry:%v]\n", err2, string(buf))
+	e = getEntriesByType("trace")
+	fmt.Printf("test: getEntriesByType(trace) %v\n", e)
 
-	e, err = GetEntriesByType[[]Entry]("trace")
-	fmt.Printf("test: GetEntriesByType[[]Entry](trace) [err:%v] [entry:%v]\n", err, e)
+	e = getEntriesByType("action")
+	fmt.Printf("test: getEntriesByType(action) %v\n", e)
 
-	buf, err2 = GetEntriesByType[[]byte]("trace")
-	fmt.Printf("test: GetEntriesByType[[]byte](trace) [err:%v] [entry:%v]\n", err2, string(buf))
+	/*
+		e, err = getEntriesByActivityType[[]entry]("trace")
+		fmt.Printf("test: getEntriesByActivityType[[]entry](trace) [err:%v] [entry:%v]\n", err, e)
 
-	e, err = GetEntriesByType[[]Entry]("action")
-	fmt.Printf("test: GetEntriesByType[[]Entry](action) [err:%v] [entry:%v]\n", err, e)
+		buf, err2 = getEntriesByActivityType[[]byte]("trace")
+		fmt.Printf("test: getEntriesByActivityType[[]byte](trace) [err:%v] [entry:%v]\n", err2, string(buf))
 
-	buf, err2 = GetEntriesByType[[]byte]("action")
-	fmt.Printf("test: GetEntriesByType[[]byte](action) [err:%v] [entry:%v]\n", err2, string(buf))
+		e, err = getEntriesByActivityType[[]entry]("action")
+		fmt.Printf("test: getEntriesByActivityType[[]entry](action) [err:%v] [entry:%v]\n", err, e)
+
+		buf, err2 = getEntriesByActivityType[[]byte]("action")
+		fmt.Printf("test: getEntriesByActivityType[[]byte](action) [err:%v] [entry:%v]\n", err2, string(buf))
+
+
+	*/
 
 	//Output:
-	//test: GetEntriesByType[[]Entry](activity) [err:<nil>] [entry:[]]
-	//test: GetEntriesByType[[]byte](activity) [err:<nil>] [entry:null]
-	//test: GetEntriesByType[[]Entry](trace) [err:<nil>] [entry:[{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]]
-	//test: GetEntriesByType[[]byte](trace) [err:<nil>] [entry:[{"CreatedTS":"0001-01-01T00:00:00Z","ActivityID":"activity-uuid","ActivityType":"trace","Agent":"agent-controller","AgentUri":"https://host/agent-path","Assignment":"usa:west::test-service:0123456789","FrameUri":"https://host/frame-path","Controller":"host-controller","Behavior":"RateLimiting","Description":"Analyzing observation"},{"CreatedTS":"0001-01-01T00:00:00Z","ActivityID":"urn:uuid:1","ActivityType":"trace","Agent":"agent-controller","AgentUri":"https://host/agent-path","Assignment":"usa:west::test-service:0123456789","FrameUri":"https://host/frame-path","Controller":"host-controller","Behavior":"RateLimiting","Description":"Analyzing observation"}]]
-	//test: GetEntriesByType[[]Entry](action) [err:<nil>] [entry:[{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}]]
-	//test: GetEntriesByType[[]byte](action) [err:<nil>] [entry:[{"CreatedTS":"0001-01-01T00:00:00Z","ActivityID":"urn:uuid:2","ActivityType":"action","Agent":"agent-controller","AgentUri":"https://host/agent-path","Assignment":"usa:west::test-service:0123456789","FrameUri":"https://host/frame-path","Controller":"host-controller","Behavior":"RateLimiting","Description":"Reduced rate limit"},{"CreatedTS":"0001-01-01T00:00:00Z","ActivityID":"urn:uuid:3","ActivityType":"action","Agent":"agent-controller","AgentUri":"","Assignment":"usa:west::test-service:0123456789","FrameUri":"https://host/frame-path","Controller":"host-controller","Behavior":"RateLimiting","Description":"Reduced rate burst"}]]
+	//test: getEntriesByType() []
+	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
+	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}]
 
 }

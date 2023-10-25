@@ -13,7 +13,7 @@ func Example_PkgUri() {
 	//test: PkgUrl file://github.com/go-ai-agent/example-domain/slo
 	//test: PkgUri github.com/go-ai-agent/example-domain/slo
 	//test: SLOPath /go-ai-agent/example-domain/slo/entry
-	
+
 }
 
 /*
@@ -52,7 +52,7 @@ func Test_sloHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"get entries", args{req: "activity-get-req.txt", resp: "activity-get-resp.txt"}},
+		{"get entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/activitytest/resource/", tt.args.req, tt.args.resp)
