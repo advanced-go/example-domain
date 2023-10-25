@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "Controller": "host",
+    "Threshold": "99.9/800ms",
+    "StatusCodes": "0"
+  },
+  {
+    "Controller": "egress",
+    "Threshold": "88.8/1000ms",
+    "StatusCodes": "500,504"
+  }
+]

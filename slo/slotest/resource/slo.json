@@ -2,6 +2,11 @@
   {
     "Controller": "host",
     "Threshold": "99.9/800ms",
-    "Codes": "500,504"
+    "StatusCodes": "0"
+  },
+  {
+    "Controller": "egress",
+    "Threshold": "88.8/1000ms",
+    "StatusCodes": "500,504"
   }
 ]

@@ -1,5 +1,9 @@
 package slo
 
+const (
+	ControllerName = "ctrl"
+)
+
 type entry struct {
 	// What does this apply to
 	Controller string
@@ -24,13 +28,13 @@ func getEntries() []entry {
 	return list
 }
 
-func getEntriesByController(ctrl string) entry {
+func getEntriesByController(ctrl string) []entry {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return list[i]
+			return []entry{list[i]}
 		}
 	}
-	return entry{}
+	return nil
 }
 
 func patchEntry(e entry) {

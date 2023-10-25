@@ -1,0 +1,16 @@
+PUT /example-domain/slo/entry HTTP/1.1
+Host: access-log.com
+Content-Type: application/json
+
+[
+  {
+    "Controller": "host",
+    "Threshold": "99.9/800ms",
+    "StatusCodes": "0"
+  },
+  {
+    "Controller": "egress",
+    "Threshold": "88.8/1000ms",
+    "StatusCodes": "500,504"
+  }
+]
