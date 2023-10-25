@@ -1,6 +1,6 @@
 package slo
 
-type SLO struct {
+type entry struct {
 	// What does this apply to
 	Controller string
 
@@ -18,31 +18,36 @@ type Update struct {
 	Action     string // SQL set statement
 }
 
-var list []SLO
+var list []entry
 
-func GetSLO() []SLO {
+func getEntries() []entry {
 	return list
 }
 
-func GetSLOByController(ctrl string) SLO {
+func getEntriesByController(ctrl string) entry {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
 			return list[i]
 		}
 	}
-	return SLO{}
+	return entry{}
 }
 
-func PatchSLO(s SLO) {
+func patchEntry(e entry) {
 	for i, _ := range list {
-		if list[i].Controller == s.Controller {
-			list[i] = s
+		if list[i].Controller == e.Controller {
+			list[i] = e
 			return
 		}
 	}
-	list = append(list, s)
 }
 
-func AddSLO(src []SLO) {
-	copy(list, src)
+func addEntry(e []entry) {
+	for _, item := range e {
+		list = append(list, item)
+	}
+}
+
+func deleteEntries() {
+	list = []entry{}
 }

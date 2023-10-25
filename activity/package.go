@@ -11,10 +11,11 @@ import (
 type pkg struct{}
 
 var (
-	PkgUrl    = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
-	PkgUri    = PkgUrl.Host + PkgUrl.Path
-	EntryPath = PkgUrl.Path + "/entry"
-	started   int64
+	PkgUrl        = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
+	PkgUri        = PkgUrl.Host + PkgUrl.Path
+	EntryPath     = PkgUrl.Path + "/entry"
+	started       int64
+	entryLocation = PkgUri + "/entryHandler"
 )
 
 // IsPkgStarted - returns status of startup
@@ -64,17 +65,27 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		return status
 	case http.MethodPut:
 		var entries []entry
+		var e E
 
 		buf, status := httpx.ReadAll(rc.Body)
-		if !status.OK() || buf == nil {
-			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		if buf == nil {
+			nc := e.HandleStatus(runtime.NewStatusCode(runtime.StatusInvalidContent).SetLocationAndId(entryLocation, requestId))
+			httpx.WriteMinResponse[E](w, nc)
+			return nc
+		}
+		if !status.OK() {
+			e.HandleStatus(status.SetRequestId(requestId))
+			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
 		entries, status = runtime.UnmarshalType[[]entry](buf)
+		status.SetRequestId(requestId)
 		if status.OK() {
 			addEntry(entries)
+		} else {
+			e.HandleStatus(status)
 		}
-		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		httpx.WriteMinResponse[E](w, status)
 		return status
 	case http.MethodDelete:
 		deleteEntries()

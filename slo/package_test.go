@@ -7,7 +7,7 @@ import (
 func Example_PkgUri() {
 	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
 	fmt.Printf("test: PkgUri %v\n", PkgUri)
-	fmt.Printf("test: SLOPath %v\n", SLOPath)
+	fmt.Printf("test: EntryPath %v\n", EntryPath)
 
 	//Output:
 	//test: PkgUrl file://github.com/go-ai-agent/example-domain/slo
