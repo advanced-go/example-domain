@@ -86,31 +86,3 @@ func queryEntries(r *http.Request) []entry {
 	}
 	return nil
 }
-
-/*
-func marshalEntry[E runtime.ErrorHandler](entry []entry) ([]byte, *runtime.Status) {
-	if len(entry) == 0 {
-		return nil, runtime.NewStatusOK()
-	}
-	buf, err := json.Marshal(entry)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "marshal", err)
-	}
-	return buf, runtime.NewStatusOK()
-}
-
-func unmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]entry, *runtime.Status) {
-	var e []entry
-
-	err := json.Unmarshal(buf, &e)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "unmarshal", err)
-
-	}
-	return e, runtime.NewStatusOK()
-}
-
-
-*/
