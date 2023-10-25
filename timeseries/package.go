@@ -24,7 +24,7 @@ func IsPkgStarted() bool {
 
 func DoHandler(req *http.Request) (*http.Response, error) {
 	recorder := httpx.NewRecorder()
-	status := entryHandler[runtime.BypassError](recorder, req)
+	status := entryHandler[runtime.DebugError](recorder, req)
 	var err error
 	if status.IsErrors() {
 		err = status.Errors()[0]
@@ -45,24 +45,26 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	if r.Header.Get(runtime.XRequestId) == "" {
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
+	// Need to create new request context??
 	switch r.Method {
 	case http.MethodGet:
-		buf, status := runtime.MarshalType[E](requestId, queryEntries(r))
+		buf, status := runtime.MarshalType(queryEntries(r))
+		status.SetRequestId(requestId)
 		if !status.OK() || buf == nil {
-			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status.SetRequestId(requestId), runtime.ContentType, runtime.ContentTypeJson)
+		httpx.WriteResponse[E](w, buf, status, runtime.ContentType, runtime.ContentTypeJson)
 		return status
 	case http.MethodPut:
 		var entries []entry
 
-		buf, status := httpx.ReadAll[E](requestId, r.Body)
+		buf, status := httpx.ReadAll(r.Body)
 		if !status.OK() || buf == nil {
 			httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
 			return status
 		}
-		entries, status = runtime.UnmarshalType[E, []entry](requestId, buf)
+		entries, status = runtime.UnmarshalType[[]entry](buf)
 		if status.OK() {
 			addEntry(entries)
 		}

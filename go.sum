@@ -42,6 +42,10 @@ github.com/go-ai-agent/core v0.0.0-20231024233735-9ce7bcf03714 h1:Wm/UjyC4MO9z/m
 github.com/go-ai-agent/core v0.0.0-20231024233735-9ce7bcf03714/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
 github.com/go-ai-agent/core v0.0.0-20231025000402-84de3b1b8e79 h1:Yx86E4K5/jKwn5nvwSTFZpXozD5Fi8wxtE/x3vWR1tA=
 github.com/go-ai-agent/core v0.0.0-20231025000402-84de3b1b8e79/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
+github.com/go-ai-agent/core v0.0.0-20231025005332-3bbcf58406ec h1:31xILJe54/JbhxFclVeKXv7BD52icZ+T0Q2d1fiwlfs=
+github.com/go-ai-agent/core v0.0.0-20231025005332-3bbcf58406ec/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
+github.com/go-ai-agent/core v0.0.0-20231025095152-f2c1f53b6ab5 h1:qxikChaeTeILBLeGzJUCAAZa72ttImMdVuGowIXSFW4=
+github.com/go-ai-agent/core v0.0.0-20231025095152-f2c1f53b6ab5/go.mod h1:eJTo4x8bOsmTTlhCB7maKxD5SNAIHaYqSe+r6aoXONM=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/golang/protobuf v1.5.3 h1:KhyjKVUg7Usr/dYsdSqoFveMYd5ko72D+zANwlG1mmg=
 github.com/golang/protobuf v1.5.3/go.mod h1:XVQd3VNwM+JqD3oG2Ue2ip4fOMUkwXdXDdiuN0vRsmY=
