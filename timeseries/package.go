@@ -45,7 +45,9 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	if r.Header.Get(runtime.XRequestId) == "" {
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
-	// Need to create new request context??
+	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
+	//r2 := http.New
+
 	switch r.Method {
 	case http.MethodGet:
 		buf, status := runtime.MarshalType(queryEntries(r))
