@@ -49,15 +49,17 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
-		e := queryEntries(rc)
-		if len(e) == 0 {
+		entries := queryEntries(rc)
+		if len(entries) == 0 {
 			status := runtime.NewStatusCode(runtime.StatusNotFound)
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
-		buf, status := runtime.MarshalType(e)
+		buf, status := runtime.MarshalType(entries)
 		status.SetRequestId(requestId)
 		if !status.OK() {
+			var e E
+			e.HandleStatus(status)
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
