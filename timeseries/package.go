@@ -27,7 +27,7 @@ func DoHandler(req *http.Request) (*http.Response, error) {
 	status := entryHandler[runtime.BypassError](recorder, req)
 	var err error
 	if status.IsErrors() {
-		err = status.Errors()[0]
+		err = status.FirstError()
 	}
 	return recorder.Result(), err
 }
