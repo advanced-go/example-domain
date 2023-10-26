@@ -3,7 +3,7 @@ package slo
 import (
 	"fmt"
 	"github.com/go-ai-agent/core/httpx/httpxtest"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -71,7 +71,7 @@ func Test_entryHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			entryHandler[runtime.DebugError](w, req)
+			entryHandler[runtimetest.DebugError](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

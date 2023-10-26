@@ -19,7 +19,7 @@ var (
 	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(pkgUri)
 
-	searchLocation = pkgUri + "searchHandler"
+	searchLocation = pkgUri + "/searchHandler"
 	queryArgName   = "q"
 	searchPath     = "/search"
 )
@@ -52,7 +52,8 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		req, err := http.NewRequest(http.MethodGet, exchange.Resolve(searchEndpoint(r.URL)), nil)
+		uri := exchange.Resolve(searchEndpoint(r.URL))
+		req, err := http.NewRequest(http.MethodGet, uri, nil)
 		if err != nil {
 			status := runtime.NewStatusError(runtime.StatusInternal, searchLocation, err)
 			e.HandleStatus(status, "")
@@ -72,7 +73,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 			return rn
 		}
 		var buf []byte
-		buf, status = httpx.ReadAll(req.Body)
+		buf, status = httpx.ReadAll(resp.Body)
 		if !status.OK() {
 			e.HandleStatus(status, "")
 			httpx.WriteMinResponse[E](w, status)
