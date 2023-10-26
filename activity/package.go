@@ -39,7 +39,7 @@ func EntryHandler(w http.ResponseWriter, r *http.Request) {
 func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return runtime.NewHttpStatusCode(http.StatusBadRequest)
+		return runtime.NewHttpStatus(http.StatusBadRequest)
 	}
 	requestId := runtime.GetOrCreateRequestId(r)
 	if r.Header.Get(runtime.XRequestId) == "" {
@@ -51,15 +51,14 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	case http.MethodGet:
 		entries := queryEntries(rc)
 		if len(entries) == 0 {
-			status := runtime.NewStatusCode(runtime.StatusNotFound)
+			status := runtime.NewStatus(runtime.StatusNotFound)
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
 		buf, status := runtime.MarshalType(entries)
-		status.SetRequestId(requestId)
 		if !status.OK() {
 			var e E
-			e.HandleStatus(status)
+			e.HandleStatus(status, requestId)
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
@@ -70,34 +69,33 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		var e E
 
 		buf, status := httpx.ReadAll(rc.Body)
-		if buf == nil {
-			nc := e.HandleStatus(runtime.NewStatusCode(runtime.StatusInvalidContent).SetLocationAndId(entryLocation, requestId))
-			httpx.WriteMinResponse[E](w, nc)
-			return nc
-		}
 		if !status.OK() {
-			e.HandleStatus(status.SetRequestId(requestId))
+			e.HandleStatus(status, requestId)
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
+		if buf == nil {
+			nc := runtime.NewStatus(runtime.StatusInvalidContent)
+			httpx.WriteMinResponse[E](w, nc)
+			return nc
+		}
 		entries, status = runtime.UnmarshalType[[]entry](buf)
-		status.SetRequestId(requestId)
-		if status.OK() {
-			addEntry(entries)
+		if !status.OK() {
+			e.HandleStatus(status, requestId)
 		} else {
-			e.HandleStatus(status)
+			addEntry(entries)
 		}
 		httpx.WriteMinResponse[E](w, status)
 		return status
 	case http.MethodDelete:
 		deleteEntries()
 		status := runtime.NewStatusOK()
-		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		httpx.WriteMinResponse[E](w, status)
 		return status
 	default:
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
-	return runtime.NewHttpStatusCode(http.StatusMethodNotAllowed)
+	return runtime.NewHttpStatus(http.StatusMethodNotAllowed)
 }
 
 func queryEntries(r *http.Request) []entry {
