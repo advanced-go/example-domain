@@ -11,14 +11,12 @@ import (
 )
 
 func Example_PkgUri() {
-	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
-	fmt.Printf("test: PkgUri %v\n", PkgUri)
-	fmt.Printf("test: EntryPath %v\n", EntryPath)
+	fmt.Printf("test: PkgUri = %v\n", pkgUri)
+	fmt.Printf("test: EntryEndpoint = %v\n", EntryEndpoint)
 
 	//Output:
-	//test: PkgUrl file://github.com/go-ai-agent/example-domain/slo
-	//test: PkgUri github.com/go-ai-agent/example-domain/slo
-	//test: EntryPath /go-ai-agent/example-domain/slo/entry
+	//test: PkgUri = github.com/go-ai-agent/example-domain/slo
+	//test: EntryEndpoint = /go-ai-agent/example-domain/slo/entry
 
 }
 

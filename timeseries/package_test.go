@@ -12,17 +12,12 @@ import (
 )
 
 func Example_PkgUri() {
-	fmt.Printf("test: PkgUrl %v\n", PkgUrl)
-	fmt.Printf("test: PkgUri %v\n", PkgUri)
-	fmt.Printf("test: EntryPath %v\n", EntryPath)
-
-	//var e []entry
-	//fmt.Printf("test: e [len:%v] [nil:%v]\n ", len(e), e == nil)
+	fmt.Printf("test: PkgUri = %v\n", pkgUri)
+	fmt.Printf("test: EntryEndpoint = %v\n", EntryEndpoint)
 
 	//Output:
-	//test: PkgUrl file://github.com/go-ai-agent/example-domain/timeseries
-	//test: PkgUri github.com/go-ai-agent/example-domain/timeseries
-	//test: EntryPath /go-ai-agent/example-domain/timeseries/entry
+	//test: PkgUri = github.com/go-ai-agent/example-domain/timeseries
+	//test: EntryEndpoint = /go-ai-agent/example-domain/timeseries/entry
 
 }
 

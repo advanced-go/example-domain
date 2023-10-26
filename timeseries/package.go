@@ -5,21 +5,20 @@ import (
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
-	"sync/atomic"
 )
 
 type pkg struct{}
 
 var (
-	PkgUrl    = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
-	PkgUri    = PkgUrl.Host + PkgUrl.Path
-	EntryPath = PkgUrl.Path + "/entry"
-	started   int64
+	EntryEndpoint = pkgPath + "/entry"
+
+	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath = runtime.PathFromUri(pkgUri)
 )
 
 // IsPkgStarted - returns status of startup
 func IsPkgStarted() bool {
-	return atomic.LoadInt64(&started) != 0
+	return true
 }
 
 func DoHandler(req *http.Request) (*http.Response, error) {

@@ -14,10 +14,12 @@ type pkg struct{}
 //https://www.google.com/search?q=
 
 var (
-	PkgUrl         = runtime.ParsePkgUrl(reflect.TypeOf(any(pkg{})).PkgPath())
-	PkgUri         = PkgUrl.Host + PkgUrl.Path
-	SearchPath     = PkgUrl.Path + "/search"
-	searchLocation = PkgUri + "searchHandler"
+	SearchEndpoint = pkgPath + "/search"
+
+	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath = runtime.PathFromUri(pkgUri)
+
+	searchLocation = pkgUri + "searchHandler"
 	queryArgName   = "q"
 )
 
@@ -49,7 +51,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		req, err := http.NewRequest(http.MethodGet, exchange.ResolveUrl(createPath(r)), nil)
+		req, err := http.NewRequest(http.MethodGet, exchange.Resolve(createPath(r)), nil)
 		if err != nil {
 			status := runtime.NewStatusError(runtime.StatusInternal, searchLocation, err)
 			e.HandleStatus(status, "")
