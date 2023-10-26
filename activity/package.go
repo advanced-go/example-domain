@@ -47,7 +47,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
-		entries := queryEntries(rc)
+		entries := queryEntries(rc.URL)
 		if len(entries) == 0 {
 			status := runtime.NewStatus(runtime.StatusNotFound)
 			httpx.WriteMinResponse[E](w, status)
@@ -95,52 +95,3 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewHttpStatus(http.StatusMethodNotAllowed)
 }
-
-func queryEntries(r *http.Request) []entry {
-	var result []entry
-
-	name := ""
-	if r.URL.Query() != nil {
-		name = r.URL.Query().Get(Type)
-	}
-	if len(name) != 0 {
-		result = getEntriesByType(name)
-	} else {
-		result = getEntries()
-	}
-	return result
-}
-
-/*
-func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
-	if r == nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return runtime.NewHttpStatusCode(http.StatusBadRequest)
-	}
-
-	return runtime.NewStatusOK()
-}
-
-
-func MarshalEntry[E runtime.ErrorHandler](entry []Entry) ([]byte, *runtime.Status) {
-	buf, err := json.Marshal(entry)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "marshal", err)
-	}
-	return buf, runtime.NewStatusOK()
-}
-
-func UnmarshalEntry[E runtime.ErrorHandler](buf []byte) ([]Entry, *runtime.Status) {
-	var entry []Entry
-
-	err := json.Unmarshal(buf, &entry)
-	if err != nil {
-		var e E
-		return nil, e.Handle(nil, "unmarshal", err)
-	}
-	return entry, runtime.NewStatusOK()
-}
-
-
-*/

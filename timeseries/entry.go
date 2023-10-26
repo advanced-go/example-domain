@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"net/url"
 	"time"
 )
 
@@ -80,4 +81,17 @@ func getEntriesByController(ctrl string) []entry {
 
 func deleteEntries() {
 	list = []entry{}
+}
+
+func queryEntries(u *url.URL) []entry {
+	name := ""
+	if u.Query() != nil {
+		name = u.Query().Get(ConrollerName)
+	}
+	if len(name) != 0 {
+		return getEntriesByController(name)
+	} else {
+		return getEntries()
+	}
+	return nil
 }

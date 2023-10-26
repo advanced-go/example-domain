@@ -1,5 +1,9 @@
 package slo
 
+import (
+	"net/url"
+)
+
 const (
 	ControllerName = "ctrl"
 )
@@ -54,4 +58,17 @@ func addEntry(e []entry) {
 
 func deleteEntries() {
 	list = []entry{}
+}
+
+func queryEntries(u *url.URL) []entry {
+	name := ""
+	if u.Query() != nil {
+		name = u.Query().Get(ControllerName)
+	}
+	if len(name) != 0 {
+		return getEntriesByController(name)
+	} else {
+		return getEntries()
+	}
+	return nil
 }

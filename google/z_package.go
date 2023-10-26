@@ -11,7 +11,7 @@ import (
 
 type pkg struct{}
 
-//https://www.google.com/search?q=
+//https://www.google.com/search?q=test&rlz=1C1CHBF
 
 var (
 	SearchEndpoint = pkgPath + "/search"
@@ -21,6 +21,7 @@ var (
 
 	searchLocation = pkgUri + "searchHandler"
 	queryArgName   = "q"
+	searchPath     = "/search"
 )
 
 // IsPkgStarted - returns status of startup
@@ -51,7 +52,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		req, err := http.NewRequest(http.MethodGet, exchange.Resolve(createPath(r)), nil)
+		req, err := http.NewRequest(http.MethodGet, exchange.Resolve(searchEndpoint(r.URL)), nil)
 		if err != nil {
 			status := runtime.NewStatusError(runtime.StatusInternal, searchLocation, err)
 			e.HandleStatus(status, "")
@@ -82,14 +83,4 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewHttpStatus(http.StatusMethodNotAllowed)
-}
-
-func createPath(r *http.Request) string {
-	if r == nil {
-		return ""
-	}
-	if r.URL.Query().Get(queryArgName) != "" {
-		return ""
-	}
-	return ""
 }

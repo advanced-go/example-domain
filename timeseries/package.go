@@ -48,7 +48,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
-		entries := queryEntries(rc)
+		entries := queryEntries(rc.URL)
 		if len(entries) == 0 {
 			status := runtime.NewStatus(runtime.StatusNotFound)
 			httpx.WriteMinResponse[E](w, status)
@@ -95,17 +95,4 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewHttpStatus(http.StatusMethodNotAllowed)
-}
-
-func queryEntries(r *http.Request) []entry {
-	name := ""
-	if r.URL.Query() != nil {
-		name = r.URL.Query().Get(ConrollerName)
-	}
-	if len(name) != 0 {
-		return getEntriesByController(name)
-	} else {
-		return getEntries()
-	}
-	return nil
 }

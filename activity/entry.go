@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"net/url"
 	"time"
 )
 
@@ -60,4 +61,19 @@ func addEntry(e []entry) {
 
 func deleteEntries() {
 	list = []entry{}
+}
+
+func queryEntries(u *url.URL) []entry {
+	var result []entry
+
+	name := ""
+	if u.Query() != nil {
+		name = u.Query().Get(Type)
+	}
+	if len(name) != 0 {
+		result = getEntriesByType(name)
+	} else {
+		result = getEntries()
+	}
+	return result
 }
