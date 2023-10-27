@@ -79,7 +79,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status, runtime.ContentType, resp.Header.Get(runtime.ContentType))
+		httpx.WriteResponse[E](w, buf, status, httpx.ContentType, resp.Header.Get(httpx.ContentType))
 		return runtime.NewStatusOK()
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
