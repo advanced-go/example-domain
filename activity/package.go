@@ -60,7 +60,7 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 			httpx.WriteMinResponse[E](w, status)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status, runtime.ContentType, runtime.ContentTypeJson)
+		httpx.WriteResponse[E](w, buf, status, httpx.ContentType, httpx.ContentTypeJson)
 		return status
 	case http.MethodPut:
 		var entries []entry
