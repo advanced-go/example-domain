@@ -12,8 +12,9 @@ type pkg struct{}
 var (
 	EntryEndpoint = pkgPath + "/entry"
 
-	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(pkgUri)
+	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath = runtime.PathFromUri(PkgUri)
+	loc     = pkgPath + "/entryHandler"
 )
 
 // IsPkgStarted - returns status of startup
@@ -51,17 +52,17 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 		entries := queryEntries(rc.URL)
 		if len(entries) == 0 {
 			status := runtime.NewStatus(runtime.StatusNotFound)
-			httpx.WriteMinResponse[E](w, status)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
 		buf, status := runtime.MarshalType(entries)
 		if !status.OK() {
 			var e E
-			e.HandleStatus(status, requestId)
-			httpx.WriteMinResponse[E](w, status)
+			e.HandleStatus(status, requestId, loc)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status, httpx.ContentType, httpx.ContentTypeJson)
+		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}})
 		return status
 	case http.MethodPut:
 		var entries []entry
@@ -69,27 +70,27 @@ func entryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request
 
 		buf, status := httpx.ReadAll(rc.Body)
 		if !status.OK() {
-			e.HandleStatus(status, requestId)
-			httpx.WriteMinResponse[E](w, status)
+			e.HandleStatus(status, requestId, loc)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
 		if buf == nil {
 			nc := runtime.NewStatus(runtime.StatusInvalidContent)
-			httpx.WriteMinResponse[E](w, nc)
+			httpx.WriteMinResponse[E](w, nc, nil)
 			return nc
 		}
 		entries, status = runtime.UnmarshalType[[]entry](buf)
 		if !status.OK() {
-			e.HandleStatus(status, requestId)
+			e.HandleStatus(status, requestId, loc)
 		} else {
 			addEntry(entries)
 		}
-		httpx.WriteMinResponse[E](w, status)
+		httpx.WriteMinResponse[E](w, status, nil)
 		return status
 	case http.MethodDelete:
 		deleteEntries()
 		status := runtime.NewStatusOK()
-		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId))
+		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId), nil)
 		return status
 	default:
 	}

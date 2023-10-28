@@ -11,7 +11,7 @@ import (
 )
 
 func Example_PkgUri() {
-	fmt.Printf("test: PkgUri = %v\n", pkgUri)
+	fmt.Printf("test: PkgUri = %v\n", PkgUri)
 	fmt.Printf("test: EntryEndpoint = %v\n", EntryEndpoint)
 
 	//Output:
@@ -91,7 +91,8 @@ func Test_entryHandler(t *testing.T) {
 				var content bool
 				failures, content, gotT, wantT = httpxtest.Content[[]entry](w.Result(), resp, testBytes)
 				if failures != nil {
-					t.Errorf("Content() failures = %v", failures)
+					//t.Errorf("Content() failures = %v", failures)
+					Errorf(t, failures)
 				} else {
 					// compare types
 					if content {
@@ -110,6 +111,12 @@ func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantByt
 	//fmt.Printf("got = %v\n[len:%v]\n", string(gotBytes), len(gotBytes))
 	//fmt.Printf("want = %v\n[len:%v]\n", string(wantBytes), len(wantBytes))
 	return nil
+}
+
+func Errorf(t *testing.T, failures []httpxtest.Args) {
+	for _, arg := range failures {
+		t.Errorf("%v got = %v want = %v", arg.Item, arg.Got, arg.Want)
+	}
 }
 
 //t.Run(tt.name, func(t *testing.T) {

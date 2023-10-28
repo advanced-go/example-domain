@@ -2,7 +2,6 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/exchange"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
@@ -36,7 +35,7 @@ func _Example_searchHandler_ConnectivityError() {
 
 // Example_searchHandler_OK - this configures a new resolver, to https://www.google.com, so this should work
 func Example_searchHandler_OK() {
-	exchange.SetResolver(func(s string) string {
+	httpx.AddResolver(func(s string) string {
 		return "https://www.google.com" + s
 	})
 

@@ -16,10 +16,10 @@ type pkg struct{}
 var (
 	SearchEndpoint = pkgPath + "/search"
 
-	pkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(pkgUri)
+	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath = runtime.PathFromUri(PkgUri)
 
-	searchLocation = pkgUri + "/searchHandler"
+	searchLocation = PkgUri + "/searchHandler"
 	queryArgName   = "q"
 	searchPath     = "/search"
 )
@@ -52,34 +52,32 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		uri := exchange.Resolve(searchEndpoint(r.URL))
+		uri := httpx.Resolve(searchEndpoint(r.URL))
 		req, err := http.NewRequest(http.MethodGet, uri, nil)
 		if err != nil {
-			status := runtime.NewStatusError(runtime.StatusInternal, searchLocation, err)
-			e.HandleStatus(status, "")
-			httpx.WriteMinResponse[E](w, status)
+			status := e.Handle("", searchLocation, err).SetCode(runtime.StatusInternal)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
-		resp, status := exchange.Do[E](req)
+		resp, status := exchange.Do(req)
 		if !status.OK() {
-			e.HandleStatus(status, "")
-			httpx.WriteMinResponse[E](w, status)
+			e.HandleStatus(status, "", searchLocation)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
 		if resp == nil {
-			rn := runtime.NewStatusError(runtime.StatusInternal, searchLocation, errors.New("error: response is nil"))
-			e.HandleStatus(rn, "")
-			httpx.WriteMinResponse[E](w, rn)
+			rn := e.Handle("", searchLocation, errors.New("error: response is nil")).SetCode(runtime.StatusInternal)
+			httpx.WriteMinResponse[E](w, rn, nil)
 			return rn
 		}
 		var buf []byte
 		buf, status = httpx.ReadAll(resp.Body)
 		if !status.OK() {
-			e.HandleStatus(status, "")
-			httpx.WriteMinResponse[E](w, status)
+			e.HandleStatus(status, "", searchLocation)
+			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status, httpx.ContentType, resp.Header.Get(httpx.ContentType))
+		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, resp.Header.Get(httpx.ContentType)}})
 		return runtime.NewStatusOK()
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)

@@ -2,12 +2,12 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/exchange"
+	"github.com/go-ai-agent/core/httpx"
 	"net/url"
 )
 
 func Example_PkgUri() {
-	fmt.Printf("test: PkgUri = %v\n", pkgUri)
+	fmt.Printf("test: PkgUri = %v\n", PkgUri)
 	fmt.Printf("test: SearchEndpoint = %v\n", SearchEndpoint)
 
 	//Output:
@@ -17,13 +17,13 @@ func Example_PkgUri() {
 }
 
 func Example_searchEndpoint() {
-	s := pkgUri
+	s := PkgUri
 	uri, _ := url.Parse(s)
 	result := searchEndpoint(uri)
 
 	fmt.Printf("test: searchEndpoint(%v) %v\n", s, result)
 
-	s = pkgUri + "?q=test&rlz=1C1CHBF"
+	s = PkgUri + "?q=test&rlz=1C1CHBF"
 	uri, _ = url.Parse(s)
 	result = searchEndpoint(uri)
 
@@ -38,7 +38,7 @@ func Example_searchEndpoint() {
 func Example_Resolve() {
 	p := "/go-ai-agent/example-domain/google?q=test&rlz=1C1CHBF"
 	uri, _ := url.Parse(p)
-	s := exchange.Resolve(searchEndpoint(uri))
+	s := httpx.Resolve(searchEndpoint(uri))
 
 	fmt.Printf("test: Resolve(%v) path = %v\n", p, s)
 

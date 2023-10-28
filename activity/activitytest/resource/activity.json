@@ -8,7 +8,7 @@
     "FrameUri": "https://framehost.com/frame-id",
     "Controller": "egress",
     "Behavior": "timeout",
-    "Description": "decreased timeout"
+    "Description": "decreased timeout",
   },
   {
     "ActivityID": "101010",
