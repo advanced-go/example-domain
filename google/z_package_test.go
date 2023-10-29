@@ -12,7 +12,7 @@ func Example_DoHandler() {
 }
 
 // Example_searchHandler_ConnectivityError - this resolves the host to http://localhost:8080, so it will fail
-func _Example_searchHandler_ConnectivityError() {
+func Example_searchHandler_ConnectivityError() {
 	uri := "https://github.com" + SearchEndpoint + "?q=test"
 	req, err := http.NewRequest("", uri, nil)
 	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
@@ -27,8 +27,7 @@ func _Example_searchHandler_ConnectivityError() {
 
 	//Output:
 	//test: NewRequest(https://github.com/go-ai-agent/example-domain/google/search?q=test) [err:<nil>] [req:true]
-	//[[] github.com/go-ai-agent/core/exchange/Do [Get "http://localhost:8080/search?q=test": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.]]
-	//[[] github.com/go-ai-agent/core/exchange/Do [Get "http://localhost:8080/search?q=test": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.]]
+	//{ "id":null, "l":"github.com/go-ai-agent/core/exchange/Do", "o":"github.com/go-ai-agent/example-domain/google/searchHandler" "err" : [ "Get "http://localhost:8080/search?q=test": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it." ] }
 	//test: Response() &{500 Internal Server Error 500 HTTP/1.1 1 1 map[] <nil> -1 [] false false map[] <nil> <nil>}
 
 }
@@ -43,7 +42,7 @@ func Example_searchHandler_OK() {
 	req, err := http.NewRequest("", uri, nil)
 	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
 
-	// routing to localhost, so should see connectivity errors
+	// routing to https://www.google.com, so should work
 	w := httpx.NewRecorder()
 	searchHandler[runtimetest.DebugError](w, req)
 	w.Result().Header = w.Header()
