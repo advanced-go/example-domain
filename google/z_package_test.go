@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func _Example_DoHandler() {
+func Example_DoHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080/"+SearchEndpoint+"?q=test", nil)
 	resp, err := DoHandler(req)
 	fmt.Printf("test: DoHandler(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), err, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
@@ -28,7 +28,7 @@ func _Example_DoHandler() {
 }
 
 // Example_searchHandler_ConnectivityError - this resolves the host to http://localhost:8080, so it will fail
-func _Example_searchHandler_ConnectivityError() {
+func Example_searchHandler_ConnectivityError() {
 	uri := "https://github.com" + SearchEndpoint + "?q=test"
 	req, err := http.NewRequest("", uri, nil)
 	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
@@ -49,7 +49,7 @@ func _Example_searchHandler_ConnectivityError() {
 }
 
 // Example_searchHandler_OK - this configures a new resolver, to https://www.google.com, so this should work
-func _Example_searchHandler_OK() {
+func Example_searchHandler_OK() {
 	httpx.AddResolver(func(s string) string {
 		return "https://www.google.com" + s
 	})
@@ -71,7 +71,7 @@ func _Example_searchHandler_OK() {
 
 }
 
-func Example_Proxy() {
+func _Example_Proxy() {
 	url := "http://localhost:8080" + SearchEndpoint + "?q=test"
 	req, err := http.NewRequest("", url, nil)
 
