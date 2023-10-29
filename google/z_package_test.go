@@ -9,7 +9,7 @@ import (
 	"net/url"
 )
 
-func _Example_DoHandler() {
+func Example_DoHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+SearchEndpoint+"?q=test", nil)
 	resp, err := DoHandler(req)
 	fmt.Printf("test: DoHandler(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), err, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
@@ -20,7 +20,7 @@ func _Example_DoHandler() {
 }
 
 // Example_searchHandler - this should work
-func _Example_searchHandler() {
+func Example_searchHandler() {
 	uri := "https://github.com" + SearchEndpoint + "?q=test"
 	req, err := http.NewRequest("", uri, nil)
 	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
@@ -39,13 +39,25 @@ func _Example_searchHandler() {
 }
 
 func Example_Resolver() {
-	s := "file://[cwd]/resource/query-result.txt"
-	u, _ := url.Parse(s)
-
+	fileUri := "file://[cwd]/resource/query-result.txt"
+	httpx.AddResolver(func(s string) string {
+		return fileUri
+	},
+	)
+	u, _ := url.Parse(fileUri)
 	buf, err := httpx.ReadFile(u)
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
+	w := httpx.NewRecorder()
+	req, _ := http.NewRequest("", pkgPath, nil)
+	searchHandler[runtimetest.DebugError](w, req)
+	w.Result().Header = w.Header()
+	buf2, status := httpx.ReadAll(w.Result().Body)
+	fmt.Printf("test: Response() [status:%v] [content:%v]\n", status, string(buf2))
+
 	//Output:
+	//test: ReadFile() -> [err:<nil>] [buf:This is an alternate result for a Google query.]
+	//test: Response() [status:OK] [content:This is an alternate result for a Google query.]
 
 }
 
