@@ -23,13 +23,15 @@ func IsPkgStarted() bool {
 }
 
 func DoHandler(req *http.Request) (*http.Response, error) {
-	recorder := httpx.NewRecorder()
-	status := entryHandler[runtime.BypassError](recorder, req)
+	w := httpx.NewRecorder()
+	status := entryHandler[runtime.BypassError](w, req)
+	// kludge
+	w.Result().Header = w.Header().Clone()
 	var err error
 	if status.IsErrors() {
 		err = status.FirstError()
 	}
-	return recorder.Result(), err
+	return w.Result(), err
 }
 
 func EntryHandler(w http.ResponseWriter, r *http.Request) {
