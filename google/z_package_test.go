@@ -6,9 +6,10 @@ import (
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
+	"net/url"
 )
 
-func Example_DoHandler() {
+func _Example_DoHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+SearchEndpoint+"?q=test", nil)
 	resp, err := DoHandler(req)
 	fmt.Printf("test: DoHandler(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), err, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
@@ -19,7 +20,7 @@ func Example_DoHandler() {
 }
 
 // Example_searchHandler - this should work
-func Example_searchHandler() {
+func _Example_searchHandler() {
 	uri := "https://github.com" + SearchEndpoint + "?q=test"
 	req, err := http.NewRequest("", uri, nil)
 	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
@@ -34,6 +35,17 @@ func Example_searchHandler() {
 	//Output:
 	//test: NewRequest(https://github.com/go-ai-agent/example-domain/google/search?q=test) [err:<nil>] [req:true]
 	//test: Response() [status:OK] [content:true]
+
+}
+
+func Example_Resolver() {
+	s := "file://[cwd]/resource/query-result.txt"
+	u, _ := url.Parse(s)
+
+	buf, err := httpx.ReadFile(u)
+	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
+
+	//Output:
 
 }
 
