@@ -54,8 +54,8 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		uri := httpx.Resolve(searchEndpoint(r.URL))
-		req, err := http.NewRequest(http.MethodGet, uri, nil)
+		//uri := httpx.Resolve()//searchEndpoint(r.URL))
+		req, err := http.NewRequest(http.MethodGet, searchEndpoint(r.URL), nil)
 		if err != nil {
 			status := e.Handle("", searchLocation, err).SetCode(runtime.StatusInternal)
 			httpx.WriteMinResponse[E](w, status, nil)
