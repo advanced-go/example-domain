@@ -2,7 +2,6 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/httpx"
 	"net/url"
 )
 
@@ -17,32 +16,31 @@ func Example_PkgUri() {
 }
 
 func Example_searchEndpoint() {
+	endpoint := "/google/search"
+	googleUri := "https://www.google.com/search"
+
 	s := PkgUri
 	uri, _ := url.Parse(s)
-	result := searchEndpoint(uri)
 
-	fmt.Printf("test: searchEndpoint(%v) %v\n", s, result)
+	result := searchUri(uri, endpoint)
+	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
 
-	s = PkgUri + "?q=test&rlz=1C1CHBF"
+	result = searchUri(uri, googleUri)
+	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
+
+	s = PkgUri + "?q=testrlz=1C1CHBF"
 	uri, _ = url.Parse(s)
-	result = searchEndpoint(uri)
 
-	fmt.Printf("test: searchEndpoint(%v) %v\n", s, result)
+	result = searchUri(uri, endpoint)
+	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
 
-	//Output:
-	//test: searchEndpoint(github.com/go-ai-agent/example-domain/google) /search
-	//test: searchEndpoint(github.com/go-ai-agent/example-domain/google?q=test&rlz=1C1CHBF) /search?q=test
-
-}
-
-func Example_Resolve() {
-	p := "/go-ai-agent/example-domain/google?q=test&rlz=1C1CHBF"
-	uri, _ := url.Parse(p)
-	s := httpx.Resolve(searchEndpoint(uri))
-
-	fmt.Printf("test: Resolve(%v) path = %v\n", p, s)
+	result = searchUri(uri, googleUri)
+	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
 
 	//Output:
-	//test: Resolve(/go-ai-agent/example-domain/google?q=test&rlz=1C1CHBF) path = http://localhost:8080/search?q=test
+	//test: searchUrl(github.com/go-ai-agent/example-domain/google) /google/search
+	//test: searchUrl(github.com/go-ai-agent/example-domain/google) https://www.google.com/search
+	//test: searchUrl(github.com/go-ai-agent/example-domain/google?q=testrlz=1C1CHBF) /google/search?q=testrlz=1C1CHBF
+	//test: searchUrl(github.com/go-ai-agent/example-domain/google?q=testrlz=1C1CHBF) https://www.google.com/search?q=testrlz=1C1CHBF
 
 }

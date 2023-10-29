@@ -1,7 +1,6 @@
 package google
 
 import (
-	"errors"
 	"github.com/go-ai-agent/core/exchange"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime"
@@ -19,9 +18,16 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	searchLocation = PkgUri + "/searchHandler"
-	queryArgName   = "q"
-	searchPath     = "/search"
+	searchLocation     = PkgUri + "/searchHandler"
+	googleQueryArgName = "q"
+
+	// As a rule do not create/use embedded URI's, use endpoints with a sidecar like Envoy for endpoint -> URI resolution.
+	// URI resolution is late and dynamic
+	// With Envoy
+	//googleEndpoint = "/google/search"
+
+	// Without Envoy, this URL will pass through httpx.Resolve()
+	googleEndpoint = "https://www.google.com/search"
 )
 
 // IsPkgStarted - returns status of startup
@@ -54,23 +60,18 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	case http.MethodGet:
 		var e E
 
-		//uri := httpx.Resolve()//searchEndpoint(r.URL))
-		req, err := http.NewRequest(http.MethodGet, searchEndpoint(r.URL), nil)
+		req, err := http.NewRequest(http.MethodGet, httpx.Resolve(searchUri(r.URL, googleEndpoint)), nil)
 		if err != nil {
 			status := e.Handle("", searchLocation, err).SetCode(runtime.StatusInternal)
 			httpx.WriteMinResponse[E](w, status, nil)
 			return status
 		}
+		// exchange.Do() will always return a non nil *http.Response
 		resp, status := exchange.Do(req)
 		if !status.OK() {
 			e.HandleStatus(status, "", searchLocation)
 			httpx.WriteMinResponse[E](w, status, nil)
 			return status
-		}
-		if resp == nil {
-			rn := e.Handle("", searchLocation, errors.New("error: response is nil")).SetCode(runtime.StatusInternal)
-			httpx.WriteMinResponse[E](w, rn, nil)
-			return rn
 		}
 		var buf []byte
 		buf, status = httpx.ReadAll(resp.Body)
