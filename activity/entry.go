@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"fmt"
 	"net/url"
 	"time"
 )
@@ -56,6 +57,7 @@ func getEntriesByType(act string) []entry {
 func addEntry(e []entry) {
 	for _, item := range e {
 		list = append(list, item)
+		fmt.Printf("%v\n", item)
 	}
 }
 
