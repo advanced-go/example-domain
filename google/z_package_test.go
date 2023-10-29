@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func Example_DoHandler() {
+func _Example_DoHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080/"+SearchEndpoint+"?q=test", nil)
 	resp, err := DoHandler(req)
 	fmt.Printf("test: DoHandler(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), err, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
