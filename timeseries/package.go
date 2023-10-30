@@ -2,6 +2,7 @@ package timeseries
 
 import (
 	"github.com/go-ai-agent/core/httpx"
+	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -24,14 +25,14 @@ func IsPkgStarted() bool {
 
 // InConstraints - defining constraints for the TypeHandler
 type InConstraints interface {
-	[]EntryV1 | *struct{}
+	[]EntryV1 | runtime.Nil
 }
 
-func TypeHandler[T InConstraints](r *http.Request, t T) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError, T](r, t)
+func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
+	return typeHandler[runtime.LogError, T](r, body)
 }
 
-func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, content T) (any, *runtime.Status) {
+func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -51,7 +52,7 @@ func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, conte
 	case http.MethodPut:
 		var entries []EntryV1
 
-		switch ptr := any(content).(type) {
+		switch ptr := any(body).(type) {
 		case []EntryV1:
 			entries = ptr
 		default:
@@ -86,19 +87,21 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
-		entries, status := typeHandler[E, *struct{}](rc, nil)
+		var buf []byte
+
+		entries, status := typeHandler[E, runtime.Nil](rc, nil)
 		if !status.OK() {
-			httpx.WriteMinResponse[E](w, status, nil)
+			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		buf, status1 := runtime.MarshalType(entries)
-		if !status1.OK() {
+		buf, status = json.MarshalType(entries)
+		if !status.OK() {
 			var e E
-			e.HandleStatus(status1, requestId, loc)
-			httpx.WriteMinResponse[E](w, status, nil)
+			e.HandleStatus(status, requestId, loc)
+			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		httpx.WriteResponse[E](w, buf, status1, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}})
+		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}})
 		return status
 	case http.MethodPut:
 		var entries []EntryV1
@@ -107,26 +110,26 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		buf, status := httpx.ReadAll(rc.Body)
 		if !status.OK() {
 			e.HandleStatus(status, requestId, loc)
-			httpx.WriteMinResponse[E](w, status, nil)
+			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
 		if buf == nil {
 			nc := runtime.NewStatus(runtime.StatusInvalidContent)
-			httpx.WriteMinResponse[E](w, nc, nil)
+			httpx.WriteResponse[E](w, nil, nc, nil)
 			return nc
 		}
-		entries, status = runtime.UnmarshalType[[]EntryV1](buf)
+		entries, status = json.UnmarshalType[[]EntryV1](buf)
 		if !status.OK() {
 			e.HandleStatus(status, requestId, loc)
 		} else {
 			addEntry(entries)
 		}
-		httpx.WriteMinResponse[E](w, status, nil)
+		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
 		deleteEntries()
 		status := runtime.NewStatusOK()
-		httpx.WriteMinResponse[E](w, status.SetRequestId(requestId), nil)
+		httpx.WriteResponse[E](w, nil, status.SetRequestId(requestId), nil)
 		return status
 	default:
 	}

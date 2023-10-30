@@ -6,7 +6,7 @@ import (
 
 func Example_addEntry() {
 
-	addEntry([]entry{{ActivityID: "activity-uuid",
+	addEntry([]EntryV1{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -21,13 +21,14 @@ func Example_addEntry() {
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
+	//{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}
 	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 
 }
 
 func Example_getEntriesByType() {
 
-	addEntry([]entry{{ActivityID: "urn:uuid:1",
+	addEntry([]EntryV1{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -39,7 +40,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]entry{{ActivityID: "urn:uuid:2",
+	addEntry([]EntryV1{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -51,7 +52,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]entry{{ActivityID: "urn:uuid:3",
+	addEntry([]EntryV1{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-service:0123456789",
@@ -71,14 +72,14 @@ func Example_getEntriesByType() {
 	fmt.Printf("test: getEntriesByType(action) %v\n", e)
 
 	/*
-		e, err = getEntriesByActivityType[[]entry]("trace")
-		fmt.Printf("test: getEntriesByActivityType[[]entry](trace) [err:%v] [entry:%v]\n", err, e)
+		e, err = getEntriesByActivityType[[]EntryV1]("trace")
+		fmt.Printf("test: getEntriesByActivityType[[]EntryV1](trace) [err:%v] [entry:%v]\n", err, e)
 
 		buf, err2 = getEntriesByActivityType[[]byte]("trace")
 		fmt.Printf("test: getEntriesByActivityType[[]byte](trace) [err:%v] [entry:%v]\n", err2, string(buf))
 
-		e, err = getEntriesByActivityType[[]entry]("action")
-		fmt.Printf("test: getEntriesByActivityType[[]entry](action) [err:%v] [entry:%v]\n", err, e)
+		e, err = getEntriesByActivityType[[]EntryV1]("action")
+		fmt.Printf("test: getEntriesByActivityType[[]EntryV1](action) [err:%v] [entry:%v]\n", err, e)
 
 		buf, err2 = getEntriesByActivityType[[]byte]("action")
 		fmt.Printf("test: getEntriesByActivityType[[]byte](action) [err:%v] [entry:%v]\n", err2, string(buf))
@@ -87,6 +88,9 @@ func Example_getEntriesByType() {
 	*/
 
 	//Output:
+	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}
+	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit}
+	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}
 	//test: getEntriesByType() []
 	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}]

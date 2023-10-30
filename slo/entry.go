@@ -8,7 +8,7 @@ const (
 	ControllerName = "ctrl"
 )
 
-type entry struct {
+type EntryV1 struct {
 	// What does this apply to
 	Controller string
 
@@ -26,22 +26,22 @@ type Update struct {
 	Action     string // SQL set statement
 }
 
-var list []entry
+var list []EntryV1
 
-func getEntries() []entry {
+func getEntries() []EntryV1 {
 	return list
 }
 
-func getEntriesByController(ctrl string) []entry {
+func getEntriesByController(ctrl string) []EntryV1 {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return []entry{list[i]}
+			return []EntryV1{list[i]}
 		}
 	}
 	return nil
 }
 
-func patchEntry(e entry) {
+func patchEntry(e EntryV1) {
 	for i, _ := range list {
 		if list[i].Controller == e.Controller {
 			list[i] = e
@@ -50,17 +50,17 @@ func patchEntry(e entry) {
 	}
 }
 
-func addEntry(e []entry) {
+func addEntry(e []EntryV1) {
 	for _, item := range e {
 		list = append(list, item)
 	}
 }
 
 func deleteEntries() {
-	list = []entry{}
+	list = []EntryV1{}
 }
 
-func queryEntries(u *url.URL) []entry {
+func queryEntries(u *url.URL) []EntryV1 {
 	name := ""
 	if u.Query() != nil {
 		name = u.Query().Get(ControllerName)

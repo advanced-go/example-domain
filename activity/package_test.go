@@ -75,7 +75,7 @@ func Test_entryHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			entryHandler[runtimetest.DebugError](w, req)
+			httpHandler[runtimetest.DebugError](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
@@ -87,9 +87,9 @@ func Test_entryHandler(t *testing.T) {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 				// test content size and unmarshal types
-				var gotT, wantT []entry
+				var gotT, wantT []EntryV1
 				var content bool
-				failures, content, gotT, wantT = httpxtest.Content[[]entry](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = httpxtest.Content[[]EntryV1](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)

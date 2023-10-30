@@ -7,7 +7,7 @@ import (
 
 func createEntry(ctrl string) []EntryV1 {
 	return []EntryV1{{Traffic: "ingress",
-		Start:       time.Now().UTC(),
+		//Start:      time.Now().UTC(),
 		Duration:    time.Millisecond * 500,
 		Controller:  ctrl,
 		Region:      "us",
@@ -37,7 +37,7 @@ func Example_addEntry() {
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//test: addEntry() -> [{ingress 2023-10-21 19:01:59.1121739 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: addEntry() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }
 
@@ -57,5 +57,8 @@ func Example_getEntriesByController() {
 	fmt.Printf("test: getEntriesByController() -> %v\n", e)
 
 	//Output:
+	//test: getEntriesByController() -> []
+	//test: list() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms ingress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms egress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: getEntriesByController() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }

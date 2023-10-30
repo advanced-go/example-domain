@@ -10,7 +10,7 @@ const (
 	Type = "type"
 )
 
-type entry struct {
+type EntryV1 struct {
 	CreatedTS    time.Time
 	ActivityID   string // Some form of UUID
 	ActivityType string // trace|action
@@ -33,14 +33,14 @@ type entry struct {
 //	[]Entry | []byte
 //}
 
-var list []entry
+var list []EntryV1
 
-func getEntries() []entry {
+func getEntries() []EntryV1 {
 	return list
 }
 
-func getEntriesByType(act string) []entry {
-	var l []entry
+func getEntriesByType(act string) []EntryV1 {
+	var l []EntryV1
 
 	for _, v := range list {
 		if act == "" {
@@ -54,7 +54,7 @@ func getEntriesByType(act string) []entry {
 	return l
 }
 
-func addEntry(e []entry) {
+func addEntry(e []EntryV1) {
 	for _, item := range e {
 		list = append(list, item)
 		fmt.Printf("%v\n", item)
@@ -62,11 +62,11 @@ func addEntry(e []entry) {
 }
 
 func deleteEntries() {
-	list = []entry{}
+	list = []EntryV1{}
 }
 
-func queryEntries(u *url.URL) []entry {
-	var result []entry
+func queryEntries(u *url.URL) []EntryV1 {
+	var result []EntryV1
 
 	name := ""
 	if u.Query() != nil {
