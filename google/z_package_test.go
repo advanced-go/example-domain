@@ -2,43 +2,44 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/exchange"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"net/url"
 )
 
-func Example_DoHandler() {
+func Example_typeHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+SearchEndpoint+"?q=test", nil)
-	resp, err := DoHandler(req)
-	fmt.Printf("test: DoHandler(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), err, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
+	resp, status := typeHandler[runtimetest.DebugError](req)
+	if buf, ok := resp.([]byte); ok {
+		if buf != nil {
+		}
+	}
+
+	fmt.Printf("test: typeHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
 
 	//Output:
-	//test: DoHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [err:<nil>] [status:200] [content-length:108269]
+	//test: typeHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
 
 }
+func Example_httpHandler() {
+	r := httpx.NewRecorder()
 
-// Example_searchHandler - this should work
-func Example_searchHandler() {
-	uri := "https://github.com" + SearchEndpoint + "?q=test"
-	req, err := http.NewRequest("", uri, nil)
-	fmt.Printf("test: NewRequest(%v) [err:%v] [req:%v]\n", uri, err, req != nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+SearchEndpoint+"?q=test", nil)
+	status := httpHandler[runtimetest.DebugError](r, req)
+	r.Result().Header = r.Header()
+	buf, status1 := httpx.ReadAll(r.Result().Body)
+	fmt.Printf("test: ReadAll() -> [status:%v] [body:%v]\n", status1, len(buf))
 
-	// routing to https://www.google.com, so should work
-	w := httpx.NewRecorder()
-	searchHandler[runtimetest.DebugError](w, req)
-	w.Result().Header = w.Header()
-	buf, status := httpx.ReadAll(w.Result().Body)
-	fmt.Printf("test: Response() [status:%v] [content:%v]\n", status, len(buf) > 0)
+	fmt.Printf("test: httpHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, r.Result().Header.Get(httpx.ContentType), r.Result().Header.Get(httpx.ContentLength))
 
-	//Output:
-	//test: NewRequest(https://github.com/go-ai-agent/example-domain/google/search?q=test) [err:<nil>] [req:true]
-	//test: Response() [status:OK] [content:true]
+	//Output:test: ReadAll() -> [status:OK] [body:100705]
+	//test: httpHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=utf-8] [content-length:100705]
 
 }
 
 func Example_Resolver() {
+	// Resolve the content to a file
 	fileUri := "file://[cwd]/resource/query-result.txt"
 	httpx.AddResolver(func(s string) string {
 		return fileUri
@@ -48,43 +49,16 @@ func Example_Resolver() {
 	buf, err := httpx.ReadFile(u)
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
-	w := httpx.NewRecorder()
 	req, _ := http.NewRequest("", pkgPath, nil)
-	searchHandler[runtimetest.DebugError](w, req)
-	w.Result().Header = w.Header()
-	buf2, status := httpx.ReadAll(w.Result().Body)
-	fmt.Printf("test: Response() [status:%v] [content:%v]\n", status, string(buf2))
+	result, status := typeHandler[runtimetest.DebugError](req)
+	str := ""
+	if buf1, ok := result.([]byte); ok {
+		str = string(buf1)
+	}
+	fmt.Printf("test: typeHandler() [status:%v] [content:%v]\n", status, str)
 
 	//Output:
 	//test: ReadFile() -> [err:<nil>] [buf:This is an alternate result for a Google query.]
-	//test: Response() [status:OK] [content:This is an alternate result for a Google query.]
+	//test: typeHandler() [status:OK] [content:This is an alternate result for a Google query.]
 
-}
-
-func _Example_Proxy() {
-	url := "http://localhost:8080" + SearchEndpoint + "?q=test"
-	req, err := http.NewRequest("", url, nil)
-
-	if err != nil {
-		fmt.Printf("test: NewRequest(%v) -> [err:%v]\n", url, err)
-	}
-	resp, status := exchange.Do(req)
-	fmt.Printf("test: Do(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), status, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
-
-	exchange.AddProxy(exchange.Proxy{Select: func(req *http.Request) bool { return true }, Do: do})
-	req, err = http.NewRequest("", "https://www.google.com/search?q=test", nil)
-	resp, status = exchange.Do(req)
-	fmt.Printf("test: Do(%v) -> [err:%v] [status:%v] [content-length:%v]\n", req.URL.String(), status, resp.StatusCode, resp.Header.Get(httpx.ContentLength))
-
-	//Output:
-	//test: Do(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [err:Internal Error [Get "http://localhost:8080/go-ai-agent/example-domain/google/search?q=test": dial tcp [::1]:8080: connectex: No connection could be made because the target machine actively refused it.]] [status:500] [content-length:]
-
-}
-
-func do(req *http.Request) (*http.Response, error) {
-	//url, _ := url.Parse("https://www.google.com/search?q=test")
-	//req.URL = url
-	//url := "https://www.google.com/search?q=test"
-	//req, _ = http.NewRequest("", url, nil)
-	return exchange.Client.Do(req)
 }
