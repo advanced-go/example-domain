@@ -56,20 +56,17 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status)
 
 		req, err := http.NewRequest(http.MethodGet, httpx.Resolve(searchUri(rc.URL, googleEndpoint)), nil)
 		if err != nil {
-			status := e.Handle(requestId, searchLocation, err).SetCode(http.StatusInternalServerError)
-			return nil, status
+			return nil, e.Handle(requestId, searchLocation, err).SetCode(http.StatusInternalServerError)
 		}
 		// exchange.Do() will always return a non nil *http.Response
 		resp, status := exchange.Do(req)
 		if !status.OK() {
-			e.HandleStatus(status, requestId, searchLocation)
-			return nil, status
+			return nil, e.HandleStatus(status, requestId, searchLocation)
 		}
 		var buf []byte
 		buf, status = httpx.ReadAll(resp.Body)
 		if !status.OK() {
-			e.HandleStatus(status, requestId, searchLocation)
-			return nil, status
+			return nil, e.HandleStatus(status, requestId, searchLocation)
 		}
 		status.Header().Set(httpx.ContentType, resp.Header.Get(httpx.ContentType))
 		status.Header().Set(httpx.ContentLength, fmt.Sprintf("%v", len(buf)))

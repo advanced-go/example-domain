@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-func createEntry(ctrl string) []entry {
-	return []entry{{Traffic: "ingress",
+func createEntry(ctrl string) []EntryV1 {
+	return []EntryV1{{Traffic: "ingress",
 		Start:       time.Now().UTC(),
 		Duration:    time.Millisecond * 500,
 		Controller:  ctrl,

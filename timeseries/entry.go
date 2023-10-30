@@ -20,7 +20,7 @@ var (
 //
 // Notes:
 
-type entry struct {
+type EntryV1 struct {
 	Traffic    string
 	Start      time.Time
 	Duration   time.Duration
@@ -56,20 +56,20 @@ type entry struct {
 
 }
 
-var list []entry
+var list []EntryV1
 
-func getEntries() []entry {
+func getEntries() []EntryV1 {
 	return list
 }
 
-func addEntry(e []entry) {
+func addEntry(e []EntryV1) {
 	for _, item := range e {
 		list = append(list, item)
 	}
 }
 
-func getEntriesByController(ctrl string) []entry {
-	var e []entry
+func getEntriesByController(ctrl string) []EntryV1 {
+	var e []EntryV1
 
 	for i, _ := range list {
 		if list[i].Controller == ctrl {
@@ -80,10 +80,10 @@ func getEntriesByController(ctrl string) []entry {
 }
 
 func deleteEntries() {
-	list = []entry{}
+	list = []EntryV1{}
 }
 
-func queryEntries(u *url.URL) []entry {
+func queryEntries(u *url.URL) []EntryV1 {
 	name := ""
 	if u.Query() != nil {
 		name = u.Query().Get(ConrollerName)
