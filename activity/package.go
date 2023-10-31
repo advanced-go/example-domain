@@ -11,7 +11,7 @@ import (
 type pkg struct{}
 
 var (
-	EntryEndpoint = pkgPath + "/entry"
+	HttpHandlerEndpoint = pkgPath + "/HttpHandler"
 
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
@@ -48,6 +48,7 @@ func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, body 
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
+		// Set content-type
 		return entries, runtime.NewStatusOK()
 	case http.MethodPut:
 		var entries []EntryV1
