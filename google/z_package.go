@@ -14,7 +14,7 @@ type pkg struct{}
 //https://www.google.com/search?q=test&rlz=1C1CHBF
 
 var (
-	HttpHandlerEndpoint = pkgPath + "/HttpHandler"
+	HttpHandlerPattern = pkgPath + "/"
 
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)

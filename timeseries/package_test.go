@@ -12,11 +12,11 @@ import (
 
 func Example_PkgUri() {
 	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: HttpHandlerEndpoint = %v\n", HttpHandlerEndpoint)
+	fmt.Printf("test: HttpHandlerPattern = %v\n", HttpHandlerPattern)
 
 	//Output:
 	//test: PkgUri = github.com/go-ai-agent/example-domain/timeseries
-	//test: HttpHandlerEndpoint = /go-ai-agent/example-domain/timeseries/HttpHandler
+	//test: HttpHandlerPattern = /go-ai-agent/example-domain/timeseries/HttpHandler
 	
 }
 

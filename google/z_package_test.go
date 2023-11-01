@@ -9,7 +9,7 @@ import (
 )
 
 func Example_typeHandler() {
-	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerEndpoint+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
 	resp, status := typeHandler[runtimetest.DebugError](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -25,7 +25,7 @@ func Example_typeHandler() {
 func Example_httpHandler() {
 	r := httpx.NewRecorder()
 
-	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerEndpoint+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
 	status := httpHandler[runtimetest.DebugError](r, req)
 	r.Result().Header = r.Header()
 	buf, status1 := httpx.ReadAll(r.Result().Body)
