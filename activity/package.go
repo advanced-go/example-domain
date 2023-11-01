@@ -96,7 +96,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			return status
 		}
 
-		buf, status = json.MarshalType(entries)
+		buf, status = json.Marshal(entries)
 		if !status.OK() {
 			var e E
 			e.HandleStatus(status, requestId, loc)
@@ -120,7 +120,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, nc, nil)
 			return nc
 		}
-		entries, status = json.UnmarshalType[[]EntryV1](buf)
+		status = json.Unmarshal(buf, &entries)
 		if !status.OK() {
 			e.HandleStatus(status, requestId, loc)
 		} else {

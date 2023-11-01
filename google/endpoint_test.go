@@ -7,11 +7,11 @@ import (
 
 func Example_PkgUri() {
 	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: SearchEndpoint = %v\n", SearchEndpoint)
+	fmt.Printf("test: HttpHandlerEndpoint = %v\n", HttpHandlerEndpoint)
 
 	//Output:
 	//test: PkgUri = github.com/go-ai-agent/example-domain/google
-	//test: SearchEndpoint = /go-ai-agent/example-domain/google/search
+	//test: HttpHandlerEndpoint = /go-ai-agent/example-domain/google/HttpHandler
 
 }
 
