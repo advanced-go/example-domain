@@ -56,7 +56,7 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status)
 
 		req, err := http.NewRequest(http.MethodGet, httpx.Resolve(searchUri(rc.URL, googleEndpoint)), nil)
 		if err != nil {
-			return nil, e.Handle(requestId, searchLocation, err).SetCode(http.StatusInternalServerError)
+			return nil, e.HandleStatus(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
 		// exchange.Do() will always return a non nil *http.Response
 		resp, status := exchange.Do(req)
