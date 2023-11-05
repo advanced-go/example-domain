@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/go-ai-agent/core/exchange"
 	"github.com/go-ai-agent/core/httpx"
+	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -19,6 +20,7 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
+	controller         = log.NewController(newTypeHandler[runtime.LogError]())
 	searchLocation     = PkgUri + "/searchHandler"
 	googleQueryArgName = "q"
 
@@ -36,11 +38,18 @@ func IsPkgStarted() bool {
 	return true
 }
 
-func TypeHandler(r *http.Request) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError](r)
+// newTypeHandler - templated function providing a TypeHandlerFn with a closure
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return typeHandler[E](r, body)
+	}
 }
 
-func typeHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status) {
+func TypeHandler(r *http.Request, body any) (any, *runtime.Status) {
+	return controller.Apply(r, body)
+}
+
+func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -80,7 +89,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
-	result, status := typeHandler[E](r)
+	result, status := typeHandler[E](r, nil)
 	httpx.WriteResponse[E](w, result, status, status.Header())
 	return status
 }

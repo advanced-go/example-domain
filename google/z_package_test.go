@@ -1,16 +1,34 @@
 package google
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-ai-agent/core/httpx"
+	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"net/url"
 )
 
+func Example_TypeHandler() {
+	ctx := log.ContextWithAccessLogger(context.Background(), log.AccessLogger)
+	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
+	resp, status := TypeHandler(req, nil)
+	if buf, ok := resp.([]byte); ok {
+		if buf != nil {
+		}
+	}
+
+	fmt.Printf("test: TypeHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
+
+	//Output:
+	//test: typeHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
+
+}
+
 func Example_typeHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
-	resp, status := typeHandler[runtimetest.DebugError](req)
+	resp, status := typeHandler[runtimetest.DebugError](req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -50,7 +68,7 @@ func Example_Resolver() {
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
 	req, _ := http.NewRequest("", pkgPath, nil)
-	result, status := typeHandler[runtimetest.DebugError](req)
+	result, status := typeHandler[runtimetest.DebugError](req, nil)
 	str := ""
 	if buf1, ok := result.([]byte); ok {
 		str = string(buf1)

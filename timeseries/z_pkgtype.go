@@ -1,7 +1,7 @@
 package timeseries
 
 import (
-	"github.com/go-ai-agent/core/resiliency"
+	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -12,7 +12,7 @@ type pkg struct{}
 var (
 	PkgUri     = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath    = runtime.PathFromUri(PkgUri)
-	controller = resiliency.NewBypassController(newTypeHandler[runtime.LogError]())
+	controller = log.NewController(newTypeHandler[runtime.LogError]())
 )
 
 // newTypeHandler - templated function providing a TypeHandlerFn with a closure
