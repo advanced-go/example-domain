@@ -15,7 +15,7 @@ type pkg struct{}
 //https://www.google.com/search?q=test&rlz=1C1CHBF
 
 var (
-	HttpHandlerPattern = pkgPath + "/"
+	Pattern = pkgPath + "/"
 
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
@@ -58,24 +58,24 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
 	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
+	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
 		var e E
 
 		req, err := http.NewRequest(http.MethodGet, httpx.Resolve(searchUri(rc.URL, googleEndpoint)), nil)
 		if err != nil {
-			return nil, e.HandleStatus(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
+			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
 		// exchange.Do() will always return a non nil *http.Response
 		resp, status := exchange.Do(req)
 		if !status.OK() {
-			return nil, e.HandleStatus(status, requestId, searchLocation)
+			return nil, e.Handle(status, requestId, searchLocation)
 		}
 		var buf []byte
 		buf, status = httpx.ReadAll(resp.Body)
 		if !status.OK() {
-			return nil, e.HandleStatus(status, requestId, searchLocation)
+			return nil, e.Handle(status, requestId, searchLocation)
 		}
 		status.Header().Set(httpx.ContentType, resp.Header.Get(httpx.ContentType))
 		status.Header().Set(httpx.ContentLength, fmt.Sprintf("%v", len(buf)))

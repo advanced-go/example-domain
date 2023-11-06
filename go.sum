@@ -1,6 +1,4 @@
-github.com/go-ai-agent/core v0.0.0-20231105203119-0d330a68c218 h1:PS4NkufKQ8c98BxNg1Ap+7YGrv8yCQX0oKYk8lmJtf8=
-github.com/go-ai-agent/core v0.0.0-20231105203119-0d330a68c218/go.mod h1:K25Nm1JSMCfyivjVFcEzXpKQGXa8a/pIHiWaRbXzqYg=
+github.com/go-ai-agent/core v0.0.0-20231106183840-af56aa0e8ad1 h1:9FjHGMPc7dWnXFuFK6iv/72MWbmf5JrStz88gKsuku4=
+github.com/go-ai-agent/core v0.0.0-20231106183840-af56aa0e8ad1/go.mod h1:K25Nm1JSMCfyivjVFcEzXpKQGXa8a/pIHiWaRbXzqYg=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-golang.org/x/time v0.3.0 h1:rg5rLMjNzMS1RkNLzCG38eapWhnYLFYXDXj2gOlr8j4=
-golang.org/x/time v0.3.0/go.mod h1:tRJNPiyCQ0inRvYxbN9jk5I+vvW/OXSQhTDSoE431IQ=

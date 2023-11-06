@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	HttpHandlerPattern = pkgPath + "/HttpHandler"
-	httpLoc            = pkgPath + "/httpHandler"
+	Pattern = pkgPath + "/"
+	httpLoc = pkgPath + "/httpHandler"
 )
 
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +26,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
 	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
+	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
 		var buf []byte
@@ -39,7 +39,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		buf, status = json.Marshal(entries)
 		if !status.OK() {
 			var e E
-			e.HandleStatus(status, requestId, httpLoc)
+			e.Handle(status, requestId, httpLoc)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -51,7 +51,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 
 		buf, status := httpx.ReadAll(rc.Body)
 		if !status.OK() {
-			e.HandleStatus(status, requestId, httpLoc)
+			e.Handle(status, requestId, httpLoc)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -62,7 +62,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		}
 		status = json.Unmarshal(buf, &entries)
 		if !status.OK() {
-			e.HandleStatus(status, requestId, httpLoc)
+			e.Handle(status, requestId, httpLoc)
 		} else {
 			addEntry(entries)
 		}

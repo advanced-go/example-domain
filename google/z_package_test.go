@@ -11,8 +11,8 @@ import (
 )
 
 func Example_TypeHandler() {
-	ctx := log.ContextWithAccessLogger(context.Background(), log.AccessLogger)
-	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
+	ctx := log.NewAccessContext(context.Background())
+	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	resp, status := TypeHandler(req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -27,7 +27,7 @@ func Example_TypeHandler() {
 }
 
 func Example_typeHandler() {
-	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	resp, status := typeHandler[runtimetest.DebugError](req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -43,7 +43,7 @@ func Example_typeHandler() {
 func Example_httpHandler() {
 	r := httpx.NewRecorder()
 
-	req, _ := http.NewRequest("", "http://localhost:8080"+HttpHandlerPattern+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	status := httpHandler[runtimetest.DebugError](r, req)
 	r.Result().Header = r.Header()
 	buf, status1 := httpx.ReadAll(r.Result().Body)

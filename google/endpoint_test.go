@@ -7,11 +7,11 @@ import (
 
 func Example_PkgUri() {
 	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: HttpHandlerPattern = %v\n", HttpHandlerPattern)
+	fmt.Printf("test: Pattern = %v\n", Pattern)
 
 	//Output:
 	//test: PkgUri = github.com/go-ai-agent/example-domain/google
-	//test: HttpHandlerPattern = /go-ai-agent/example-domain/google/
+	//test: Pattern = /go-ai-agent/example-domain/google/
 
 }
 

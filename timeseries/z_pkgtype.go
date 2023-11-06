@@ -40,7 +40,7 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
 	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.ContextWithRequestId(r.Context(), requestId))
+	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
 	switch rc.Method {
 	case http.MethodGet:
 		entries := queryEntries(rc.URL)
