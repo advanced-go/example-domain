@@ -33,11 +33,6 @@ var (
 	googleEndpoint = "https://www.google.com/search"
 )
 
-// IsPkgStarted - returns status of startup
-func IsPkgStarted() bool {
-	return true
-}
-
 // newTypeHandler - templated function providing a TypeHandlerFn with a closure
 func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 	return func(r *http.Request, body any) (any, *runtime.Status) {

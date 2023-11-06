@@ -3,6 +3,7 @@ package slo
 import (
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/json"
+	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -16,11 +17,15 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/entryHandler"
+
+	controller = log.NewController(newTypeHandler[runtime.LogError]())
 )
 
-// IsPkgStarted - returns status of startup
-func IsPkgStarted() bool {
-	return true
+// newTypeHandler - templated function providing a TypeHandlerFn with a closure
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return typeHandler[E](r, body)
+	}
 }
 
 // InConstraints - defining constraints for the TypeHandler
@@ -29,10 +34,10 @@ type InConstraints interface {
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return typeHandler[runtime.LogError, T](r, body)
+	return controller.Apply(r, body)
 }
 
-func typeHandler[E runtime.ErrorHandler, T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
+func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -89,7 +94,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := typeHandler[E, runtime.Nil](rc, nil)
+		entries, status := typeHandler[E](rc, nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
