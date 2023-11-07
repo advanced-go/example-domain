@@ -68,6 +68,13 @@ func addItems(e []EntryV1) {
 	}
 }
 
+func addEntryTimes(e []EntryV1) {
+	for _, item := range e {
+		list = append(list, item)
+		//fmt.Printf("%v\n", item)
+	}
+}
+
 func deleteEntries() {
 	list = []EntryV1{}
 }
