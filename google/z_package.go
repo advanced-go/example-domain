@@ -84,7 +84,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
-	result, status := typeHandler[E](r, nil)
+	result, status := TypeHandler(r, nil)
 	httpx.WriteResponse[E](w, result, status, status.Header())
 	return status
 }

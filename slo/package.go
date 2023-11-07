@@ -30,7 +30,7 @@ func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 
 // InConstraints - defining constraints for the TypeHandler
 type InConstraints interface {
-	[]EntryV1 | runtime.Nil
+	[]EntryV1 | runtime.Nillable
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
@@ -94,7 +94,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := typeHandler[E](rc, nil)
+		entries, status := TypeHandler[runtime.Nillable](rc, nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -132,8 +132,9 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		deleteEntries()
-		status := runtime.NewStatusOK()
+		_, status := TypeHandler[runtime.Nillable](rc, nil)
+		//deleteEntries()
+		//status := runtime.NewStatusOK()
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

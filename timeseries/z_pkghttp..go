@@ -31,7 +31,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := typeHandler[E](rc, nil)
+		entries, status := TypeHandler[runtime.Nillable](rc, nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -69,8 +69,12 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		deleteEntries()
-		status := runtime.NewStatusOK()
+		_, status := TypeHandler[runtime.Nillable](rc, nil)
+		//if !status.OK() {
+		//	httpx.WriteResponse[E](w, nil, status, nil)
+		//	return status
+		//}
+		//status = runtime.NewStatusOK()
 		httpx.WriteResponse[E](w, nil, status.SetRequestId(requestId), nil)
 		return status
 	default:

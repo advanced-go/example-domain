@@ -1,4 +1,6 @@
-github.com/go-ai-agent/core v0.0.0-20231106183840-af56aa0e8ad1 h1:9FjHGMPc7dWnXFuFK6iv/72MWbmf5JrStz88gKsuku4=
-github.com/go-ai-agent/core v0.0.0-20231106183840-af56aa0e8ad1/go.mod h1:K25Nm1JSMCfyivjVFcEzXpKQGXa8a/pIHiWaRbXzqYg=
+github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
+github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
+github.com/go-ai-agent/core v0.0.0-20231107101857-29bcd851b769 h1:waQWYSM089KvY+wOLO5nkUtkeXdz9sLPGEdGvNz5Wpo=
+github.com/go-ai-agent/core v0.0.0-20231107101857-29bcd851b769/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

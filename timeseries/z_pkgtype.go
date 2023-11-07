@@ -24,7 +24,7 @@ func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 
 // InConstraints - defining constraints for the TypeHandler
 type InConstraints interface {
-	[]EntryV1 | runtime.Nil
+	[]EntryV1 | runtime.Nillable
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
@@ -51,7 +51,7 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 	case http.MethodPut:
 		var entries []EntryV1
 
-		switch ptr := any(body).(type) {
+		switch ptr := body.(type) {
 		case []EntryV1:
 			entries = ptr
 		default:
