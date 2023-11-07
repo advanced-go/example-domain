@@ -58,7 +58,7 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 	case http.MethodPut:
 		var entries []EntryV1
 
-		switch ptr := any(body).(type) {
+		switch ptr := body.(type) {
 		case []EntryV1:
 			entries = ptr
 		default:
@@ -129,7 +129,8 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		if !status.OK() {
 			e.Handle(status, requestId, loc)
 		} else {
-			addEntry(entries)
+			//addEntry(entries)
+			TypeHandler[[]EntryV1](r, entries)
 		}
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status

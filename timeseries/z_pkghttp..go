@@ -64,7 +64,9 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		if !status.OK() {
 			e.Handle(status, requestId, httpLoc)
 		} else {
-			addEntry(entries)
+			//addEntry(entries)
+			TypeHandler[[]EntryV1](r, entries)
+
 		}
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
