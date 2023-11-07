@@ -21,17 +21,12 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	requestId := runtime.GetOrCreateRequestId(r)
-	if r.Header.Get(runtime.XRequestId) == "" {
-		r.Header.Set(runtime.XRequestId, requestId)
-	}
-	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
-	switch rc.Method {
+	r = httpx.UpdateHeadersAndContext(r)
+	switch r.Method {
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := TypeHandler[runtime.Nillable](rc, nil)
+		entries, status := TypeHandler[runtime.Nillable](r, nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -39,7 +34,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		buf, status = json.Marshal(entries)
 		if !status.OK() {
 			var e E
-			e.Handle(status, requestId, httpLoc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -48,18 +43,18 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodPut:
 		var e E
 
-		buf, status := httpx.ReadAll(rc.Body)
+		buf, status := httpx.ReadAll(r.Body)
 		if !status.OK() {
-			e.Handle(status, requestId, httpLoc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = TypeHandler[[]byte](rc, buf)
+		_, status = TypeHandler[[]byte](r, buf)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := TypeHandler[runtime.Nillable](rc, nil)
-		httpx.WriteResponse[E](w, nil, status.SetRequestId(requestId), nil)
+		_, status := TypeHandler[runtime.Nillable](r, nil)
+		httpx.WriteResponse[E](w, nil, status.SetRequestId(r), nil)
 		return status
 	default:
 	}

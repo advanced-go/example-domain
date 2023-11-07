@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
@@ -30,22 +31,16 @@ type BodyConstraints interface {
 }
 
 func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return controller.Apply(r, body)
+	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
 }
 
 func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	requestId := runtime.GetOrCreateRequestId(r)
-	if r.Header.Get(runtime.XRequestId) == "" {
-		r.Header.Set(runtime.XRequestId, requestId)
-	}
-	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
-	switch rc.Method {
+	switch r.Method {
 	case http.MethodGet:
-		entries := queryEntries(rc.URL)
+		entries := queryEntries(r.URL)
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
@@ -63,7 +58,7 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 			status := json.Unmarshal(ptr, &entries)
 			if !status.OK() {
 				var e E
-				e.Handle(status, requestId, typeLoc)
+				e.Handle(status, runtime.RequestId(r), typeLoc)
 				return nil, status.AddLocation(typeLoc)
 			}
 		default:
