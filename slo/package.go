@@ -1,6 +1,7 @@
 package slo
 
 import (
+	"fmt"
 	"github.com/go-ai-agent/core/httpx"
 	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/log"
@@ -95,12 +96,15 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
+	fmt.Printf("httpHandler1() -> [access:%v]\n", log.AccessFromContext(r.Context()) != nil)
 	requestId := runtime.GetOrCreateRequestId(r)
 	if r.Header.Get(runtime.XRequestId) == "" {
 		r.Header.Set(runtime.XRequestId, requestId)
 	}
 	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
 	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
+	fmt.Printf("httpHandler2() -> [access:%v]\n", log.AccessFromContext(r.Context()) != nil)
+
 	switch rc.Method {
 	case http.MethodGet:
 		var buf []byte
