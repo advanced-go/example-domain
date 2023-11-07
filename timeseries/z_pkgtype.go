@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -13,6 +14,7 @@ var (
 	PkgUri     = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath    = runtime.PathFromUri(PkgUri)
 	controller = log.NewController(newTypeHandler[runtime.LogError]())
+	typeLoc    = pkgPath + "/typeHandler"
 )
 
 // newTypeHandler - templated function providing a TypeHandlerFn with a closure
@@ -24,7 +26,7 @@ func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 
 // InConstraints - defining constraints for the TypeHandler
 type InConstraints interface {
-	[]EntryV1 | runtime.Nillable
+	[]EntryV1 | []byte | runtime.Nillable
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
@@ -54,6 +56,16 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 		switch ptr := body.(type) {
 		case []EntryV1:
 			entries = ptr
+		case []byte:
+			if ptr == nil {
+				return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+			}
+			status := json.Unmarshal(ptr, &entries)
+			if !status.OK() {
+				var e E
+				e.Handle(status, requestId, typeLoc)
+				return nil, status.AddLocation(typeLoc)
+			}
 		default:
 		}
 		if len(entries) == 0 {

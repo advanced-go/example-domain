@@ -46,7 +46,6 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		var entries []EntryV1
 		var e E
 
 		buf, status := httpx.ReadAll(rc.Body)
@@ -55,28 +54,11 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		if buf == nil {
-			nc := runtime.NewStatus(runtime.StatusInvalidContent)
-			httpx.WriteResponse[E](w, nil, nc, nil)
-			return nc
-		}
-		status = json.Unmarshal(buf, &entries)
-		if !status.OK() {
-			e.Handle(status, requestId, httpLoc)
-		} else {
-			//addEntry(entries)
-			TypeHandler[[]EntryV1](r, entries)
-
-		}
+		_, status = TypeHandler[[]byte](rc, buf)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
 		_, status := TypeHandler[runtime.Nillable](rc, nil)
-		//if !status.OK() {
-		//	httpx.WriteResponse[E](w, nil, status, nil)
-		//	return status
-		//}
-		//status = runtime.NewStatusOK()
 		httpx.WriteResponse[E](w, nil, status.SetRequestId(requestId), nil)
 		return status
 	default:
@@ -84,3 +66,15 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
+
+//if buf == nil {
+//	nc := runtime.NewStatus(runtime.StatusInvalidContent)
+//	httpx.WriteResponse[E](w, nil, nc, nil)
+//	return nc
+//}
+//status = json.Unmarshal(buf, &entries)
+//if !status.OK() {
+//	e.Handle(status, requestId, httpLoc)
+//} else {
+//  addEntry(entries)
+//}

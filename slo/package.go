@@ -19,6 +19,7 @@ var (
 	loc     = pkgPath + "/entryHandler"
 
 	controller = log.NewController(newTypeHandler[runtime.LogError]())
+	typeLoc    = pkgPath + "/typeHandler"
 )
 
 // newTypeHandler - templated function providing a TypeHandlerFn with a closure
@@ -30,7 +31,7 @@ func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 
 // InConstraints - defining constraints for the TypeHandler
 type InConstraints interface {
-	[]EntryV1 | runtime.Nillable
+	[]EntryV1 | []byte | runtime.Nillable
 }
 
 func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
@@ -60,6 +61,16 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 		switch ptr := any(body).(type) {
 		case []EntryV1:
 			entries = ptr
+		case []byte:
+			if ptr == nil {
+				return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+			}
+			status := json.Unmarshal(ptr, &entries)
+			if !status.OK() {
+				var e E
+				e.Handle(status, requestId, typeLoc)
+				return nil, status.AddLocation(typeLoc)
+			}
 		default:
 		}
 		if len(entries) == 0 {
@@ -109,7 +120,6 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		var entries []EntryV1
 		var e E
 
 		buf, status := httpx.ReadAll(rc.Body)
@@ -118,23 +128,11 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		if buf == nil {
-			nc := runtime.NewStatus(runtime.StatusInvalidContent)
-			httpx.WriteResponse[E](w, nil, nc, nil)
-			return nc
-		}
-		status = json.Unmarshal(buf, &entries)
-		if !status.OK() {
-			e.Handle(status, requestId, loc)
-		} else {
-			TypeHandler[[]EntryV1](r, entries)
-		}
+		_, status = TypeHandler[[]byte](rc, buf)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
 		_, status := TypeHandler[runtime.Nillable](rc, nil)
-		//deleteEntries()
-		//status := runtime.NewStatusOK()
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:
@@ -142,3 +140,17 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
+
+/*
+	if buf == nil {
+		nc := runtime.NewStatus(runtime.StatusInvalidContent)
+		httpx.WriteResponse[E](w, nil, nc, nil)
+		return nc
+	}
+	status = json.Unmarshal(buf, &entries)
+	if !status.OK() {
+		e.Handle(status, requestId, loc)
+	} else {
+		addEntry(entries)
+	}
+*/
