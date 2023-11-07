@@ -29,12 +29,12 @@ func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 	}
 }
 
-// InConstraints - defining constraints for the TypeHandler
-type InConstraints interface {
+// BodyConstraints - defining constraints for the TypeHandler body
+type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
-func TypeHandler[T InConstraints](r *http.Request, body T) (any, *runtime.Status) {
+func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	return controller.Apply(r, body)
 }
 
