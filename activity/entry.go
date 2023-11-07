@@ -57,6 +57,13 @@ func getEntriesByType(act string) []EntryV1 {
 func addEntry(e []EntryV1) {
 	for _, item := range e {
 		list = append(list, item)
+		//fmt.Printf("%v\n", item)
+	}
+}
+
+func addItems(e []EntryV1) {
+	for _, item := range e {
+		list = append(list, item)
 		fmt.Printf("%v\n", item)
 	}
 }

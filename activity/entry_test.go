@@ -21,7 +21,6 @@ func Example_addEntry() {
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}
 	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 
 }
@@ -88,9 +87,6 @@ func Example_getEntriesByType() {
 	*/
 
 	//Output:
-	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}
-	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit}
-	//{0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}
 	//test: getEntriesByType() []
 	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}]
