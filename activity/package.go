@@ -22,23 +22,39 @@ var (
 	typeLoc    = pkgPath + "/typeHandler"
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn with a closure
+// newTypeHandler - templated function providing a TypeHandlerFn
 func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
 	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return typeHandler[E](r, body)
+		return doHandler[E](nil, r, body)
 	}
 }
 
-// BodyConstraints - defining constraints for the TypeHandler body
+// newDoHandler - templated function providing a DoHandlerFn
+func newDoHandler[E runtime.ErrorHandler]() DoHandlerFn {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
+	}
+}
+
+// BodyConstraints - defining constraints for the Do body
 type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
+}
+
+func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+	req, err := http.NewRequest(method, uri, nil)
+	if err != nil {
+		return nil, runtime.NewStatusError(http.StatusBadRequest, "/Do", err)
+	}
+	req.Header.Set(runtime.ContentLocation, variant)
+	return doHandler[runtime.LogError](ctx, req, body)
 }
 
 func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
 }
 
-func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
+func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
