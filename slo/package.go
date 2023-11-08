@@ -22,8 +22,8 @@ var (
 	doLoc      = pkgPath + "/doHandler"
 )
 
-// newDoHandler - templated function providing a TypeHandlerFn with a closure
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
+// newDoHandler - templated function providing a DoeHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
@@ -33,14 +33,6 @@ func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
 type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
-
-/*
-func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
-}
-
-
-*/
 
 // Get - return the entries
 func Get(ctx any, uri, variant string) (any, *runtime.Status) {

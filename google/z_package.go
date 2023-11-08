@@ -33,8 +33,8 @@ var (
 	googleEndpoint = "https://www.google.com/search"
 )
 
-// newDoHandler - templated function providing a TypeHandlerFn with a closure
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
+// newDoHandler - templated function providing a DoHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
