@@ -10,5 +10,11 @@ github.com/go-ai-agent/core v0.0.0-20231107154125-6eea44b42396 h1:5KMSE+YwuRugq8
 github.com/go-ai-agent/core v0.0.0-20231107154125-6eea44b42396/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/go-ai-agent/core v0.0.0-20231107161741-78d4857a63aa h1:ou4/dx5SKn9AAS7RruKGAk1KMABicbvtiSjDW1PXGfg=
 github.com/go-ai-agent/core v0.0.0-20231107161741-78d4857a63aa/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231108111222-13cc43eaa726 h1:7sYPqXHCNkAKjypJbsLa8urZOkE0F8heAr4TEAk5Vw4=
+github.com/go-ai-agent/core v0.0.0-20231108111222-13cc43eaa726/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231108120940-9bb50f716375 h1:fKd1JqpFtEMLFD/U7YURKWJde96Ddif/pBy6q7KSXUs=
+github.com/go-ai-agent/core v0.0.0-20231108120940-9bb50f716375/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231108125255-168734c511d7 h1:1JPudZ4mtGhyPyiJmSSIzk2Ie40cK2AIWkGfU346sWg=
+github.com/go-ai-agent/core v0.0.0-20231108125255-168734c511d7/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

@@ -2,6 +2,7 @@ package slo
 
 import (
 	"net/url"
+	"time"
 )
 
 const (
@@ -9,6 +10,8 @@ const (
 )
 
 type EntryV1 struct {
+	CreatedTS time.Time
+
 	// What does this apply to
 	Controller string
 
@@ -52,6 +55,7 @@ func patchEntry(e EntryV1) {
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
+		item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
 }

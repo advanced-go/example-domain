@@ -21,6 +21,7 @@ var (
 // Notes:
 
 type EntryV1 struct {
+	CreatedTS  time.Time
 	Traffic    string
 	Start      time.Time
 	Duration   time.Duration
@@ -64,6 +65,7 @@ func getEntries() []EntryV1 {
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
+		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
 }

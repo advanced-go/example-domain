@@ -18,19 +18,14 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/entryHandler"
 
-	controller = log.NewController(newTypeHandler[runtime.LogError]())
-	typeLoc    = pkgPath + "/typeHandler"
+	//controller  = log.NewController(newTypeHandler[runtime.LogError]())
+	controller2 = log.NewController2(newDoHandler[runtime.LogError]())
+
+	typeLoc = pkgPath + "/typeHandler"
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](nil, r, body)
-	}
-}
-
 // newDoHandler - templated function providing a DoHandlerFn
-func newDoHandler[E runtime.ErrorHandler]() DoHandlerFn {
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
@@ -42,17 +37,24 @@ type BodyConstraints interface {
 }
 
 func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
-	req, err := http.NewRequest(method, uri, nil)
-	if err != nil {
-		return nil, runtime.NewStatusError(http.StatusBadRequest, "/Do", err)
+	req, status := httpx.NewRequest(ctx, method, uri, variant)
+	if !status.OK() {
+		return nil, status
 	}
-	req.Header.Set(runtime.ContentLocation, variant)
-	return doHandler[runtime.LogError](ctx, req, body)
+	return controller2.Apply(ctx, req, body)
 }
 
+/*
+// newTypeHandler - templated function providing a TypeHandlerFn
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](nil, r, body)
+	}
+}
 func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
 }
+*/
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
@@ -111,7 +113,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := TypeHandler[runtime.Nillable](r, nil)
+		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -134,11 +136,11 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = TypeHandler[[]byte](r, buf)
+		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), buf)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := TypeHandler[runtime.Nillable](r, nil)
+		_, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), "", nil)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:
