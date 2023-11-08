@@ -21,7 +21,7 @@ var (
 	//controller  = log.NewController(newTypeHandler[runtime.LogError]())
 	controller2 = log.NewController2(newDoHandler[runtime.LogError]())
 
-	typeLoc = pkgPath + "/typeHandler"
+	doLoc = pkgPath + "/doHandler"
 )
 
 // newDoHandler - templated function providing a DoHandlerFn
@@ -81,8 +81,8 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 			status := json.Unmarshal(ptr, &entries)
 			if !status.OK() {
 				var e E
-				e.Handle(status, runtime.RequestId(r), typeLoc)
-				return nil, status.AddLocation(typeLoc)
+				e.Handle(status, runtime.RequestId(r), doLoc)
+				return nil, status.AddLocation(doLoc)
 			}
 		default:
 		}
