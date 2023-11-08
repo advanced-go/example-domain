@@ -55,7 +55,7 @@ func patchEntry(e EntryV1) {
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
-		item.CreatedTS = time.Now().UTC()
+		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
 }

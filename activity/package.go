@@ -18,10 +18,8 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/entryHandler"
 
-	//controller  = log.NewController(newTypeHandler[runtime.LogError]())
-	controller2 = log.NewController2(newDoHandler[runtime.LogError]())
-
-	doLoc = pkgPath + "/doHandler"
+	controller = log.NewController2(newDoHandler[runtime.LogError]())
+	doLoc      = pkgPath + "/doHandler"
 )
 
 // newDoHandler - templated function providing a DoHandlerFn
@@ -36,25 +34,18 @@ type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
+// Get - return the entries
+func Get(ctx any, uri, variant string) (any, *runtime.Status) {
+	return Do[runtime.Nillable](ctx, "", uri, variant, nil)
+}
+
 func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
 	req, status := httpx.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status
 	}
-	return controller2.Apply(ctx, req, body)
+	return controller.Apply(ctx, req, body)
 }
-
-/*
-// newTypeHandler - templated function providing a TypeHandlerFn
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](nil, r, body)
-	}
-}
-func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
-	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
-}
-*/
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
@@ -171,3 +162,17 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 // Handled in Http
 // Need to create as new request as upstream calls may not be http, and rely on the context for a request id
 //rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
+
+/*
+
+//controller  = log.NewController(newTypeHandler[runtime.LogError]())
+// newTypeHandler - templated function providing a TypeHandlerFn
+func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
+	return func(r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](nil, r, body)
+	}
+}
+func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
+	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
+}
+*/

@@ -18,14 +18,14 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/entryHandler"
 
-	controller = log.NewController(newTypeHandler[runtime.LogError]())
-	typeLoc    = pkgPath + "/typeHandler"
+	controller = log.NewController2(newDoHandler[runtime.LogError]())
+	doLoc      = pkgPath + "/doHandler"
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn with a closure
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return typeHandler[E](r, body)
+// newDoHandler - templated function providing a TypeHandlerFn with a closure
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
 	}
 }
 
@@ -34,11 +34,28 @@ type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
+/*
 func TypeHandler[T BodyConstraints](r *http.Request, body T) (any, *runtime.Status) {
 	return controller.Apply(httpx.UpdateHeadersAndContext(r), body)
 }
 
-func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
+
+*/
+
+// Get - return the entries
+func Get(ctx any, uri, variant string) (any, *runtime.Status) {
+	return Do[runtime.Nillable](ctx, "", uri, variant, nil)
+}
+
+func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+	req, status := httpx.NewRequest(ctx, method, uri, variant)
+	if !status.OK() {
+		return nil, status
+	}
+	return controller.Apply(ctx, req, body)
+}
+
+func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -62,8 +79,8 @@ func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runti
 			status := json.Unmarshal(ptr, &entries)
 			if !status.OK() {
 				var e E
-				e.Handle(status, runtime.RequestId(r), typeLoc)
-				return nil, status.AddLocation(typeLoc)
+				e.Handle(status, runtime.RequestId(r), doLoc)
+				return nil, status.AddLocation(doLoc)
 			}
 		default:
 		}
@@ -94,7 +111,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := TypeHandler[runtime.Nillable](r, nil)
+		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), nil)
 		if !status.OK() {
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -117,11 +134,11 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			httpx.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = TypeHandler[[]byte](r, buf)
+		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), buf)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := TypeHandler[runtime.Nillable](r, nil)
+		_, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), "", nil)
 		httpx.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

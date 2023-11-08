@@ -13,7 +13,7 @@ import (
 func Example_TypeHandler() {
 	ctx := log.NewAccessContext(context.Background())
 	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+pkgPath+"?q=test", nil)
-	resp, status := TypeHandler(req, nil)
+	resp, status := Do(nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -28,7 +28,7 @@ func Example_TypeHandler() {
 
 func Example_typeHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
-	resp, status := typeHandler[runtimetest.DebugError](req, nil)
+	resp, status := doHandler[runtimetest.DebugError](nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -68,7 +68,7 @@ func Example_Resolver() {
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
 	req, _ := http.NewRequest("", pkgPath, nil)
-	result, status := typeHandler[runtimetest.DebugError](req, nil)
+	result, status := doHandler[runtimetest.DebugError](nil, req, nil)
 	str := ""
 	if buf1, ok := result.([]byte); ok {
 		str = string(buf1)

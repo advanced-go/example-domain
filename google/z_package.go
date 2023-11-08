@@ -20,7 +20,7 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	controller         = log.NewController(newTypeHandler[runtime.LogError]())
+	controller         = log.NewController2(newDoHandler[runtime.LogError]())
 	searchLocation     = PkgUri + "/searchHandler"
 	googleQueryArgName = "q"
 
@@ -33,18 +33,18 @@ var (
 	googleEndpoint = "https://www.google.com/search"
 )
 
-// newTypeHandler - templated function providing a TypeHandlerFn with a closure
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return typeHandler[E](r, body)
+// newDoHandler - templated function providing a TypeHandlerFn with a closure
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandlerFn {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
 	}
 }
 
-func TypeHandler(r *http.Request, body any) (any, *runtime.Status) {
-	return controller.Apply(r, body)
+func Do(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+	return controller.Apply(ctx, r, body)
 }
 
-func typeHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, *runtime.Status) {
+func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -84,7 +84,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
-	result, status := TypeHandler(r, nil)
+	result, status := Do(nil, r, nil)
 	httpx.WriteResponse[E](w, result, status, status.Header())
 	return status
 }
