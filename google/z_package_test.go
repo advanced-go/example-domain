@@ -10,7 +10,7 @@ import (
 	"net/url"
 )
 
-func Example_TypeHandler() {
+func Example_Do() {
 	ctx := log.NewAccessContext(context.Background())
 	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	resp, status := Do(nil, req, nil)
@@ -19,14 +19,14 @@ func Example_TypeHandler() {
 		}
 	}
 
-	fmt.Printf("test: TypeHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
+	fmt.Printf("test: Do(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
 
 	//Output:
-	//test: typeHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
+	//test: Do(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
 
 }
 
-func Example_typeHandler() {
+func Example_doHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	resp, status := doHandler[runtimetest.DebugError](nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
@@ -34,10 +34,10 @@ func Example_typeHandler() {
 		}
 	}
 
-	fmt.Printf("test: typeHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
+	fmt.Printf("test: doHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.Header().Get(httpx.ContentType), status.Header().Get(httpx.ContentLength))
 
 	//Output:
-	//test: typeHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
+	//test: doHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
 
 }
 func Example_httpHandler() {
@@ -73,10 +73,10 @@ func Example_Resolver() {
 	if buf1, ok := result.([]byte); ok {
 		str = string(buf1)
 	}
-	fmt.Printf("test: typeHandler() [status:%v] [content:%v]\n", status, str)
+	fmt.Printf("test: doHandler() [status:%v] [content:%v]\n", status, str)
 
 	//Output:
 	//test: ReadFile() -> [err:<nil>] [buf:This is an alternate result for a Google query.]
-	//test: typeHandler() [status:OK] [content:This is an alternate result for a Google query.]
+	//test: doHandler() [status:OK] [content:This is an alternate result for a Google query.]
 
 }

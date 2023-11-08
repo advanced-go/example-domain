@@ -25,7 +25,7 @@ func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	}
 }
 
-// BodyConstraints - defining constraints for the TypeHandler body
+// BodyConstraints - defining constraints for the Do body
 type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }

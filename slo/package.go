@@ -16,7 +16,7 @@ var (
 
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
-	loc     = pkgPath + "/entryHandler"
+	loc     = pkgPath + "/httpHandler"
 
 	controller = log.NewController2(newDoHandler[runtime.LogError]())
 	doLoc      = pkgPath + "/doHandler"
@@ -29,7 +29,7 @@ func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	}
 }
 
-// BodyConstraints - defining constraints for the TypeHandler body
+// BodyConstraints - defining constraints for the Do body
 type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
