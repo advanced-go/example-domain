@@ -7,7 +7,7 @@ Connection: Closed
 [
    {
     "Traffic":     "egress",
-    "Duration":    100000,
+    "Duration":    1000,
     "Controller":  "egress-update",
     "Region":      "usa",
     "Zone":        "east",

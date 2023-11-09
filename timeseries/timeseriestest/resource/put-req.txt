@@ -6,7 +6,7 @@ Content-Length: 1
 [
   {
     "Traffic":     "ingress",
-    "Duration":    800000,
+    "Duration":    800,
     "Controller":  "host",
     "Region":      "usa",
     "Zone":        "west",
@@ -29,7 +29,7 @@ Content-Length: 1
   },
   {
     "Traffic":     "egress",
-    "Duration":    100000,
+    "Duration":    1000,
     "Controller":  "egress-update",
     "Region":      "usa",
     "Zone":        "east",

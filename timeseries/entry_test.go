@@ -2,13 +2,14 @@ package timeseries
 
 import (
 	"fmt"
-	"time"
 )
 
 func createEntry(ctrl string) []EntryV1 {
-	return []EntryV1{{Traffic: "ingress",
-		//Start:      time.Now().UTC(),
-		Duration:    time.Millisecond * 500,
+	return []EntryV1{{
+		//CreatedTS  0
+		Traffic: "ingress",
+		//Start:      0),
+		Duration:    500,
 		Controller:  ctrl,
 		Region:      "us",
 		Zone:        "west",
@@ -37,7 +38,7 @@ func Example_addEntry() {
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//test: addEntry() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }
 
@@ -58,7 +59,7 @@ func Example_getEntriesByController() {
 
 	//Output:
 	//test: getEntriesByController() -> []
-	//test: list() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms ingress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms egress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
-	//test: getEntriesByController() -> [{ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {ingress 0001-01-01 00:00:00 +0000 UTC 500ms host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: list() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 ingress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 egress us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: getEntriesByController() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }

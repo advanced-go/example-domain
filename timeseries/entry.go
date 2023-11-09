@@ -24,7 +24,7 @@ type EntryV1 struct {
 	CreatedTS  time.Time
 	Traffic    string
 	Start      time.Time
-	Duration   time.Duration
+	Duration   int //time.Duration
 	Controller string
 
 	// Do we need an Origin Uri ?? A concatenation of the following fields. Maybe a controller Uri??

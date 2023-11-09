@@ -13,9 +13,9 @@ func Example_addEntry() {
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:
-	//test: addEntry() -> [{percentile 99/1s }]
-	//test: addEntry() -> [{percentile 99/1s } {status-codes 10% 500,504}]
-	//test: addEntry() -> [{percentile 99/1s } {status-codes 10% 500,504} {percentile 95/500ms }]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC percentile 99/1s }]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC percentile 99/1s } {0001-01-01 00:00:00 +0000 UTC status-codes 10% 500,504}]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC percentile 99/1s } {0001-01-01 00:00:00 +0000 UTC status-codes 10% 500,504} {0001-01-01 00:00:00 +0000 UTC percentile 95/500ms }]
 
 }
 
@@ -41,9 +41,10 @@ func ExampleGetEntryByController() {
 	s = getEntriesByController(ctrl)
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
+	//Output:
 	//test: getEntriesByController() -> []
-	//test: getEntriesByController(percentile) -> [{percentile 99/1s }]
-	//test: getEntriesByController(status-codes) -> [{status-codes 10% 500,504}]
-	//test: getEntriesByController(percentile) -> [{percentile 95/500ms }]
+	//test: getEntriesByController(percentile) -> [{0001-01-01 00:00:00 +0000 UTC percentile 99/1s }]
+	//test: getEntriesByController(status-codes) -> [{0001-01-01 00:00:00 +0000 UTC status-codes 10% 500,504}]
+	//test: getEntriesByController(percentile) -> [{0001-01-01 00:00:00 +0000 UTC percentile 95/500ms }]
 
 }
