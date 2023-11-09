@@ -20,23 +20,30 @@ var (
 
 	controller = log.NewController2(newDoHandler[runtime.LogError]())
 	doLoc      = pkgPath + "/doHandler"
+
+	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
 
-// newDoHandler - templated function providing a DoeHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
+// GetConstraints - defining constraints for Get
+type GetConstraints interface {
+	[]EntryV1
 }
 
-// BodyConstraints - defining constraints for the Do body
+// Get - type templated function
+func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
+	data, status := Do[runtime.Nillable](ctx, "", uri, EntryV1Variant, nil)
+	if !status.OK() {
+		return nil, status
+	}
+	if entry, ok := data.([]EntryV1); ok {
+		return entry, status
+	}
+	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+}
+
+// BodyConstraints - defining constraints for Do
 type BodyConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
-}
-
-// Get - return the entries
-func Get(ctx any, uri, variant string) (any, *runtime.Status) {
-	return Do[runtime.Nillable](ctx, "", uri, variant, nil)
 }
 
 func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
@@ -89,6 +96,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
+// HttpHandler - http handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpHandler[runtime.LogError](w, r)
 }
@@ -137,6 +145,13 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
+}
+
+// newDoHandler - templated function providing a DoeHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
+	}
 }
 
 /*
