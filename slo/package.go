@@ -24,12 +24,12 @@ var (
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
 
-// GetConstraints - defining constraints for Get
+// GetConstraints - Get constraints
 type GetConstraints interface {
 	[]EntryV1
 }
 
-// Get - type templated function
+// Get - generic get function
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	data, status := Do[runtime.Nillable](ctx, "", uri, EntryV1Variant, nil)
 	if !status.OK() {
@@ -41,12 +41,13 @@ func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 }
 
-// BodyConstraints - defining constraints for Do
-type BodyConstraints interface {
+// DoConstraints - Do constraints
+type DoConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
-func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+// Do - generic exchange function
+func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
 	req, status := httpx.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status

@@ -18,28 +18,35 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/entryHandler"
 
-	controller = log.NewController2(newDoHandler[runtime.LogError]())
-	doLoc      = pkgPath + "/doHandler"
+	controller     = log.NewController2(newDoHandler[runtime.LogError]())
+	doLoc          = pkgPath + "/doHandler"
+	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
 
-// newDoHandler - templated function providing a DoHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
+// GetConstraints - Get constraints
+type GetConstraints interface {
+	[]EntryV1
 }
 
-// BodyConstraints - defining constraints for the Do body
-type BodyConstraints interface {
+// Get - generic get function
+func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
+	data, status := Do[runtime.Nillable](ctx, "", uri, EntryV1Variant, nil)
+	if !status.OK() {
+		return nil, status
+	}
+	if entry, ok := data.([]EntryV1); ok {
+		return entry, status
+	}
+	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+}
+
+// DoConstraints - Do constraints
+type DoConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
-// Get - return the entries
-func Get(ctx any, uri, variant string) (any, *runtime.Status) {
-	return Do[runtime.Nillable](ctx, "", uri, variant, nil)
-}
-
-func Do[T BodyConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+// Do - generic exchange function
+func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
 	req, status := httpx.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status
@@ -90,6 +97,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
+// HttpHandler - Http handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpHandler[runtime.LogError](w, r)
 }
@@ -138,6 +146,13 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
+}
+
+// newDoHandler - templated function providing a DoHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
+	}
 }
 
 /*

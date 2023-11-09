@@ -12,6 +12,7 @@ var (
 	httpLoc = pkgPath + "/httpHandler"
 )
 
+// HttpHandler - http handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpHandler[runtime.LogError](w, r)
 }
