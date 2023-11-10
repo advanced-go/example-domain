@@ -2,8 +2,8 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/exchange"
 	"github.com/go-ai-agent/core/httpx"
+	io2 "github.com/go-ai-agent/core/io"
 	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -63,12 +63,12 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
 		// exchange.Do() will always return a non nil *http.Response
-		resp, status := exchange.Do(req)
+		resp, status := httpx.Do(req)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
 		var buf []byte
-		buf, status = httpx.ReadAll(resp.Body)
+		buf, status = io2.ReadAll(resp.Body)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}

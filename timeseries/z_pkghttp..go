@@ -2,6 +2,7 @@ package timeseries
 
 import (
 	"github.com/go-ai-agent/core/httpx"
+	io2 "github.com/go-ai-agent/core/io"
 	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -22,7 +23,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	r = httpx.UpdateHeadersAndContext(r)
+	httpx.AddRequestId(r)
 	switch r.Method {
 	case http.MethodGet:
 		var buf []byte
@@ -44,7 +45,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodPut:
 		var e E
 
-		buf, status := httpx.ReadAll(r.Body)
+		buf, status := io2.ReadAll(r.Body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			httpx.WriteResponse[E](w, nil, status, nil)

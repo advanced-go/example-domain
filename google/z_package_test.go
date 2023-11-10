@@ -1,18 +1,16 @@
 package google
 
 import (
-	"context"
 	"fmt"
 	"github.com/go-ai-agent/core/httpx"
-	"github.com/go-ai-agent/core/log"
+	io2 "github.com/go-ai-agent/core/io"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"net/url"
 )
 
 func Example_Do() {
-	ctx := log.NewAccessContext(context.Background())
-	req, _ := http.NewRequestWithContext(ctx, "GET", "http://localhost:8080"+pkgPath+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	resp, status := Do(nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -46,7 +44,7 @@ func Example_httpHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
 	status := httpHandler[runtimetest.DebugError](r, req)
 	r.Result().Header = r.Header()
-	buf, status1 := httpx.ReadAll(r.Result().Body)
+	buf, status1 := io2.ReadAll(r.Result().Body)
 	fmt.Printf("test: ReadAll() -> [status:%v] [body:%v]\n", status1, len(buf))
 
 	fmt.Printf("test: httpHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, r.Result().Header.Get(httpx.ContentType), r.Result().Header.Get(httpx.ContentLength))
@@ -64,7 +62,7 @@ func Example_Resolver() {
 	},
 	)
 	u, _ := url.Parse(fileUri)
-	buf, err := httpx.ReadFile(u)
+	buf, err := io2.ReadFile(u)
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
 	req, _ := http.NewRequest("", pkgPath, nil)

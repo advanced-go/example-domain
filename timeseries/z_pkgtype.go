@@ -14,7 +14,7 @@ type pkg struct{}
 var (
 	PkgUri         = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath        = runtime.PathFromUri(PkgUri)
-	controller     = log.NewController2(newDoHandler[runtime.LogError]())
+	wrapper        = log.WrapDo(newDoHandler[runtime.LogError]())
 	doLoc          = pkgPath + "/doHandler"
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
@@ -26,7 +26,13 @@ type GetConstraints interface {
 
 // Get - generic get function
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
-	data, status := Do[runtime.Nillable](ctx, "", uri, EntryV1Variant, nil)
+	var t T
+	//Set variant based on generic type
+	variant := EntryV1Variant
+	switch any(t).(type) {
+	case []EntryV1:
+	}
+	data, status := Do[runtime.Nillable](ctx, "", uri, variant, nil)
 	if !status.OK() {
 		return nil, status
 	}
@@ -47,7 +53,7 @@ func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *ru
 	if !status.OK() {
 		return nil, status
 	}
-	return controller.Apply(ctx, req, body)
+	return wrapper(ctx, req, body)
 }
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {

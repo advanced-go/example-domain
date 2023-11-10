@@ -2,6 +2,7 @@ package slo
 
 import (
 	"github.com/go-ai-agent/core/httpx"
+	io2 "github.com/go-ai-agent/core/io"
 	"github.com/go-ai-agent/core/json"
 	"github.com/go-ai-agent/core/log"
 	"github.com/go-ai-agent/core/runtime"
@@ -18,8 +19,8 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 	loc     = pkgPath + "/httpHandler"
 
-	controller = log.NewController2(newDoHandler[runtime.LogError]())
-	doLoc      = pkgPath + "/doHandler"
+	wrapper = log.WrapDo(newDoHandler[runtime.LogError]())
+	doLoc   = pkgPath + "/doHandler"
 
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
@@ -31,7 +32,13 @@ type GetConstraints interface {
 
 // Get - generic get function
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
-	data, status := Do[runtime.Nillable](ctx, "", uri, EntryV1Variant, nil)
+	var t T
+	//Set variant based on generic type
+	variant := EntryV1Variant
+	switch any(t).(type) {
+	case []EntryV1:
+	}
+	data, status := Do[runtime.Nillable](ctx, "", uri, variant, nil)
 	if !status.OK() {
 		return nil, status
 	}
@@ -52,7 +59,7 @@ func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *ru
 	if !status.OK() {
 		return nil, status
 	}
-	return controller.Apply(ctx, req, body)
+	return wrapper(ctx, req, body)
 }
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
@@ -107,7 +114,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	r = httpx.UpdateHeadersAndContext(r)
+	httpx.AddRequestId(r)
 	switch r.Method {
 	case http.MethodGet:
 		var buf []byte
@@ -129,7 +136,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodPut:
 		var e E
 
-		buf, status := httpx.ReadAll(r.Body)
+		buf, status := io2.ReadAll(r.Body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), loc)
 			httpx.WriteResponse[E](w, nil, status, nil)
