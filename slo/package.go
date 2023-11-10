@@ -30,13 +30,14 @@ type GetConstraints interface {
 	[]EntryV1
 }
 
-// Get - generic get function
+// Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
 	//Set variant based on generic type
 	variant := EntryV1Variant
 	switch any(t).(type) {
 	case []EntryV1:
+	default:
 	}
 	data, status := Do[runtime.Nillable](ctx, "", uri, variant, nil)
 	if !status.OK() {

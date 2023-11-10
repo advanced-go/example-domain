@@ -24,7 +24,7 @@ type GetConstraints interface {
 	[]EntryV1
 }
 
-// Get - generic get function
+// Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
 	//Set variant based on generic type

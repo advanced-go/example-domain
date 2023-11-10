@@ -28,7 +28,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), nil)
+		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -51,7 +51,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(runtime.ContentLocation), buf)
+		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
