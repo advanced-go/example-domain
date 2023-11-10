@@ -1,9 +1,9 @@
 package timeseries
 
 import (
-	"github.com/go-ai-agent/core/httpx"
-	"github.com/go-ai-agent/core/json"
-	"github.com/go-ai-agent/core/log"
+	"github.com/go-ai-agent/core/http2"
+	"github.com/go-ai-agent/core/json2"
+	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -14,7 +14,7 @@ type pkg struct{}
 var (
 	PkgUri         = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath        = runtime.PathFromUri(PkgUri)
-	wrapper        = log.WrapDo(newDoHandler[runtime.LogError]())
+	wrapper        = log2.WrapDo(newDoHandler[runtime.LogError]())
 	doLoc          = pkgPath + "/doHandler"
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
@@ -49,7 +49,7 @@ type DoConstraints interface {
 
 // Do - generic exchange function
 func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
-	req, status := httpx.NewRequest(ctx, method, uri, variant)
+	req, status := http2.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status
 	}
@@ -77,7 +77,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 			if ptr == nil {
 				return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 			}
-			status := json.Unmarshal(ptr, &entries)
+			status := json2.Unmarshal(ptr, &entries)
 			if !status.OK() {
 				var e E
 				e.Handle(status, runtime.RequestId(r), doLoc)

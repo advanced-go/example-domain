@@ -2,9 +2,9 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/httpx"
-	io2 "github.com/go-ai-agent/core/io"
-	"github.com/go-ai-agent/core/log"
+	"github.com/go-ai-agent/core/http2"
+	"github.com/go-ai-agent/core/io2"
+	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 	"reflect"
@@ -20,7 +20,7 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	controller         = log.NewController2(newDoHandler[runtime.LogError]())
+	wrapper            = log2.WrapDo(newDoHandler[runtime.LogError]())
 	searchLocation     = PkgUri + "/searchHandler"
 	googleQueryArgName = "q"
 
@@ -33,37 +33,26 @@ var (
 	googleEndpoint = "https://www.google.com/search"
 )
 
-// newDoHandler - templated function providing a DoHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
-}
-
 func Do(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-	return controller.Apply(ctx, r, body)
+	return wrapper(ctx, r, body)
 }
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	requestId := runtime.GetOrCreateRequestId(r)
-	if r.Header.Get(runtime.XRequestId) == "" {
-		r.Header.Set(runtime.XRequestId, requestId)
-	}
-	// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-	rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
-	switch rc.Method {
+	requestId := "invalid-change"
+	http2.AddRequestId(r)
+	switch r.Method {
 	case http.MethodGet:
 		var e E
 
-		req, err := http.NewRequest(http.MethodGet, httpx.Resolve(searchUri(rc.URL, googleEndpoint)), nil)
+		req, err := http.NewRequest(http.MethodGet, http2.Resolve(searchUri(r.URL, googleEndpoint)), nil)
 		if err != nil {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
 		// exchange.Do() will always return a non nil *http.Response
-		resp, status := httpx.Do(req)
+		resp, status := http2.Do(req)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
@@ -72,21 +61,29 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
-		status.Header().Set(httpx.ContentType, resp.Header.Get(httpx.ContentType))
-		status.Header().Set(httpx.ContentLength, fmt.Sprintf("%v", len(buf)))
+		status.Header().Set(http2.ContentType, resp.Header.Get(http2.ContentType))
+		status.Header().Set(http2.ContentLength, fmt.Sprintf("%v", len(buf)))
 		return buf, status
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
+// HttpHandler - HTTP handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpHandler[runtime.LogError](w, r)
 }
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
 	result, status := Do(nil, r, nil)
-	httpx.WriteResponse[E](w, result, status, status.Header())
+	http2.WriteResponse[E](w, result, status, status.Header())
 	return status
+}
+
+// newDoHandler - templated function providing a DoHandler
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
+	}
 }
 
 /*
