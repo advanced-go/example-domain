@@ -58,6 +58,7 @@ func addEntry(e []EntryV1) {
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
+		logActivity(item)
 	}
 }
 
@@ -93,4 +94,10 @@ func queryEntries(u *url.URL) []EntryV1 {
 		result = getEntries()
 	}
 	return result
+}
+
+func logActivity(e EntryV1) {
+	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
+	fmt.Printf("%v", s)
+
 }

@@ -2,6 +2,7 @@ package activity
 
 import (
 	"fmt"
+	"time"
 )
 
 func Example_addEntry() {
@@ -91,4 +92,23 @@ func Example_getEntriesByType() {
 	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Analyzing observation}]
 	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 https://host/frame-path host-controller RateLimiting Reduced rate burst}]
 
+}
+
+func Example_Log() {
+	e := EntryV1{
+		CreatedTS:    time.Time{},
+		ActivityID:   "",
+		ActivityType: "trace",
+		Agent:        "agent-test",
+		AgentUri:     "",
+		Assignment:   "",
+		FrameUri:     "",
+		Controller:   "controller-test",
+		Behavior:     "",
+		Description:  "test description",
+	}
+	fmt.Printf("test: logActivity() -> %v\n", e)
+	logActivity(e)
+
+	//Output:
 }
