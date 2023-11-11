@@ -10,15 +10,8 @@ func createEntry(ctrl string) []EntryV1 {
 		Traffic: "ingress",
 		//Start:      0),
 		Duration:    500,
-		Controller:  ctrl,
-		Region:      "us",
-		Zone:        "west",
-		SubZone:     "",
-		Service:     "test-service",
-		InstanceId:  "123-456-789",
 		RequestId:   "request-id",
 		Url:         "https://service.com/path",
-		Route:       "primary",
 		Protocol:    "http",
 		Host:        "service.com",
 		Path:        "/path",
@@ -35,13 +28,14 @@ func createEntry(ctrl string) []EntryV1 {
 func Example_addEntry() {
 
 	addEntry(createEntry("host"))
-	fmt.Printf("test: addEntry() -> %v\n", list)
+	fmt.Printf("test: addEntry() -> %v\n", listV1)
 
 	//Output:
-	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 request-id https://service.com/path http service.com /path GET 200  500 500 100 0}]
 
 }
 
+/*
 func Example_getEntriesByController() {
 	deleteEntries()
 
@@ -63,3 +57,6 @@ func Example_getEntriesByController() {
 	//test: getEntriesByController() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0} {0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 host us west  test-service 123-456-789 request-id https://service.com/path primary http service.com /path GET 200  500 500 100 0}]
 
 }
+
+
+*/

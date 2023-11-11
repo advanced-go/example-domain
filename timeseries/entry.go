@@ -21,25 +21,16 @@ var (
 // Notes:
 
 type EntryV1 struct {
-	CreatedTS  time.Time
-	Traffic    string
-	Start      time.Time
-	Duration   int //time.Duration
-	Controller string
-
-	// Do we need an Origin Uri ?? A concatenation of the following fields. Maybe a controller Uri??
-	Region     string
-	Zone       string
-	SubZone    string
-	Service    string
-	InstanceId string
+	CreatedTS time.Time
+	Traffic   string
+	Start     time.Time
+	Duration  int
 
 	// Use for ecosystem triage, not application triage.
 	RequestId string
 
 	// Request attributes
 	Url         string // {scheme}://{host}/{path} No query
-	Route       string // primary|secondary Need routing groups
 	Protocol    string // From timeseries
 	Host        string // From timeseries
 	Path        string // From timeseries
@@ -57,43 +48,22 @@ type EntryV1 struct {
 
 }
 
-var list []EntryV1
+var listV1 []EntryV1
 
 func getEntries() []EntryV1 {
-	return list
+	return listV1
 }
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
-		//item.CreatedTS = time.Now().UTC()
-		list = append(list, item)
+		listV1 = append(listV1, item)
 	}
-}
-
-func getEntriesByController(ctrl string) []EntryV1 {
-	var e []EntryV1
-
-	for i, _ := range list {
-		if list[i].Controller == ctrl {
-			e = append(e, list[i])
-		}
-	}
-	return e
 }
 
 func deleteEntries() {
-	list = []EntryV1{}
+	listV1 = []EntryV1{}
 }
 
 func queryEntries(u *url.URL) []EntryV1 {
-	name := ""
-	if u.Query() != nil {
-		name = u.Query().Get(ConrollerName)
-	}
-	if len(name) != 0 {
-		return getEntriesByController(name)
-	} else {
-		return getEntries()
-	}
-	return nil
+	return getEntries()
 }
