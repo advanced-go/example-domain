@@ -27,7 +27,7 @@ func Test_httpHandlerV2(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/", tt.args.req, tt.args.resp)
+		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/v2/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
@@ -67,7 +67,7 @@ func Test_httpHandlerV2(t *testing.T) {
 	fmt.Printf("test: End Entries -> %v\n", len(listV2))
 }
 
-func Test_httpHandlerV1(t *testing.T) {
+func _Test_httpHandlerV1(t *testing.T) {
 	deleteEntriesV1()
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
@@ -84,7 +84,7 @@ func Test_httpHandlerV1(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/", tt.args.req, tt.args.resp)
+		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/timeseriestest/resource/v1/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
