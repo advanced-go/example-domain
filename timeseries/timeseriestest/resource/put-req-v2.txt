@@ -16,11 +16,8 @@ Content-Location: github.com/go-ai-agent/example-domain/timeseries/EntryV2
     "Method":      "GET",
     "StatusCode":  200,
     "StatusFlags": "",
-    "Timeout":     500,
-    "RateLimit":   500,
-    "RateBurst":   100,
-    "RoutePct":    0
-  },
+    "Threshold":     50
+   },
   {
     "Traffic":     "egress",
     "Duration":    1000,
@@ -32,9 +29,6 @@ Content-Location: github.com/go-ai-agent/example-domain/timeseries/EntryV2
     "Method":      "PUT",
     "StatusCode":  202,
     "StatusFlags": "",
-    "Timeout":     400,
-    "RateLimit":   400,
-    "RateBurst":   50,
-    "RoutePct":    0
+    "Threshold":     60
   }
 ]
