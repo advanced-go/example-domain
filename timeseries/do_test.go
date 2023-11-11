@@ -2,7 +2,17 @@ package timeseries
 
 import (
 	"fmt"
+	"github.com/go-ai-agent/core/log2"
+	"github.com/go-ai-agent/core/runtime"
 )
+
+func init() {
+	BypassLogging()
+}
+
+func BypassLogging() {
+	wrapper = log2.WrapBypass(newDoHandler[runtime.LogError]())
+}
 
 func Example_PkgUri() {
 	fmt.Printf("test: PkgUri = %v\n", PkgUri)

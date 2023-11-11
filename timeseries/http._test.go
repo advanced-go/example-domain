@@ -67,8 +67,9 @@ func Test_httpHandlerV2(t *testing.T) {
 	fmt.Printf("test: End Entries -> %v\n", len(listV2))
 }
 
-func _Test_httpHandlerV1(t *testing.T) {
+func Test_httpHandlerV1(t *testing.T) {
 	deleteEntriesV1()
+	BypassLogging()
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
 		req  string
