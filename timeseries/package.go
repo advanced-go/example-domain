@@ -12,6 +12,7 @@ var (
 	pkgPath = runtime.PathFromUri(PkgUri)
 
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
+	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
 )
 
 // GetConstraints - Get constraints

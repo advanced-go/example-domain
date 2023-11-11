@@ -1,15 +1,10 @@
-HTTP/1.1 200 OK
-Date: Mon, 27 Jul 2009 12:28:53 GMT
-Server: Apache/2.2.14 (Win32)
-Content-Type: application/json
-Connection: Closed
-
 [
   {
     "Traffic":     "ingress",
     "Duration":    800,
     "RequestId":   "request-id-1",
     "Url":         "https://access-log.com/example-domain/timeseries/entry",
+    "Route":       "primary",
     "Protocol":    "http",
     "Host":        "access-log.com",
     "Path":        "/example-domain/timeseries/entry",
@@ -18,14 +13,14 @@ Connection: Closed
     "StatusFlags": "",
     "Timeout":     500,
     "RateLimit":   500,
-    "RateBurst":   100,
-    "RoutePct":    0
+    "RateBurst":   100
   },
   {
     "Traffic":     "egress",
     "Duration":    1000,
     "RequestId":   "request-id-2",
     "Url":         "https://access-log.com/example-domain/timeseries/entry",
+    "Route":       "primary",
     "Protocol":    "http",
     "Host":        "access-log.com",
     "Path":        "/example-domain/timeseries/entry",
@@ -34,7 +29,6 @@ Connection: Closed
     "StatusFlags": "",
     "Timeout":     400,
     "RateLimit":   400,
-    "RateBurst":   50,
-    "RoutePct":    0
+    "RateBurst":   50
   }
 ]

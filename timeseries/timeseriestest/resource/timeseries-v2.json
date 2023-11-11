@@ -11,10 +11,7 @@
     "Method":      "GET",
     "StatusCode":  200,
     "StatusFlags": "",
-    "Timeout":     500,
-    "RateLimit":   500,
-    "RateBurst":   100,
-    "RoutePct":    0
+    "Threshold": -1
   },
   {
     "Traffic":     "egress",
@@ -28,9 +25,6 @@
     "Method":      "PUT",
     "StatusCode":  202,
     "StatusFlags": "",
-    "Timeout":     400,
-    "RateLimit":   400,
-    "RateBurst":   50,
-    "RoutePct":    0
-  }
+    "Threshold": -1
+   }
 ]

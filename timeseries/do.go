@@ -26,7 +26,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 	}
 	switch r.Method {
 	case http.MethodGet:
-		entries := queryEntries(r.URL)
+		entries := queryEntriesV1(r.URL)
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
@@ -56,10 +56,10 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 		}
-		addEntry(entries)
+		addEntryV1(entries)
 		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
-		deleteEntries()
+		deleteEntriesV1()
 		return nil, runtime.NewStatusOK()
 	default:
 	}

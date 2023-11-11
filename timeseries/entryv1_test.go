@@ -21,17 +21,16 @@ func createEntry(ctrl string) []EntryV1 {
 		Timeout:     500,
 		RateLimit:   500,
 		RateBurst:   100,
-		RoutePct:    0,
 	}}
 }
 
 func Example_addEntry() {
 
-	addEntry(createEntry("host"))
+	addEntryV1(createEntry("host"))
 	fmt.Printf("test: addEntry() -> %v\n", listV1)
 
 	//Output:
-	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 request-id https://service.com/path http service.com /path GET 200  500 500 100 0}]
+	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC ingress 0001-01-01 00:00:00 +0000 UTC 500 request-id https://service.com/path http service.com /path GET 200  500 500 100}]
 
 }
 

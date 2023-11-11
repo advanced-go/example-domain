@@ -1,7 +1,9 @@
-PUT /example-domain/timeseries/entry HTTP/1.1
-Host: access-log.com
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
 Content-Type: application/json
-Content-Length: 1
+Content-Location: github.com/go-ai-agent/example-domain/timeseries/EntryV1
+Connection: Closed
 
 [
   {
@@ -17,8 +19,7 @@ Content-Length: 1
     "StatusFlags": "",
     "Timeout":     500,
     "RateLimit":   500,
-    "RateBurst":   100,
-    "RoutePct":    0
+    "RateBurst":   100
   },
   {
     "Traffic":     "egress",
@@ -33,7 +34,6 @@ Content-Length: 1
     "StatusFlags": "",
     "Timeout":     400,
     "RateLimit":   400,
-    "RateBurst":   50,
-    "RoutePct":    0
+    "RateBurst":   50
   }
 ]

@@ -1,3 +1,0 @@
-GET /example-domain/timeseries/entry HTTP/1.1
-Host: example-domain.com
-
