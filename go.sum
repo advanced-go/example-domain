@@ -2,5 +2,9 @@ github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
 github.com/go-ai-agent/core v0.0.0-20231110161306-908353af223e h1:MATEo3Evbckwd2DQgIINDIssUYNwxQZ7UNNR3TzPTLU=
 github.com/go-ai-agent/core v0.0.0-20231110161306-908353af223e/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231111115649-b3795f719dce h1:NxCmZG3wRIwYZFndxfwHRePR7nEGSOE7m/yW6OCWU4s=
+github.com/go-ai-agent/core v0.0.0-20231111115649-b3795f719dce/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231111121640-26c6f3b8cabe h1:2VWprPC6LyAz7uPmjs1TV6MzTYpQ6LATYFlmvJLsy58=
+github.com/go-ai-agent/core v0.0.0-20231111121640-26c6f3b8cabe/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

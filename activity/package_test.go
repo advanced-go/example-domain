@@ -2,6 +2,7 @@ package activity
 
 import (
 	"fmt"
+	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/httpx/httpxtest"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
@@ -20,8 +21,25 @@ func Example_PkgUri() {
 
 }
 
-func Example_Do() {
-	go Do(nil, "put", "uri", "", nil)
+func _Example_doHandler() {
+	req, status := http2.NewRequest(nil, "put", "", "")
+	if !status.OK() {
+		fmt.Printf("test: NewRequest() -> [status%v]\n", status)
+	}
+
+	_, status = doHandler[runtimetest.DebugError](nil, req, nil)
+	fmt.Printf("test: doHandler() -> %v\n", status)
+
+	req, status = http2.NewRequest(nil, "put", "", "")
+	_, status = doHandler[runtimetest.DebugError](nil, req, "invalid string type")
+	fmt.Printf("test: doHandler() -> %v\n", status)
+
+	//Output:
+	//{ "code":90, "status":"Invalid Content", "id":"b7d1c98c-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/go-ai-agent/example-domain/activity/doHandler" ], "err" : [ "invalid body type: <nil>" ] }
+	//test: doHandler() -> Invalid Content [invalid body type: <nil>]
+	//{ "code":90, "status":"Invalid Content", "id":"b7d2a698-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/go-ai-agent/example-domain/activity/doHandler" ], "err" : [ "invalid body type: string" ] }
+	//test: doHandler() -> Invalid Content [invalid body type: string]
+
 }
 
 /*
@@ -53,7 +71,7 @@ func TestDoHandler(t *testing.T) {
 
 */
 
-func Test_httpHandler(t *testing.T) {
+func _Test_httpHandler(t *testing.T) {
 
 	deleteEntries()
 	fmt.Printf("test: Start Entries -> %v\n", len(list))

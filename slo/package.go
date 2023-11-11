@@ -17,10 +17,10 @@ var (
 
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
-	loc     = pkgPath + "/httpHandler"
+	httpLoc = PkgUri + "/httpHandler"
 
 	wrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
-	doLoc   = pkgPath + "/doHandler"
+	doLoc   = PkgUri + "/doHandler"
 
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
@@ -33,18 +33,17 @@ type GetConstraints interface {
 // Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
-	//Set variant based on generic type
-	variant := EntryV1Variant
+
 	switch any(t).(type) {
 	case []EntryV1:
+		data, status := Do(ctx, "", uri, EntryV1Variant, nil)
+		if !status.OK() {
+			return nil, status
+		}
+		if entry, ok := data.([]EntryV1); ok {
+			return entry, status
+		}
 	default:
-	}
-	data, status := Do[runtime.Nillable](ctx, "", uri, variant, nil)
-	if !status.OK() {
-		return nil, status
-	}
-	if entry, ok := data.([]EntryV1); ok {
-		return entry, status
 	}
 	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 }
@@ -54,8 +53,8 @@ type DoConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
-// Do - generic exchange function
-func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+// Do - exchange function
+func Do(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
 	req, status := http2.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status
@@ -77,7 +76,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 	case http.MethodPut:
 		var entries []EntryV1
 
-		switch ptr := any(body).(type) {
+		switch ptr := body.(type) {
 		case []EntryV1:
 			entries = ptr
 		case []byte:
@@ -91,6 +90,10 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 				return nil, status.AddLocation(doLoc)
 			}
 		default:
+			var e E
+			status := runtime.NewStatusError(runtime.StatusInvalidContent, doLoc, runtime.NewInvalidBodyTypeError(body))
+			e.Handle(status, runtime.RequestId(r), "")
+			return nil, status
 		}
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(runtime.StatusInvalidContent)
@@ -120,7 +123,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
+		entries, status := Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -128,7 +131,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		buf, status = json2.Marshal(entries)
 		if !status.OK() {
 			var e E
-			e.Handle(status, runtime.RequestId(r), loc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -139,15 +142,15 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 
 		buf, status := io2.ReadAll(r.Body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), loc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
+		_, status = Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), "", nil)
+		_, status := Do(r, r.Method, r.URL.String(), "", nil)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:
