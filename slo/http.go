@@ -1,4 +1,4 @@
-package timeseries
+package slo
 
 import (
 	"github.com/go-ai-agent/core/http2"
@@ -8,27 +8,23 @@ import (
 	"net/http"
 )
 
-var (
-	Pattern = pkgPath + "/"
-	httpLoc = PkgUri + "/httpHandler"
-)
-
-// HttpHandler - http handler endpoint
-func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpHandler[runtime.LogError](w, r)
-}
-
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
+	}
+	var newCtx any
+	if ctx != nil {
+		newCtx = ctx
+	} else {
+		newCtx = r
 	}
 	http2.AddRequestId(r)
 	switch r.Method {
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
+		entries, status := Do(newCtx, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -51,27 +47,15 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
+		_, status = Do(newCtx, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := Do(r, r.Method, r.URL.String(), "", nil)
-		http2.WriteResponse[E](w, nil, status.SetRequestId(r), nil)
+		_, status := Do(newCtx, r.Method, r.URL.String(), "", nil)
+		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
-
-//if buf == nil {
-//	nc := runtime.NewStatus(runtime.StatusInvalidContent)
-//	http2.WriteResponse[E](w, nil, nc, nil)
-//	return nc
-//}
-//status = json2.Unmarshal(buf, &entries)
-//if !status.OK() {
-//	e.Handle(status, requestId, httpLoc)
-//} else {
-//  addEntry(entries)
-//}

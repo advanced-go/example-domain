@@ -1,4 +1,4 @@
-package activity
+package timeseries
 
 import (
 	"github.com/go-ai-agent/core/http2"
@@ -7,11 +7,7 @@ import (
 	"reflect"
 )
 
-type pkg struct{}
-
 var (
-	Pattern = pkgPath + "/"
-
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
@@ -55,7 +51,7 @@ func Do(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
 	return wrapper(ctx, req, body)
 }
 
-// HttpHandler - Http handler endpoint
+// HttpHandler - http handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpHandler[runtime.LogError](nil, w, r)
 }
