@@ -18,9 +18,9 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt"}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
+		{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
+		{"get-entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
+		{"delete-entries", args{req: "delete-req.txt", resp: "delete-resp.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/slotest/resource/", tt.args.req, tt.args.resp)
