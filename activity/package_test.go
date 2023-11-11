@@ -3,7 +3,6 @@ package activity
 import (
 	"fmt"
 	"github.com/go-ai-agent/core/httpx/httpxtest"
-	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
@@ -22,7 +21,7 @@ func Example_PkgUri() {
 }
 
 func Example_Do() {
-	go Do[runtime.Nillable](nil, "put", "uri", "", nil)
+	go Do(nil, "put", "uri", "", nil)
 }
 
 /*

@@ -37,7 +37,7 @@ func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	switch any(t).(type) {
 	case []EntryV1:
 	}
-	data, status := Do[runtime.Nillable](ctx, "", uri, variant, nil)
+	data, status := Do(ctx, "", uri, variant, nil)
 	if !status.OK() {
 		return nil, status
 	}
@@ -53,7 +53,7 @@ type DoConstraints interface {
 }
 
 // Do - generic exchange function
-func Do[T DoConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+func Do(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
 	req, status := http2.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
 		return nil, status
@@ -119,7 +119,7 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
+		entries, status := Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -142,11 +142,11 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = Do[[]byte](r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
+		_, status = Do(r, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := Do[runtime.Nillable](r, r.Method, r.URL.String(), "", nil)
+		_, status := Do(r, r.Method, r.URL.String(), "", nil)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:
