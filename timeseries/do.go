@@ -24,13 +24,28 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 			return fn(ctx, r, body)
 		}
 	}
+	variant := r.Header.Get(http2.ContentLocation)
+	if variant != EntryV1Variant && variant != EntryV2Variant {
+		return nil, runtime.NewStatus(http.StatusBadRequest)
+	}
 	switch r.Method {
 	case http.MethodGet:
-		entries := queryEntriesV1(r.URL)
-		if len(entries) == 0 {
-			return nil, runtime.NewStatus(http.StatusNotFound)
+		switch variant {
+		case EntryV2Variant:
+			entries := queryEntriesV2(r.URL)
+			if len(entries) == 0 {
+				return nil, runtime.NewStatus(http.StatusNotFound)
+			}
+			return entries, runtime.NewStatusOK()
+		case EntryV1Variant:
+			entries := queryEntriesV1(r.URL)
+			if len(entries) == 0 {
+				return nil, runtime.NewStatus(http.StatusNotFound)
+			}
+			return entries, runtime.NewStatusOK()
+		default:
 		}
-		return entries, runtime.NewStatusOK()
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	case http.MethodPut:
 		var entries []EntryV1
 
@@ -59,7 +74,12 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 		addEntryV1(entries)
 		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
-		deleteEntriesV1()
+		switch variant {
+		case EntryV1Variant:
+			deleteEntriesV1()
+		case EntryV2Variant:
+			deleteEntriesV2()
+		}
 		return nil, runtime.NewStatusOK()
 	default:
 	}

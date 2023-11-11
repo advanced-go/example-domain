@@ -56,7 +56,7 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := Do(newCtx, r.Method, r.URL.String(), "", nil)
+		_, status := Do(newCtx, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
 		http2.WriteResponse[E](w, nil, status.SetRequestId(r), nil)
 		return status
 	default:
