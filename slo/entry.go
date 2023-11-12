@@ -1,6 +1,7 @@
 package slo
 
 import (
+	"github.com/google/uuid"
 	"net/url"
 	"time"
 )
@@ -11,7 +12,7 @@ const (
 
 type EntryV1 struct {
 	CreatedTS time.Time
-
+	Id        string
 	// What does this apply to
 	Controller string
 
@@ -55,6 +56,8 @@ func patchEntry(e EntryV1) {
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
+		s, _ := uuid.NewUUID()
+		item.Id = s.String()
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
