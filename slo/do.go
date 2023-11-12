@@ -9,9 +9,15 @@ import (
 )
 
 var (
-	wrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
-	doLoc   = PkgUri + "/doHandler"
+	doWrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
+	doLoc     = PkgUri + "/doHandler"
 )
+
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+		return doHandler[E](ctx, r, body)
+	}
+}
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
@@ -62,11 +68,4 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 	default:
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
-}
-
-// newDoHandler - templated function providing a DoeHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
 }

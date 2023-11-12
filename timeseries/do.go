@@ -11,13 +11,12 @@ import (
 type pkg struct{}
 
 var (
-	wrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
-	doLoc   = PkgUri + "/doHandler"
-	putLoc  = PkgUri + "/put"
-	getLoc  = PkgUri + "/get"
+	doWrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
+	doLoc     = PkgUri + "/doHandler"
+	putLoc    = PkgUri + "/put"
+	getLoc    = PkgUri + "/get"
 )
 
-// newDoHandler - templated function providing DoHandler
 func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
@@ -133,10 +132,10 @@ func verifyVariant(r *http.Request) string {
 	}
 	v := r.URL.Query().Get("v")
 	if len(v) > 0 {
-		if v == "v1" {
+		if v == "1" {
 			return EntryV1Variant
 		}
-		if v == "v2" {
+		if v == "2" {
 			return EntryV2Variant
 		}
 	}

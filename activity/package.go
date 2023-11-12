@@ -27,18 +27,19 @@ type GetConstraints interface {
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
 
-	switch any(t).(type) {
-	case []EntryV1:
+	switch ptr := any(&t).(type) {
+	case *[]EntryV1:
 		data, status := Do(ctx, "", uri, EntryV1Variant, nil)
 		if !status.OK() {
 			return nil, status
 		}
 		if entry, ok := data.([]EntryV1); ok {
-			return entry, status
+			*ptr = entry
 		}
 	default:
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+	return t, runtime.NewStatusOK()
 }
 
 // DoConstraints - Do constraints
@@ -52,10 +53,10 @@ func Do(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
 	if !status.OK() {
 		return nil, status
 	}
-	return wrapper(ctx, req, body)
+	return doWrapper(ctx, req, body)
 }
 
-// HttpHandler - Http handler endpoint
+// HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpHandler[runtime.LogError](nil, w, r)
+	httpWrapper(nil, w, r) //httpHandler[runtime.LogError](nil, w, r)
 }

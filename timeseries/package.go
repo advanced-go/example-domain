@@ -8,6 +8,8 @@ import (
 )
 
 var (
+	Pattern = pkgPath + "/"
+
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
@@ -17,25 +19,34 @@ var (
 
 // GetConstraints - Get constraints
 type GetConstraints interface {
-	[]EntryV1
+	[]EntryV1 | []EntryV2
 }
 
 // Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
 
-	switch any(t).(type) {
-	case []EntryV1:
+	switch ptr := any(&t).(type) {
+	case *[]EntryV1:
 		data, status := Do(ctx, "", uri, EntryV1Variant, nil)
 		if !status.OK() {
 			return nil, status
 		}
 		if entry, ok := data.([]EntryV1); ok {
-			return entry, status
+			*ptr = entry
+		}
+	case *[]EntryV2:
+		data, status := Do(ctx, "", uri, EntryV2Variant, nil)
+		if !status.OK() {
+			return nil, status
+		}
+		if entry, ok := data.([]EntryV2); ok {
+			*ptr = entry
 		}
 	default:
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+	return t, runtime.NewStatusOK()
 }
 
 // DoConstraints - Do constraints
@@ -49,10 +60,10 @@ func Do(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
 	if !status.OK() {
 		return nil, status
 	}
-	return wrapper(ctx, req, body)
+	return doWrapper(ctx, req, body)
 }
 
-// HttpHandler - http handler endpoint
+// HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpHandler[runtime.LogError](nil, w, r)
+	httpWrapper(nil, w, r) //httpHandler[runtime.LogError](nil, w, r)
 }

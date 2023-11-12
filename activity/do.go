@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	wrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
-	doLoc   = PkgUri + "/doHandler"
+	doWrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
+	doLoc     = PkgUri + "/doHandler"
 )
 
 // newDoHandler - templated function providing a DoHandler

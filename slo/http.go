@@ -1,12 +1,26 @@
 package slo
 
 import (
+	"context"
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/io2"
 	"github.com/go-ai-agent/core/json2"
+	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
 )
+
+var (
+	httpLoc     = PkgUri + "/httpHandler"
+	httpWrapper = log2.WrapHttp(newHttpHandler[runtime.LogError]())
+)
+
+// newHttpHandler - templated function providing a DoHandler
+func newHttpHandler[E runtime.ErrorHandler]() runtime.HttpHandler {
+	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) *runtime.Status {
+		return httpHandler[E](ctx, w, r)
+	}
+}
 
 func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
@@ -24,7 +38,7 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 	case http.MethodGet:
 		var buf []byte
 
-		entries, status := Do(newCtx, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), nil)
+		entries, status := doHandler[E](newCtx, r, nil)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -47,11 +61,11 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = Do(newCtx, r.Method, r.URL.String(), r.Header.Get(http2.ContentLocation), buf)
+		_, status = doHandler[E](newCtx, r, buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := Do(newCtx, r.Method, r.URL.String(), "", nil)
+		_, status := doHandler[E](newCtx, r, nil)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

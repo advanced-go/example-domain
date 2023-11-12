@@ -1,7 +1,6 @@
 package timeseries
 
 import (
-	"fmt"
 	"github.com/go-ai-agent/core/httpx/httpxtest"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -64,7 +63,7 @@ func Test_httpHandlerV2(t *testing.T) {
 			}
 		})
 	}
-	fmt.Printf("test: End Entries -> %v\n", len(listV2))
+	//fmt.Printf("test: End Entries -> %v\n", len(listV2))
 }
 
 func Test_httpHandlerV1(t *testing.T) {
@@ -121,7 +120,7 @@ func Test_httpHandlerV1(t *testing.T) {
 			}
 		})
 	}
-	fmt.Printf("test: End Entries -> %v\n", len(listV1))
+	//fmt.Printf("test: End Entries -> %v\n", len(listV1))
 }
 
 func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []httpxtest.Args {
