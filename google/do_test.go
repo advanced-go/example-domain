@@ -36,3 +36,10 @@ func Example_doHandler() {
 	//test: doHandler(http://localhost:8080/go-ai-agent/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
 
 }
+
+func Example_Another_Test() {
+	fmt.Printf("test: error")
+
+	//Output:
+
+}
