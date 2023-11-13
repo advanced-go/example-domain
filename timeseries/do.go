@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"errors"
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/io2"
 	"github.com/go-ai-agent/core/json2"
@@ -18,6 +19,7 @@ var (
 	postLoc     = PkgUri + "/postHandler"
 	putLoc      = PkgUri + "/put"
 	getLoc      = PkgUri + "/get"
+	fromAnyLoc  = PkgUri + "/fromAny"
 )
 
 func newPostHandler[E runtime.ErrorHandler]() log2.PostHandler {
@@ -86,6 +88,35 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	default:
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
+}
+
+func fromAny[T GetConstraints](a any) (t T, status *runtime.Status) {
+	if a == nil {
+		return
+	}
+	switch ptr := any(&t).(type) {
+	case *[]EntryV1:
+		if e, ok := a.([]EntryV1); ok {
+			*ptr = e
+		} else {
+			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		}
+	case *[]EntryV2:
+		if e, ok := a.([]EntryV2); ok {
+			*ptr = e
+		} else {
+			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		}
+	case *[]byte:
+		if b, ok := a.([]byte); ok {
+			*ptr = b
+		} else {
+			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		}
+	default:
+		return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
+	}
+	return t, runtime.NewStatusOK()
 }
 
 func getEntry[T GetConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {

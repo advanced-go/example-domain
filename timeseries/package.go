@@ -23,12 +23,6 @@ var (
 	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
 )
 
-func NewStatusCode(status **runtime.Status) func() int {
-	return func() int {
-		return (*(status)).Code()
-	}
-}
-
 // GetConstraints - Get constraints
 type GetConstraints interface {
 	[]EntryV1 | []EntryV2 | []byte
@@ -44,7 +38,8 @@ func log(ctx any, method string, uri any, statusCode func() int) func() {
 
 // Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (t T, status *runtime.Status) {
-	defer log(ctx, "GET", uri, NewStatusCode(&status))
+	fn := log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))
+	defer fn()
 	var e runtime.LogError
 
 	u, err := url.Parse(uri)
@@ -52,6 +47,16 @@ func Get[T GetConstraints](ctx any, uri string) (t T, status *runtime.Status) {
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getLoc2, err)
 		e.Handle(status, runtime.RequestId(ctx), "")
 		return
+	}
+	if runtime.IsDebugEnvironment() {
+		if fn := http2.GetHandlerProxy(ctx); fn != nil {
+			a, status1 := fn(ctx, uri, "")
+			if !status1.OK() {
+				e.Handle(status, runtime.RequestId(ctx), "")
+				return t, status1
+			}
+			return fromAny[T](a)
+		}
 	}
 	t, status = getEntry[T](ctx, u, "")
 	if !status.OK() {

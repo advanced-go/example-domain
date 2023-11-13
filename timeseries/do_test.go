@@ -20,27 +20,27 @@ func Example_PkgUri() {
 func Example_verifyVariant() {
 	uri := "https://www/google/com"
 	r, _ := http.NewRequest("", uri, nil)
-	v := verifyVariant(r, "")
+	v := verifyVariant(r.URL, "")
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	uri = "https://www/google/com?q=golang"
 	r, _ = http.NewRequest("", uri, nil)
-	v = verifyVariant(r, "")
+	v = verifyVariant(r.URL, "")
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	uri = "https://www/google/com?v=3"
 	r, _ = http.NewRequest("", uri, nil)
-	v = verifyVariant(r, "")
+	v = verifyVariant(r.URL, "")
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	uri = "https://www/google/com?v=1"
 	r, _ = http.NewRequest("", uri, nil)
-	v = verifyVariant(r, "")
+	v = verifyVariant(r.URL, "")
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	uri = "https://www/google/com?v=2"
 	r, _ = http.NewRequest("", uri, nil)
-	v = verifyVariant(r, "")
+	v = verifyVariant(r.URL, "")
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	//Output:
