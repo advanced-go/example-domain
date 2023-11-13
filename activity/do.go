@@ -15,7 +15,7 @@ var (
 )
 
 // newDoHandler - templated function providing a DoHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
+func newDoHandler[E runtime.ErrorHandler]() log2.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
