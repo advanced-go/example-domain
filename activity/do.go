@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"fmt"
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/json2"
 	"github.com/go-ai-agent/core/log2"
@@ -19,6 +20,9 @@ func newDoHandler[E runtime.ErrorHandler]() log2.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
+}
+func anotherWorthlessFn() {
+	fmt.Printf("error - worthless")
 }
 
 func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
