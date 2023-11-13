@@ -38,8 +38,7 @@ func log(ctx any, method string, uri any, statusCode func() int) func() {
 
 // Get - generic get function with context and uri for resource selection and filtering
 func Get[T GetConstraints](ctx any, uri string) (t T, status *runtime.Status) {
-	fn := log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))
-	defer fn()
+	defer log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))()
 	var e runtime.LogError
 
 	u, err := url.Parse(uri)
