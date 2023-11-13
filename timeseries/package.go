@@ -42,10 +42,10 @@ func log(ctx any, method string, uri any, statusCode func() int) func() {
 }
 
 // Get - generic get function with context and uri for resource selection and filtering
-func Get[T GetConstraints](ctx, uri any, variant string) (t T, status *runtime.Status) {
+func Get[T GetConstraints](ctx, uri any) (t T, status *runtime.Status) {
 	defer log(ctx, "GET", uri, NewStatusCode(&status))
 
-	t, status = getEntry[T](ctx, uri, variant)
+	t, status = getEntry[T](ctx, uri, "")
 	if !status.OK() {
 		var e runtime.LogError
 		e.Handle(status, runtime.RequestId(ctx), getLoc2)

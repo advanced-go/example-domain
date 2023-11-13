@@ -27,13 +27,19 @@ func newPostHandler[E runtime.ErrorHandler]() log2.PostHandler {
 }
 
 func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+	if r == nil {
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+	}
 	if runtime.IsDebugEnvironment() {
 		if fn := http2.PostHandlerProxy(ctx); fn != nil {
 			return fn(ctx, r, body)
 		}
 	}
 	var e E
-	variant2 := verifyVariant(r)
+	variant2 := r.Header.Get(http2.ContentLocation)
+	if variant2 != EntryV1Variant || variant2 != EntryV2Variant {
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+	}
 	switch r.Method {
 	/*
 		case http.MethodGet:
@@ -67,7 +73,6 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	case http.MethodPut:
 		status := putEntry(nil, variant2, body)
 		if !status.OK() {
-			var e E
 			e.Handle(status, runtime.RequestId(ctx), doLoc)
 			return nil, status
 		}
@@ -75,7 +80,6 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	case http.MethodDelete:
 		status := deleteEntry(ctx, variant2)
 		if !status.OK() {
-			var e E
 			e.Handle(status, runtime.RequestId(ctx), doLoc)
 		}
 		return nil, status
@@ -113,6 +117,9 @@ func getEntry[T GetConstraints](ctx, uri any, variant string) (T, *runtime.Statu
 		}
 		*ptr = entries
 	case *[]byte:
+		// How to allow for query arg determination??
+		// Need to determine the variant for []byte type as that is coming from an Http request.
+		variant = verifyVariant(ctx, variant)
 		if variant == EntryV1Variant {
 			entries := queryEntriesV1(u)
 			if len(entries) == 0 {
@@ -217,12 +224,8 @@ func deleteEntry(ctx any, variant string) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func verifyVariant(r *http.Request) string {
-	variant := r.Header.Get(http2.ContentLocation)
-	if len(variant) == 0 {
-		return EntryV1Variant
-	}
-	/*
+func verifyVariant(ctx any, variant string) string {
+	if r, ok := ctx.(*http.Request); ok {
 		v := r.URL.Query().Get("v")
 		if len(v) > 0 {
 			if v == "1" {
@@ -232,7 +235,9 @@ func verifyVariant(r *http.Request) string {
 				return EntryV2Variant
 			}
 		}
-
-	*/
+	}
+	if len(variant) == 0 {
+		return EntryV1Variant
+	}
 	return variant
 }

@@ -26,5 +26,7 @@ github.com/go-ai-agent/core v0.0.0-20231113135134-a8568e27a01a h1:TTqzVQo+c8k078
 github.com/go-ai-agent/core v0.0.0-20231113135134-a8568e27a01a/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/go-ai-agent/core v0.0.0-20231113141537-74343b7af0f2 h1:FrmBibVrum72GCoZG+VZjbmF3E8u1oKY2bgfvhL/L1k=
 github.com/go-ai-agent/core v0.0.0-20231113141537-74343b7af0f2/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
+github.com/go-ai-agent/core v0.0.0-20231113144421-4630d43db238 h1:Cb7UWdyLzjpy+fwSC3EFdEAIstGAQbRauuaMxkRA0As=
+github.com/go-ai-agent/core v0.0.0-20231113144421-4630d43db238/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
 github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
