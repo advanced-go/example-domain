@@ -15,7 +15,7 @@ type pkg struct{}
 
 var (
 	postWrapper = log2.WrapPost(newPostHandler[runtime.LogError]())
-	doLoc       = PkgUri + "/doHandler"
+	postLoc     = PkgUri + "/postHandler"
 	putLoc      = PkgUri + "/put"
 	getLoc      = PkgUri + "/get"
 )
@@ -73,14 +73,14 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	case http.MethodPut:
 		status := putEntry(nil, variant2, body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), doLoc)
+			e.Handle(status, runtime.RequestId(ctx), postLoc)
 			return nil, status
 		}
 		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
 		status := deleteEntry(ctx, variant2)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), doLoc)
+			e.Handle(status, runtime.RequestId(ctx), postLoc)
 		}
 		return nil, status
 	default:
@@ -88,21 +88,9 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func getEntry[T GetConstraints](ctx, uri any, variant string) (T, *runtime.Status) {
+func getEntry[T GetConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
 	var t T
-	var u *url.URL
 
-	switch ptr := uri.(type) {
-	case *url.URL:
-		u = ptr
-	case string:
-		u2, err := url.Parse(ptr)
-		if err != nil {
-			u = u2
-		}
-	default:
-		return t, runtime.NewStatus(runtime.StatusInvalidContent)
-	}
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
 		entries := queryEntriesV1(u)
@@ -117,9 +105,7 @@ func getEntry[T GetConstraints](ctx, uri any, variant string) (T, *runtime.Statu
 		}
 		*ptr = entries
 	case *[]byte:
-		// How to allow for query arg determination??
-		// Need to determine the variant for []byte type as that is coming from an Http request.
-		variant = verifyVariant(ctx, variant)
+		variant = verifyVariant(u, variant)
 		if variant == EntryV1Variant {
 			entries := queryEntriesV1(u)
 			if len(entries) == 0 {
@@ -224,9 +210,9 @@ func deleteEntry(ctx any, variant string) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func verifyVariant(ctx any, variant string) string {
-	if r, ok := ctx.(*http.Request); ok {
-		v := r.URL.Query().Get("v")
+func verifyVariant(u *url.URL, variant string) string {
+	if u != nil {
+		v := u.Query().Get("v")
 		if len(v) > 0 {
 			if v == "1" {
 				return EntryV1Variant

@@ -5,6 +5,7 @@ import (
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
+	"net/url"
 	"reflect"
 	"time"
 )
@@ -42,13 +43,20 @@ func log(ctx any, method string, uri any, statusCode func() int) func() {
 }
 
 // Get - generic get function with context and uri for resource selection and filtering
-func Get[T GetConstraints](ctx, uri any) (t T, status *runtime.Status) {
+func Get[T GetConstraints](ctx any, uri string) (t T, status *runtime.Status) {
 	defer log(ctx, "GET", uri, NewStatusCode(&status))
+	var e runtime.LogError
 
-	t, status = getEntry[T](ctx, uri, "")
+	u, err := url.Parse(uri)
+	if err != nil {
+		status = runtime.NewStatusError(runtime.StatusInvalidContent, getLoc2, err)
+		e.Handle(status, runtime.RequestId(ctx), "")
+		return
+	}
+	t, status = getEntry[T](ctx, u, "")
 	if !status.OK() {
-		var e runtime.LogError
 		e.Handle(status, runtime.RequestId(ctx), getLoc2)
+		return
 	}
 	return t, runtime.NewStatusOK()
 }
@@ -60,8 +68,11 @@ type PostConstraints interface {
 
 // Post - exchange function
 func Post(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
+	var e runtime.LogError
+
 	req, status := http2.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
+		e.Handle(status, runtime.RequestId(ctx), getLoc2)
 		return nil, status
 	}
 	return postWrapper(ctx, req, body)
