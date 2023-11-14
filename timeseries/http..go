@@ -33,16 +33,16 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 		http2.WriteResponse[E](w, nil, statusVar, nil)
 		return statusVar
 	}
-	if runtime.IsDebugEnvironment() {
-		if fn := http2.HttpHandlerProxy(ctx); fn != nil {
-			return fn(ctx, w, r)
-		}
-	}
 	var newCtx any
 	if ctx != nil {
 		newCtx = ctx
 	} else {
 		newCtx = r
+	}
+	if runtime.IsDebugEnvironment() {
+		if fn := http2.HttpHandlerProxy(ctx); fn != nil {
+			return fn(ctx, w, r)
+		}
 	}
 	http2.AddRequestId(r)
 	switch strings.ToUpper(r.Method) {
