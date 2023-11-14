@@ -10,23 +10,24 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 var (
-	doWrapper   = log2.WrapPost(newPostHandler[runtime.LogError]())
-	doLoc       = PkgUri + "/doHandler"
+	postWrapper = log2.WrapPost(newPostEntryHandler[runtime.LogError]())
+	postLoc     = PkgUri + "/postEntryHandler"
 	putEntryLoc = PkgUri + "/putEntry"
 	getEntryLoc = PkgUri + "/getEntry"
-	fromAnyLoc  = PkgUri + "/fromAny"
+	fromAnyLoc  = PkgUri + "/entryFromAny"
 )
 
-func newPostHandler[E runtime.ErrorHandler]() runtime.PostHandler {
+func newPostEntryHandler[E runtime.ErrorHandler]() runtime.PostHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return postHandler[E](ctx, r, body)
+		return postEntryHandler[E](ctx, r, body)
 	}
 }
 
-func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -35,41 +36,19 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 			return fn(ctx, r, body)
 		}
 	}
-	switch r.Method {
-	case http.MethodGet:
-		entries := queryEntries(r.URL)
-		if len(entries) == 0 {
-			return nil, runtime.NewStatus(http.StatusNotFound)
-		}
-		return entries, runtime.NewStatusOK()
+	var e E
+	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		var entries []EntryV1
-
-		switch ptr := body.(type) {
-		case []EntryV1:
-			entries = ptr
-		case []byte:
-			if ptr == nil {
-				return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-			}
-			status := json2.Unmarshal(ptr, &entries)
-			if !status.OK() {
-				var e E
-				e.Handle(status, runtime.RequestId(r), doLoc)
-				return nil, status.AddLocation(doLoc)
-			}
-		default:
-			var e E
-			status := runtime.NewStatusError(runtime.StatusInvalidContent, doLoc, runtime.NewInvalidBodyTypeError(body))
-			e.Handle(status, runtime.RequestId(r), "")
+		status := putEntry(nil, r.Header.Get(http2.ContentLocation), body)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(ctx), postLoc)
 			return nil, status
 		}
-		if len(entries) == 0 {
-			return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-		}
-		addEntry(entries)
-		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
+		status := deleteEntry(ctx, r.Header.Get(http2.ContentLocation))
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(ctx), postLoc)
+		}
 		deleteEntries()
 		return nil, runtime.NewStatusOK()
 	default:
@@ -77,7 +56,7 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func fromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
+func entryFromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 	if a == nil {
 		return
 	}
@@ -131,6 +110,11 @@ func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *r
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	return t, runtime.NewStatusOK()
+}
+
+// putEntryConstraints - Get constraints
+type putEntryConstraints interface {
+	[]EntryV1 | []byte
 }
 
 func putEntry(ctx any, variant string, body any) *runtime.Status {

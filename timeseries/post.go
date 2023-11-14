@@ -15,20 +15,20 @@ import (
 type pkg struct{}
 
 var (
-	postWrapper = log2.WrapPost(newPostHandler[runtime.LogError]())
-	postLoc     = PkgUri + "/postHandler"
-	putLoc      = PkgUri + "/put"
-	getLoc      = PkgUri + "/get"
-	fromAnyLoc  = PkgUri + "/fromAny"
+	postWrapper = log2.WrapPost(newPostEntryHandler[runtime.LogError]())
+	postLoc     = PkgUri + "/postEntryHandler"
+	putLoc      = PkgUri + "/putEntry"
+	getLoc      = PkgUri + "/getEntry"
+	fromAnyLoc  = PkgUri + "/entryFromAny"
 )
 
-func newPostHandler[E runtime.ErrorHandler]() log2.PostHandler {
+func newPostEntryHandler[E runtime.ErrorHandler]() runtime.PostHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return postHandler[E](ctx, r, body)
+		return postEntryHandler[E](ctx, r, body)
 	}
 }
 
-func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -90,7 +90,11 @@ func fromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 	return t, runtime.NewStatusOK()
 }
 
-func getEntry[T GetEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
+type getEntryConstraints interface {
+	[]EntryV1 | []EntryV2 | []byte
+}
+
+func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {

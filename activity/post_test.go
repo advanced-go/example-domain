@@ -24,11 +24,11 @@ func Example_postHandler() {
 		fmt.Printf("test: NewRequest() -> [status%v]\n", status)
 	}
 
-	_, status = postHandler[runtimetest.DebugError](nil, req, nil)
+	_, status = postEntryHandler[runtimetest.DebugError](nil, req, nil)
 	fmt.Printf("test: postHandler() -> %v\n", status)
 
 	req, status = http2.NewRequest(nil, "put", "", EntryV1Variant)
-	_, status = postHandler[runtimetest.DebugError](nil, req, "invalid string type")
+	_, status = postEntryHandler[runtimetest.DebugError](nil, req, "invalid string type")
 	fmt.Printf("test: postHandler() -> %v\n", status)
 
 	//Output:

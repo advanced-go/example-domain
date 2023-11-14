@@ -15,8 +15,8 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	putLoc2 = PkgUri + "/Put"
-	getLoc2 = PkgUri + "/Get"
+	getEntryLoc2  = PkgUri + "/GetEntry"
+	postEntryLoc2 = PkgUri + "/PostEntry"
 
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
@@ -24,7 +24,7 @@ var (
 
 // GetEntryConstraints - Get constraints
 type GetEntryConstraints interface {
-	[]EntryV1 | []EntryV2 | []byte
+	[]EntryV1 | []EntryV2
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
@@ -34,7 +34,7 @@ func GetEntry[T GetEntryConstraints](ctx any, uri string) (t T, status *runtime.
 
 	u, err := url.Parse(uri)
 	if err != nil {
-		status = runtime.NewStatusError(runtime.StatusInvalidContent, getLoc2, err)
+		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc2, err)
 		e.Handle(status, runtime.RequestId(ctx), "")
 		return
 	}
@@ -50,24 +50,24 @@ func GetEntry[T GetEntryConstraints](ctx any, uri string) (t T, status *runtime.
 	}
 	t, status = getEntry[T](ctx, u, "")
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(ctx), getLoc2)
+		e.Handle(status, runtime.RequestId(ctx), getEntryLoc2)
 		return
 	}
 	return t, runtime.NewStatusOK()
 }
 
-// PostConstraints - Post constraints
-type PostConstraints interface {
+// PostEntryConstraints - Post constraints
+type PostEntryConstraints interface {
 	[]EntryV1 | []byte | runtime.Nillable
 }
 
-// Post - exchange function
-func Post(ctx any, method, uri, variant string, body any) (any, *runtime.Status) {
+// PostEntry - exchange function
+func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
 	var e runtime.LogError
 
 	req, status := http2.NewRequest(ctx, method, uri, variant)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(ctx), getLoc2)
+		e.Handle(status, runtime.RequestId(ctx), postEntryLoc2)
 		return nil, status
 	}
 	return postWrapper(ctx, req, body)

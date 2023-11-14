@@ -24,7 +24,7 @@ func Example_GetWithProxy() {
 	log2.EnableDebugAccessHandler()
 	ctx := runtime.NewRequestIdContext(nil, "123-request-456")
 	ctx = runtime.NewProxyContext(ctx, getProxy)
-	e, status := Get[[]EntryV1](ctx, "https://google.com/search")
+	e, status := GetEntry[[]EntryV1](ctx, "https://google.com/search")
 	fmt.Printf("test: Get() -> [status:%v] %v", status, e)
 
 	//Output:

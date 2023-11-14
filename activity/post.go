@@ -14,20 +14,21 @@ import (
 )
 
 var (
-	postWrapper = log2.WrapPost(newPostHandler[runtime.LogError]())
-	postLoc     = PkgUri + "/postHandler"
+	postWrapper = log2.WrapPost(newPostEntryHandler[runtime.LogError]())
+	postLoc     = PkgUri + "/postEntryHandler"
+	getEntryLoc = PkgUri + "/getEntry"
 	putEntryLoc = PkgUri + "/putEntry"
-	fromAnyLoc  = PkgUri + "/fromAny"
+	fromAnyLoc  = PkgUri + "/entryFromAny"
 )
 
-// newPostHandler - templated function providing a PostHandler
-func newPostHandler[E runtime.ErrorHandler]() log2.PostHandler {
+// newPostEntryHandler - templated function providing a PostHandler
+func newPostEntryHandler[E runtime.ErrorHandler]() runtime.PostHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return postHandler[E](ctx, r, body)
+		return postEntryHandler[E](ctx, r, body)
 	}
 }
 
-func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -56,7 +57,7 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func fromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
+func entryFromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 	if a == nil {
 		return
 	}
@@ -79,7 +80,11 @@ func fromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 	return t, runtime.NewStatusOK()
 }
 
-func getEntry[T GetEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
+type getEntryConstraints interface {
+	[]EntryV1 | []byte
+}
+
+func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
