@@ -56,8 +56,10 @@ func patchEntry(e EntryV1) {
 
 func addEntry(e []EntryV1) {
 	for _, item := range e {
-		s, _ := uuid.NewUUID()
-		item.Id = s.String()
+		if len(item.Id) == 0 {
+			s, _ := uuid.NewUUID()
+			item.Id = s.String()
+		}
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}

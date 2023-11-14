@@ -3,7 +3,7 @@ module github.com/go-ai-agent/example-domain
 go 1.20
 
 require (
-	github.com/go-ai-agent/core v0.0.0-20231113181828-76b916c8605c
+	github.com/go-ai-agent/core v0.0.0-20231114101110-45dcd331b274
 	github.com/google/uuid v1.3.0
 )
 

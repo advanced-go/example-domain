@@ -18,13 +18,13 @@ var (
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
 
-// GetConstraints - Get constraints
-type GetConstraints interface {
+// GetEntryConstraints - Get constraints
+type GetEntryConstraints interface {
 	[]EntryV1
 }
 
-// Get - generic get function with context and uri for resource selection and filtering
-func Get[T GetConstraints](ctx any, uri string) (T, *runtime.Status) {
+// GetEntry - generic get function with context and uri for resource selection and filtering
+func GetEntry[T GetEntryConstraints](ctx any, uri string) (T, *runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
