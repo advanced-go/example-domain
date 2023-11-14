@@ -37,7 +37,6 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx any, uri
 	t, status = getEntry[T](ctx, u, "")
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(ctx), getEntryHandlerLoc)
-		return
 	}
 	return
 }

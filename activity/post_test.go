@@ -19,7 +19,7 @@ func Example_PkgUri() {
 }
 
 func Example_postHandler() {
-	req, status := http2.NewRequest(nil, "put", "", "")
+	req, status := http2.NewRequest(nil, "put", "", "", nil)
 	if !status.OK() {
 		fmt.Printf("test: NewRequest() -> [status%v]\n", status)
 	}
@@ -27,7 +27,7 @@ func Example_postHandler() {
 	_, status = postEntryHandler[runtimetest.DebugError](nil, req, nil)
 	fmt.Printf("test: postHandler() -> %v\n", status)
 
-	req, status = http2.NewRequest(nil, "put", "", EntryV1Variant)
+	req, status = http2.NewRequest(nil, "put", "", EntryV1Variant, nil)
 	_, status = postEntryHandler[runtimetest.DebugError](nil, req, "invalid string type")
 	fmt.Printf("test: postHandler() -> %v\n", status)
 

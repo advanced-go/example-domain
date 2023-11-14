@@ -1,4 +1,4 @@
-package timeseries
+package activity
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 
 var (
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
-	getLoc             = PkgUri + "/getEntry"
+	getEntryLoc        = PkgUri + "/getEntry"
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
@@ -52,12 +52,6 @@ func entryFromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 		} else {
 			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
 		}
-	case *[]EntryV2:
-		if e, ok := a.([]EntryV2); ok {
-			*ptr = e
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-		}
 	case *[]byte:
 		if b, ok := a.([]byte); ok {
 			*ptr = b
@@ -71,7 +65,7 @@ func entryFromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 }
 
 type getEntryConstraints interface {
-	[]EntryV1 | []EntryV2 | []byte
+	[]EntryV1 | []byte
 }
 
 func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
@@ -79,37 +73,20 @@ func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *r
 
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
-		entries := queryEntriesV1(u)
-		if len(entries) == 0 {
-			return nil, runtime.NewStatus(http.StatusNotFound)
-		}
-		*ptr = entries
-	case *[]EntryV2:
-		entries := queryEntriesV2(u)
+		entries := queryEntries(u)
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
 		*ptr = entries
 	case *[]byte:
-		variant = verifyVariant(u, variant)
 		if variant == EntryV1Variant {
-			entries := queryEntriesV1(u)
+			entries := queryEntries(u)
 			if len(entries) == 0 {
 				return nil, runtime.NewStatus(http.StatusNotFound)
 			}
 			buf, status := json2.Marshal(entries)
 			if !status.OK() {
-				return nil, status.AddLocation(getLoc)
-			}
-			*ptr = buf
-		} else {
-			entries := queryEntriesV2(u)
-			if len(entries) == 0 {
-				return nil, runtime.NewStatus(http.StatusNotFound)
-			}
-			buf, status := json2.Marshal(entries)
-			if !status.OK() {
-				return nil, status.AddLocation(getLoc)
+				return nil, status.AddLocation(getEntryLoc)
 			}
 			*ptr = buf
 		}
