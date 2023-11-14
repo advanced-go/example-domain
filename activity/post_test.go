@@ -6,18 +6,6 @@ import (
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 )
 
-func Example_PkgUri() {
-	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: Pattern = %v\n", Pattern)
-	fmt.Printf("test: EntryV1Variant = %v\n", EntryV1Variant)
-
-	//Output:
-	//test: PkgUri = github.com/go-ai-agent/example-domain/activity
-	//test: Pattern = /go-ai-agent/example-domain/activity/
-	//test: EntryV1Variant = github.com/go-ai-agent/example-domain/activity/EntryV1
-
-}
-
 func Example_postHandler() {
 	req, status := http2.NewRequest(nil, "put", "", "", nil)
 	if !status.OK() {
