@@ -14,7 +14,8 @@ const (
 	Pattern        = "/go-ai-agent/example-domain/timeseries/"
 	EntryV1Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV1"
 	EntryV2Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV2"
-	postEntryLoc2  = PkgUri + "/PostEntry"
+
+	postEntryLoc = PkgUri + "/PostEntry"
 )
 
 // GetEntryConstraints - Get constraints
@@ -39,7 +40,7 @@ func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, bod
 
 	req, status := http2.NewRequest(ctx, method, uri, variant, nil)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(ctx), postEntryLoc2)
+		e.Handle(status, runtime.RequestId(ctx), postEntryLoc)
 		return nil, status
 	}
 	return postWrapper(ctx, req, body)

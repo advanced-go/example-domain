@@ -15,7 +15,7 @@ const (
 	Pattern        = "/go-ai-agent/example-domain/activity/"
 	EntryV1Variant = "github.com/go-ai-agent/example-domain/activity/EntryV1"
 
-	postEntryLoc2 = PkgUri + "/PostEntry"
+	postEntryLoc = PkgUri + "/PostEntry"
 )
 
 // GetEntryConstraints - Get constraints
@@ -39,7 +39,7 @@ func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, bod
 	req, status := http2.NewRequest(ctx, method, uri, variant, nil)
 	if !status.OK() {
 		var e runtime.LogError
-		e.Handle(status, runtime.RequestId(ctx), postEntryLoc2)
+		e.Handle(status, runtime.RequestId(ctx), postEntryLoc)
 		return nil, status
 	}
 	return postWrapper(ctx, req, body)
