@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
-	"time"
 )
 
 var (
@@ -23,21 +22,13 @@ var (
 	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
 )
 
-// GetConstraints - Get constraints
-type GetConstraints interface {
+// GetEntryConstraints - Get constraints
+type GetEntryConstraints interface {
 	[]EntryV1 | []EntryV2 | []byte
 }
 
-func log(ctx any, method string, uri any, statusCode func() int) func() {
-	start := time.Now().UTC()
-	req, _ := http2.NewRequest(ctx, method, uri, "")
-	return func() {
-		log2.InternalAccess(start, time.Since(start), req, &http.Response{StatusCode: statusCode()}, -1, "")
-	}
-}
-
-// Get - generic get function with context and uri for resource selection and filtering
-func Get[T GetConstraints](ctx any, uri string) (t T, status *runtime.Status) {
+// GetEntry - generic get function with context and uri for resource selection and filtering
+func GetEntry[T GetEntryConstraints](ctx any, uri string) (t T, status *runtime.Status) {
 	defer log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))()
 	var e runtime.LogError
 

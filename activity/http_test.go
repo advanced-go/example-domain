@@ -11,7 +11,6 @@ import (
 )
 
 func Test_httpHandler(t *testing.T) {
-
 	deleteEntries()
 	fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {

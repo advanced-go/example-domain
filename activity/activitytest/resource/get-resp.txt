@@ -2,6 +2,7 @@ HTTP/1.1 200 OK
 Date: Mon, 27 Jul 2009 12:28:53 GMT
 Server: Apache/2.2.14 (Win32)
 Content-Type: application/json
+Content-Location: Content-Location: github.com/go-ai-agent/example-domain/activity/EntryV1
 Connection: Closed
 
 [
@@ -11,7 +12,6 @@ Connection: Closed
     "Agent": "Controller",
     "AgentUri": "https://somehost.com/id",
     "Assignment": "case#",
-    "FrameUri": "https://framehost.com/frame-id",
     "Controller": "egress",
     "Behavior": "timeout",
     "Description": "decreased timeout"
@@ -22,7 +22,6 @@ Connection: Closed
     "Agent": "Controller2",
     "AgentUri": "https://somehost.com/id2",
     "Assignment": "case#5",
-    "FrameUri": "https://framehost.com/frame-id2",
     "Controller": "",
     "Behavior": "",
     "Description": "created action"

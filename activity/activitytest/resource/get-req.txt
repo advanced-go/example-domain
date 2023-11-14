@@ -1,3 +1,5 @@
 GET /example-domain/activity/entry HTTP/1.1
 Host: example-domain.com
+Content-Location: Content-Location: github.com/go-ai-agent/example-domain/activity/EntryV1
+
 

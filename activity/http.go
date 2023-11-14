@@ -3,8 +3,6 @@ package activity
 import (
 	"context"
 	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/io2"
-	"github.com/go-ai-agent/core/json2"
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
@@ -27,6 +25,12 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
+	if runtime.IsDebugEnvironment() {
+		if fn := http2.HttpHandlerProxy(ctx); fn != nil {
+			return fn(ctx, w, r)
+		}
+	}
+	var e E
 	var newCtx any
 	if ctx != nil {
 		newCtx = ctx
@@ -36,16 +40,8 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 	http2.AddRequestId(r)
 	switch r.Method {
 	case http.MethodGet:
-		var buf []byte
-
-		entries, status := doHandler[E](newCtx, r, nil)
+		buf, status := getEntry[[]byte](newCtx, r.URL, r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
-		}
-		buf, status = json2.Marshal(entries)
-		if !status.OK() {
-			var e E
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -53,19 +49,19 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		var e E
-
-		buf, status := io2.ReadAll(r.Body)
+		status := putEntry(newCtx, r.Header.Get(http2.ContentLocation), r.Body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
-		_, status = doHandler[E](newCtx, r, buf)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := doHandler[E](newCtx, r, nil)
+		status := deleteEntry(newCtx, r.Header.Get(http2.ContentLocation))
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), httpLoc)
+		}
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

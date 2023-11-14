@@ -43,35 +43,6 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	switch r.Method {
-	/*
-		case http.MethodGet:
-			switch variant {
-			case EntryV2Variant:
-				entries, status := getEntry[[]EntryV2](ctx, variant, r.URL)
-				if !status.OK() {
-					e.Handle(status, runtime.RequestId(r), doLoc)
-					return nil, status
-				}
-				//if len(entries) == 0 {
-				//	return nil, runtime.NewStatus(http.StatusNotFound)
-				//}
-				return entries, runtime.NewStatusOK()
-			case EntryV1Variant:
-				entries, status := getEntry[[]EntryV1](ctx, variant, r.URL)
-				if !status.OK() {
-					e.Handle(status, runtime.RequestId(r), doLoc)
-					return nil, status
-				}
-				//entries := queryEntriesV1(r.URL)
-				//if len(entries) == 0 {
-				//	return nil, runtime.NewStatus(http.StatusNotFound)
-				//}
-				return entries, runtime.NewStatusOK()
-			default:
-			}
-			return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-
-	*/
 	case http.MethodPut:
 		status := putEntry(nil, variant2, body)
 		if !status.OK() {
@@ -90,7 +61,7 @@ func postHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (an
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func fromAny[T GetConstraints](a any) (t T, status *runtime.Status) {
+func fromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
 	if a == nil {
 		return
 	}
@@ -119,7 +90,7 @@ func fromAny[T GetConstraints](a any) (t T, status *runtime.Status) {
 	return t, runtime.NewStatusOK()
 }
 
-func getEntry[T GetConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
+func getEntry[T GetEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
@@ -258,3 +229,33 @@ func verifyVariant(u *url.URL, variant string) string {
 	}
 	return variant
 }
+
+/*
+	case http.MethodGet:
+		switch variant {
+		case EntryV2Variant:
+			entries, status := getEntry[[]EntryV2](ctx, variant, r.URL)
+			if !status.OK() {
+				e.Handle(status, runtime.RequestId(r), doLoc)
+				return nil, status
+			}
+			//if len(entries) == 0 {
+			//	return nil, runtime.NewStatus(http.StatusNotFound)
+			//}
+			return entries, runtime.NewStatusOK()
+		case EntryV1Variant:
+			entries, status := getEntry[[]EntryV1](ctx, variant, r.URL)
+			if !status.OK() {
+				e.Handle(status, runtime.RequestId(r), doLoc)
+				return nil, status
+			}
+			//entries := queryEntriesV1(r.URL)
+			//if len(entries) == 0 {
+			//	return nil, runtime.NewStatus(http.StatusNotFound)
+			//}
+			return entries, runtime.NewStatusOK()
+		default:
+		}
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+
+*/

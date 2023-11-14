@@ -1,6 +1,7 @@
 PUT /example-domain/activity/entry HTTP/1.1
 Host: access-log.com
 Content-Type: application/json
+Content-Location: github.com/go-ai-agent/example-domain/activity/EntryV1
 
 [
   {
@@ -9,7 +10,6 @@ Content-Type: application/json
     "Agent": "Controller",
     "AgentUri": "https://somehost.com/id",
     "Assignment": "case#",
-    "FrameUri": "https://framehost.com/frame-id",
     "Controller": "egress",
     "Behavior": "timeout",
     "Description": "decreased timeout"
@@ -20,7 +20,6 @@ Content-Type: application/json
     "Agent": "Controller2",
     "AgentUri": "https://somehost.com/id2",
     "Assignment": "case#5",
-    "FrameUri": "https://framehost.com/frame-id2",
     "Controller": "",
     "Behavior": "",
     "Description": "created action"

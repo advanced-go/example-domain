@@ -60,8 +60,6 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 		status := deleteEntry(newCtx, r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
-			http2.WriteResponse[E](w, nil, status, nil)
-			return status
 		}
 		http2.WriteResponse[E](w, nil, status.SetRequestId(r), nil)
 		return status

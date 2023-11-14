@@ -3,7 +3,6 @@ package activity
 import (
 	"fmt"
 	"net/url"
-	"time"
 )
 
 const (
@@ -11,14 +10,13 @@ const (
 )
 
 type EntryV1 struct {
-	CreatedTS    time.Time
+	//CreatedTS    time.Time
 	ActivityID   string // Some form of UUID
 	ActivityType string // trace|action
 	Agent        string
 	AgentUri     string // {host}:{agent}
 
 	Assignment  string
-	FrameUri    string // {host}:{frame-name}
 	Controller  string
 	Behavior    string
 	Description string
@@ -64,7 +62,7 @@ func addEntry(e []EntryV1) {
 
 func addItems(e []EntryV1) {
 	for _, item := range e {
-		item.CreatedTS = time.Now().UTC()
+		//	item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 		fmt.Printf("%v\n", item)
 	}
