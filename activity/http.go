@@ -31,12 +31,15 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 	}
 	var e E
 
-	statusVar := validateVariant(r)
-	if !statusVar.OK() {
-		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
-		http2.WriteResponse[E](w, nil, statusVar, nil)
-		return statusVar
-	}
+	/*
+		statusVar := validateVariant(r)
+		if !statusVar.OK() {
+			e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+			http2.WriteResponse[E](w, nil, statusVar, nil)
+			return statusVar
+		}
+
+	*/
 	var newCtx any
 	if ctx != nil {
 		newCtx = ctx
