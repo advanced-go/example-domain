@@ -16,7 +16,6 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	getEntryLoc2   = PkgUri + "/GetEntry"
 	postEntryLoc2  = PkgUri + "/PostEntry"
 	validateVarLoc = PkgUri + "/validateVariant"
 
