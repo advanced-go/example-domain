@@ -5,21 +5,16 @@ import (
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
-	"reflect"
 	"time"
 )
 
-var (
-	Pattern = pkgPath + "/"
-
-	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(PkgUri)
-
+const (
+	PkgUri         = "github.com/go-ai-agent/example-domain/timeseries"
+	PkgPath        = "/go-ai-agent/example-domain/timeseries"
+	Pattern        = "/go-ai-agent/example-domain/timeseries/"
+	EntryV1Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV1"
+	EntryV2Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV2"
 	postEntryLoc2  = PkgUri + "/PostEntry"
-	validateVarLoc = PkgUri + "/validateVariant"
-
-	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
-	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
 )
 
 // GetEntryConstraints - Get constraints

@@ -5,18 +5,6 @@ import (
 	"net/http"
 )
 
-func Example_PkgUri() {
-	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: Pattern = %v\n", Pattern)
-	fmt.Printf("test: EntryV1Variant = %v\n", EntryV1Variant)
-
-	//Output:
-	//test: PkgUri = github.com/go-ai-agent/example-domain/timeseries
-	//test: Pattern = /go-ai-agent/example-domain/timeseries/
-	//test: EntryV1Variant = github.com/go-ai-agent/example-domain/timeseries/EntryV1
-
-}
-
 func Example_verifyVariant() {
 	uri := "https://www/google/com"
 	r, _ := http.NewRequest("", uri, nil)

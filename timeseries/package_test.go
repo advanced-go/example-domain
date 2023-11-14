@@ -7,6 +7,7 @@ import (
 	"github.com/go-ai-agent/core/runtime"
 	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
+	"reflect"
 	"time"
 )
 
@@ -20,6 +21,27 @@ var entries = []EntryV1{{
 
 func init() {
 	log2.EnableDebugAccessHandler()
+}
+
+func Example_PkgUri() {
+	pkgUri2 := reflect.TypeOf(any(pkg{})).PkgPath()
+	pkgPath2 := runtime.PathFromUri(pkgUri2)
+	entryV1 := pkgUri2 + "/" + reflect.TypeOf(EntryV1{}).Name()
+	entryV2 := pkgUri2 + "/" + reflect.TypeOf(EntryV2{}).Name()
+
+	fmt.Printf("test: PkgUri         = \"%v\"\n", pkgUri2)
+	fmt.Printf("test: PkgPath        = \"%v\"\n", pkgPath2)
+	fmt.Printf("test: Pattern        = \"%v\"\n", pkgPath2+"/")
+	fmt.Printf("test: EntryV1Variant = \"%v\"\n", entryV1)
+	fmt.Printf("test: EntryV2Variant = \"%v\"\n", entryV2)
+
+	//Output:
+	//test: PkgUri         = "github.com/go-ai-agent/example-domain/timeseries"
+	//test: PkgPath        = "/go-ai-agent/example-domain/timeseries"
+	//test: Pattern        = "/go-ai-agent/example-domain/timeseries/"
+	//test: EntryV1Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV1"
+	//test: EntryV2Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV2"
+
 }
 
 func getProxy(ctx any, uri, variant string) (any, *runtime.Status) {
@@ -74,5 +96,5 @@ func Example_HttpWithProxy() {
 	//Output:
 	//test: httpProxy() -> in proxy
 	//test: httpHandler() -> [status:Timeout]
-	
+
 }

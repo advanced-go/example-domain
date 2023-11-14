@@ -5,22 +5,17 @@ import (
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
-	"reflect"
 	"time"
 )
 
 type pkg struct{}
 
-var (
-	Pattern = pkgPath + "/"
-
-	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(PkgUri)
-
+const (
+	PkgUri         = "github.com/go-ai-agent/example-domain/slo"
+	PkgPath        = "/go-ai-agent/example-domain/slo"
+	Pattern        = "/go-ai-agent/example-domain/slo/"
+	EntryV1Variant = "github.com/go-ai-agent/example-domain/slo/EntryV1"
 	postEntryLoc2  = PkgUri + "/PostEntry"
-	validateVarLoc = PkgUri + "/validateVariant"
-
-	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 )
 
 // GetEntryConstraints - Get constraints

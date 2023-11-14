@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	httpLoc     = PkgUri + "/httpHandler"
-	httpWrapper = log2.WrapHttp(newHttpHandler[runtime.LogError]())
+	httpLoc        = PkgUri + "/httpHandler"
+	validateVarLoc = PkgUri + "/validateVariant"
+	httpWrapper    = log2.WrapHttp(newHttpHandler[runtime.LogError]())
 )
 
 func newHttpHandler[E runtime.ErrorHandler]() runtime.HttpHandler {

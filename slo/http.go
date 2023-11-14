@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	httpLoc     = PkgUri + "/httpHandler"
-	httpWrapper = log2.WrapHttp(newHttpHandler[runtime.LogError]())
+	httpLoc        = PkgUri + "/httpHandler"
+	httpWrapper    = log2.WrapHttp(newHttpHandler[runtime.LogError]())
+	validateVarLoc = PkgUri + "/validateVariant"
 )
 
 // newHttpHandler - templated function providing a DoHandler

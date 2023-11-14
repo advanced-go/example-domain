@@ -9,7 +9,7 @@ var (
 	c       = make(chan startup.Message, 1)
 	started int64
 	//duration = time.Second * 4
-	location = pkgPath + "/startup"
+	location = PkgPath + "/startup"
 )
 
 // isPkgStarted - returns status of startup
