@@ -1,6 +1,8 @@
 package timeseries
 
 import (
+	"errors"
+	"fmt"
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
@@ -15,8 +17,9 @@ var (
 	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
 	pkgPath = runtime.PathFromUri(PkgUri)
 
-	getEntryLoc2  = PkgUri + "/GetEntry"
-	postEntryLoc2 = PkgUri + "/PostEntry"
+	getEntryLoc2   = PkgUri + "/GetEntry"
+	postEntryLoc2  = PkgUri + "/PostEntry"
+	validateVarLoc = PkgUri + "/validateVariant"
 
 	EntryV1Variant = PkgUri + "/" + reflect.TypeOf(EntryV1{}).Name()
 	EntryV2Variant = PkgUri + "/" + reflect.TypeOf(EntryV2{}).Name()
@@ -76,4 +79,20 @@ func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, bod
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	httpWrapper(nil, w, r)
+}
+
+func validateVariant(r *http.Request) *runtime.Status {
+	if r == nil {
+		return runtime.NewStatus(http.StatusBadRequest)
+	}
+	variant := r.Header.Get(http2.ContentLocation)
+	if variant != EntryV1Variant && variant != EntryV2Variant {
+		s := variant
+		if len(variant) == 0 {
+			s = "<empty>"
+		}
+		err := errors.New(fmt.Sprintf("error invalid variant: [%v] for [%v]", s, PkgUri))
+		return runtime.NewStatusError(runtime.StatusInvalidArgument, validateVarLoc, err).SetContent(err, false)
+	}
+	return runtime.NewStatusOK()
 }

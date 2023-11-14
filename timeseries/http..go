@@ -6,6 +6,7 @@ import (
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
+	"strings"
 )
 
 var (
@@ -24,12 +25,19 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
+	var e E
+
+	statusVar := validateVariant(r)
+	if !statusVar.OK() {
+		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+		http2.WriteResponse[E](w, nil, statusVar, nil)
+		return statusVar
+	}
 	if runtime.IsDebugEnvironment() {
 		if fn := http2.HttpHandlerProxy(ctx); fn != nil {
 			return fn(ctx, w, r)
 		}
 	}
-	var e E
 	var newCtx any
 	if ctx != nil {
 		newCtx = ctx
@@ -37,7 +45,7 @@ func httpHandler[E runtime.ErrorHandler](ctx any, w http.ResponseWriter, r *http
 		newCtx = r
 	}
 	http2.AddRequestId(r)
-	switch r.Method {
+	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
 		buf, status := getEntry[[]byte](ctx, r.URL, r.Header.Get(http2.ContentLocation))
 		if !status.OK() {

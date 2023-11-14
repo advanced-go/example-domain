@@ -32,12 +32,18 @@ func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
+	var e E
+
+	statusVar := validateVariant(r)
+	if !statusVar.OK() {
+		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+		return nil, statusVar
+	}
 	if runtime.IsDebugEnvironment() {
 		if fn := http2.PostHandlerProxy(ctx); fn != nil {
 			return fn(ctx, r, body)
 		}
 	}
-	var e E
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
 		status := putEntry(nil, r.Header.Get(http2.ContentLocation), body)

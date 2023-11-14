@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type pkg struct{}
@@ -32,26 +33,28 @@ func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
+	var e E
+
+	statusVar := validateVariant(r)
+	if !statusVar.OK() {
+		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+		return nil, statusVar
+	}
 	if runtime.IsDebugEnvironment() {
 		if fn := http2.PostHandlerProxy(ctx); fn != nil {
 			return fn(ctx, r, body)
 		}
 	}
-	var e E
-	variant2 := r.Header.Get(http2.ContentLocation)
-	if variant2 != EntryV1Variant || variant2 != EntryV2Variant {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-	}
-	switch r.Method {
+	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(nil, variant2, body)
+		status := putEntry(nil, r.Header.Get(http2.ContentLocation), body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(ctx), postLoc)
 			return nil, status
 		}
 		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
-		status := deleteEntry(ctx, variant2)
+		status := deleteEntry(ctx, r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(ctx), postLoc)
 		}
