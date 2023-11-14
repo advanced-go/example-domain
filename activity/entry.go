@@ -9,28 +9,6 @@ const (
 	Type = "type"
 )
 
-type EntryV1 struct {
-	//CreatedTS    time.Time
-	ActivityID   string // Some form of UUID
-	ActivityType string // trace|action
-	Agent        string
-	AgentUri     string // {host}:{agent}
-
-	Assignment  string
-	Controller  string
-	Behavior    string
-	Description string
-}
-
-// GetConstraints - interface defining constraints for the Get function
-// This could also be a representation that facilitates querying. Things like
-// 1. What time did this occur?
-// 2. Did this involve a specific entity?
-// 3. ...
-//type GetConstraints interface {
-//	[]Entry | []byte
-//}
-
 var list []EntryV1
 
 func getEntries() []EntryV1 {

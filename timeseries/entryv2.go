@@ -2,28 +2,7 @@ package timeseries
 
 import (
 	"net/url"
-	"time"
 )
-
-type EntryV2 struct {
-	CreatedTS time.Time
-	Traffic   string
-	Start     time.Time
-	Duration  int
-
-	// Use for ecosystem triage, not application triage.
-	RequestId string
-
-	// Request attributes
-	Url         string // {scheme}://{host}/{path} No query
-	Protocol    string // From timeseries
-	Host        string // From timeseries
-	Path        string // From timeseries
-	Method      string
-	StatusCode  int32
-	StatusFlags string
-	Threshold   int
-}
 
 var listV2 []EntryV2
 

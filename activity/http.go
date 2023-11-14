@@ -2,6 +2,8 @@ package activity
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
@@ -78,37 +80,18 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-/*
-	if buf == nil {
-		nc := runtime.NewStatus(runtime.StatusInvalidContent)
-		http2.WriteResponse[E](w, nil, nc, nil)
-		return nc
+func validateVariant(r *http.Request) *runtime.Status {
+	if r == nil {
+		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	status = json2.Unmarshal(buf, &entries)
-	if !status.OK() {
-		e.Handle(status, requestId, loc)
-	} else {
-		addEntry(entries)
+	variant := r.Header.Get(http2.ContentLocation)
+	if variant != EntryV1Variant {
+		s := variant
+		if len(variant) == 0 {
+			s = "<empty>"
+		}
+		err := errors.New(fmt.Sprintf("error invalid variant: [%v] for [%v]", s, PkgUri))
+		return runtime.NewStatusError(runtime.StatusInvalidArgument, validateVarLoc, err).SetContent(err, false)
 	}
-
-*/
-
-//requestId := runtime.GetOrCreateRequestId(r)
-//if r.Header.Get(runtime.XRequestId) == "" {
-//	r.Header.Set(runtime.XRequestId, requestId)
-//}
-// Handled in Http
-// Need to create as new request as upstream calls may not be http, and rely on the context for a request id
-//rc := r.Clone(runtime.NewRequestIdContext(r.Context(), requestId))
-
-/*
-
-//controller  = log2.NewController(newTypeHandler[runtime.LogError]())
-// newTypeHandler - templated function providing a TypeHandlerFn
-func newTypeHandler[E runtime.ErrorHandler]() runtime.TypeHandlerFn {
-	return func(r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](nil, r, body)
-	}
+	return runtime.NewStatusOK()
 }
-
-*/

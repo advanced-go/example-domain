@@ -3,32 +3,11 @@ package slo
 import (
 	"github.com/google/uuid"
 	"net/url"
-	"time"
 )
 
 const (
 	ControllerName = "ctrl"
 )
-
-type EntryV1 struct {
-	CreatedTS time.Time
-	Id        string
-	// What does this apply to
-	Controller string
-
-	// Types of SLOs
-	// availability : 99% and 99.999%
-	// percentage of traffic : 10% or 10
-	// latency percentile: 99/500ms
-	Threshold   string // Either percentage of traffic, or latency percentile
-	StatusCodes string // For percentage
-}
-
-type Update struct {
-	Controller string
-	Behavior   string // Maybe properties, action? Can be empty
-	Action     string // SQL set statement
-}
 
 var list []EntryV1
 
