@@ -5,6 +5,7 @@ import (
 	"github.com/go-ai-agent/core/http2"
 	"github.com/go-ai-agent/core/log2"
 	"github.com/go-ai-agent/core/runtime"
+	"github.com/go-ai-agent/core/runtime/runtimetest"
 	"net/http"
 	"time"
 )
@@ -29,27 +30,30 @@ func getProxy(ctx any, uri, variant string) (any, *runtime.Status) {
 func Example_GetWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "get-654-321")
 	ctx = runtime.NewProxyContext(ctx, getProxy)
-	e, status := GetEntry[[]EntryV1](ctx, "https://google.com/search")
-	fmt.Printf("test: GetEntry[[]EntryV1]() -> [status:%v] %v", status, e)
+	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](ctx, "https://google.com/search")
+	fmt.Printf("test: getEntryHandler[[]EntryV1]() -> [status:%v] [entries:%v]\n", status, len(e))
 
 	//Output:
 	//test: getProxy() -> in proxy
+	//test: getEntryHandler[[]EntryV1]() -> [status:OK] [entries:1]
 
 }
 
 func postProxy(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 	fmt.Printf("test: postProxy() -> in proxy\n")
-	return nil, runtime.NewStatus(http.StatusGatewayTimeout)
+	return nil, runtime.NewStatus(http.StatusServiceUnavailable)
 }
 
 func Example_PostWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "post-123-456")
 	ctx = runtime.NewProxyContext(ctx, postProxy)
-	e, status := PostEntry[runtime.Nillable](ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
-	fmt.Printf("test: PostEntry[runtime.Nillable]() -> [status:%v] %v", status, e)
+	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
+	e, status := postEntryHandler[runtimetest.DebugError](ctx, req, nil)
+	fmt.Printf("test: postEntryHandler[runtimetest.DebugError]() -> [status:%v] %v\n", status, e)
 
 	//Output:
 	//test: postProxy() -> in proxy
+	//test: postEntryHandler[runtimetest.DebugError]() -> [status:Service Unavailable] <nil>
 
 }
 
@@ -64,10 +68,11 @@ func Example_HttpWithProxy() {
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequestWithContext(ctx, "DELETE", "https://www.google.com/search", nil)
 	req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	HttpHandler(rec, req)
-	//fmt.Printf("test: PostEntry[runtime.Nillable]() -> [status:%v] %v", status, e)
+	status := httpHandler[runtimetest.DebugError](ctx, rec, req)
+	fmt.Printf("test: httpHandler() -> [status:%v]\n", status)
 
 	//Output:
 	//test: httpProxy() -> in proxy
-
+	//test: httpHandler() -> [status:Timeout]
+	
 }
