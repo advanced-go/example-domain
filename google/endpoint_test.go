@@ -5,16 +5,6 @@ import (
 	"net/url"
 )
 
-func Example_PkgUri() {
-	fmt.Printf("test: PkgUri = %v\n", PkgUri)
-	fmt.Printf("test: Pattern = %v\n", Pattern)
-
-	//Output:
-	//test: PkgUri = github.com/go-ai-agent/example-domain/google
-	//test: Pattern = /go-ai-agent/example-domain/google/
-
-}
-
 func Example_searchEndpoint() {
 	endpoint := "/google/search"
 	googleUri := "https://www.google.com/search"

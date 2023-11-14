@@ -3,19 +3,18 @@ package google
 import (
 	"github.com/go-ai-agent/core/runtime"
 	"net/http"
-	"reflect"
 )
 
 type pkg struct{}
 
-//https://www.google.com/search?q=test&rlz=1C1CHBF
+// https://www.google.com/search?q=test&rlz=1C1CHBF
+const (
+	PkgUri  = "github.com/go-ai-agent/example-domain/google"
+	PkgPath = "/go-ai-agent/example-domain/google"
+	Pattern = "/go-ai-agent/example-domain/google/"
+)
 
-var (
-	Pattern = pkgPath + "/"
-
-	PkgUri  = reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath = runtime.PathFromUri(PkgUri)
-
+const (
 	searchLocation     = PkgUri + "/searchHandler"
 	googleQueryArgName = "q"
 

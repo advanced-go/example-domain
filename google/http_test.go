@@ -12,7 +12,7 @@ import (
 func Example_httpHandler() {
 	r := http2.NewRecorder()
 
-	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
 	status := httpHandler[runtimetest.DebugError](r, req)
 	r.Result().Header = r.Header()
 	buf, status1 := io2.ReadAll(r.Result().Body)
@@ -36,7 +36,7 @@ func Example_Resolver() {
 	buf, err := io2.ReadFile(u)
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
-	req, _ := http.NewRequest("", pkgPath, nil)
+	req, _ := http.NewRequest("", PkgPath, nil)
 	result, status := doHandler[runtimetest.DebugError](nil, req, nil)
 	str := ""
 	if buf1, ok := result.([]byte); ok {

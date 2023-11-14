@@ -8,7 +8,7 @@ import (
 )
 
 func Example_Do() {
-	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
 	resp, status := Do(nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -23,7 +23,7 @@ func Example_Do() {
 }
 
 func Example_doHandler() {
-	req, _ := http.NewRequest("", "http://localhost:8080"+pkgPath+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
 	resp, status := doHandler[runtimetest.DebugError](nil, req, nil)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {

@@ -45,7 +45,7 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 }
 
 // newDoHandler - templated function providing a DoHandler
-func newDoHandler[E runtime.ErrorHandler]() log2.DoHandler {
+func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
 	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
 		return doHandler[E](ctx, r, body)
 	}
