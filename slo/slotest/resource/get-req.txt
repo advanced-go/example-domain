@@ -1,4 +1,4 @@
 GET /example-domain/slo/entry HTTP/1.1
 Host: example-domain.com
-Content-Location: github.com/go-ai-agent/example-domain/slo/EntryV1
+Content-Location: github.com/advanced-go/example-domain/slo/EntryV1
 

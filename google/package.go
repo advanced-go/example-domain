@@ -1,7 +1,7 @@
 package google
 
 import (
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
 
@@ -9,9 +9,9 @@ type pkg struct{}
 
 // https://www.google.com/search?q=test&rlz=1C1CHBF
 const (
-	PkgUri  = "github.com/go-ai-agent/example-domain/google"
-	PkgPath = "/go-ai-agent/example-domain/google"
-	Pattern = "/go-ai-agent/example-domain/google/"
+	PkgUri  = "github.com/advanced-go/example-domain/google"
+	PkgPath = "/advanced-go/example-domain/google"
+	Pattern = "/advanced-go/example-domain/google/"
 )
 
 const (

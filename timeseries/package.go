@@ -1,19 +1,19 @@
 package timeseries
 
 import (
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/log2"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/log2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"time"
 )
 
 const (
-	PkgUri         = "github.com/go-ai-agent/example-domain/timeseries"
-	PkgPath        = "/go-ai-agent/example-domain/timeseries"
-	Pattern        = "/go-ai-agent/example-domain/timeseries/"
-	EntryV1Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV1"
-	EntryV2Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV2"
+	PkgUri         = "github.com/advanced-go/example-domain/timeseries"
+	PkgPath        = "/advanced-go/example-domain/timeseries"
+	Pattern        = "/advanced-go/example-domain/timeseries/"
+	EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
+	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
 	postEntryLoc = PkgUri + "/PostEntry"
 )

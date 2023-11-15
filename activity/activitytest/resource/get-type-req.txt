@@ -1,5 +1,5 @@
 GET /example-domain/activity/entry?type=trace HTTP/1.1
 Host: example-domain.com
-Content-Location: github.com/go-ai-agent/example-domain/activity/EntryV1
+Content-Location: github.com/advanced-go/example-domain/activity/EntryV1
 
 

@@ -2,7 +2,7 @@ package google
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/runtime"
 	"reflect"
 )
 
@@ -15,9 +15,9 @@ func Example_PkgUri() {
 	fmt.Printf("test: Pattern        = \"%v\"\n", pkgPath2+"/")
 
 	//Output:
-	//test: PkgUri         = "github.com/go-ai-agent/example-domain/activity"
-	//test: PkgPath        = "/go-ai-agent/example-domain/activity"
-	//test: Pattern        = "/go-ai-agent/example-domain/activity/"
-	//test: EntryV1Variant = "github.com/go-ai-agent/example-domain/activity/EntryV1"
+	//test: PkgUri         = "github.com/advanced-go/example-domain/activity"
+	//test: PkgPath        = "/advanced-go/example-domain/activity"
+	//test: Pattern        = "/advanced-go/example-domain/activity/"
+	//test: EntryV1Variant = "github.com/advanced-go/example-domain/activity/EntryV1"
 
 }

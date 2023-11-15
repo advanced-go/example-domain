@@ -1,8 +1,6 @@
+github.com/advanced-go/core v0.0.0-20231115142649-0edc6ed27765 h1:PNGl60cesn3HzaHOKGNvFwOmHVmzTri38WlbBU6IwBc=
+github.com/advanced-go/core v0.0.0-20231115142649-0edc6ed27765/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
 github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
-github.com/go-ai-agent/core v0.0.0-20231114101110-45dcd331b274 h1:MBgoWFIhb8S3ng2uIEx1PBcmbkYpeqMSs2R5X3c+sdc=
-github.com/go-ai-agent/core v0.0.0-20231114101110-45dcd331b274/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
-github.com/go-ai-agent/core v0.0.0-20231114125601-bfab8ab35968 h1:8K+zN2QhmYykBT9ZxxciljwwuUzMGlydftzf3ogt3ZU=
-github.com/go-ai-agent/core v0.0.0-20231114125601-bfab8ab35968/go.mod h1:7ReZEgt5wnossL/Rcx47VnXmRsmHOOK6WzCeDs4cEQI=
-github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
-github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
+github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

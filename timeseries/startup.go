@@ -1,7 +1,7 @@
 package timeseries
 
 import (
-	"github.com/go-ai-agent/core/runtime/startup"
+	"github.com/advanced-go/core/runtime/startup"
 	"sync/atomic"
 )
 

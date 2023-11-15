@@ -2,10 +2,10 @@ package timeseries
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/log2"
-	"github.com/go-ai-agent/core/runtime"
-	"github.com/go-ai-agent/core/runtime/runtimetest"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/log2"
+	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"reflect"
 	"time"
@@ -36,11 +36,11 @@ func Example_PkgUri() {
 	fmt.Printf("test: EntryV2Variant = \"%v\"\n", entryV2)
 
 	//Output:
-	//test: PkgUri         = "github.com/go-ai-agent/example-domain/timeseries"
-	//test: PkgPath        = "/go-ai-agent/example-domain/timeseries"
-	//test: Pattern        = "/go-ai-agent/example-domain/timeseries/"
-	//test: EntryV1Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV1"
-	//test: EntryV2Variant = "github.com/go-ai-agent/example-domain/timeseries/EntryV2"
+	//test: PkgUri         = "github.com/advanced-go/example-domain/timeseries"
+	//test: PkgPath        = "/advanced-go/example-domain/timeseries"
+	//test: Pattern        = "/advanced-go/example-domain/timeseries/"
+	//test: EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
+	//test: EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
 }
 

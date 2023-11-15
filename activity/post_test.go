@@ -2,8 +2,8 @@ package activity
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/runtime/runtimetest"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/runtime/runtimetest"
 )
 
 func Example_postHandler() {
@@ -20,9 +20,9 @@ func Example_postHandler() {
 	fmt.Printf("test: postHandler() -> %v\n", status)
 
 	//Output:
-	//{ "code":90, "status":"Invalid Content", "id":"b7d1c98c-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/go-ai-agent/example-domain/activity/doHandler" ], "err" : [ "invalid body type: <nil>" ] }
+	//{ "code":90, "status":"Invalid Content", "id":"b7d1c98c-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/advanced-go/example-domain/activity/doHandler" ], "err" : [ "invalid body type: <nil>" ] }
 	//test: postHandler() -> Invalid Content [invalid body type: <nil>]
-	//{ "code":90, "status":"Invalid Content", "id":"b7d2a698-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/go-ai-agent/example-domain/activity/doHandler" ], "err" : [ "invalid body type: string" ] }
+	//{ "code":90, "status":"Invalid Content", "id":"b7d2a698-808f-11ee-962d-00a55441ed8b", "trace" : [ "","github.com/advanced-go/example-domain/activity/doHandler" ], "err" : [ "invalid body type: string" ] }
 	//test: postHandler() -> Invalid Content [invalid body type: string]
 
 }

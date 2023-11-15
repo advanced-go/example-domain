@@ -1,19 +1,19 @@
 package activity
 
 import (
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/log2"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/log2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
 
 type pkg struct{}
 
 const (
-	PkgUri         = "github.com/go-ai-agent/example-domain/activity"
-	PkgPath        = "/go-ai-agent/example-domain/activity"
-	Pattern        = "/go-ai-agent/example-domain/activity/"
-	EntryV1Variant = "github.com/go-ai-agent/example-domain/activity/EntryV1"
+	PkgUri         = "github.com/advanced-go/example-domain/activity"
+	PkgPath        = "/advanced-go/example-domain/activity"
+	Pattern        = "/advanced-go/example-domain/activity/"
+	EntryV1Variant = "github.com/advanced-go/example-domain/activity/EntryV1"
 
 	postEntryLoc = PkgUri + "/PostEntry"
 )

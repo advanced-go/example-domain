@@ -1,8 +1,8 @@
 package google
 
 import (
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
 

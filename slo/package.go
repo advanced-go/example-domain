@@ -1,9 +1,9 @@
 package slo
 
 import (
-	"github.com/go-ai-agent/core/http2"
-	"github.com/go-ai-agent/core/log2"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/log2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"time"
 )
@@ -11,10 +11,10 @@ import (
 type pkg struct{}
 
 const (
-	PkgUri         = "github.com/go-ai-agent/example-domain/slo"
-	PkgPath        = "/go-ai-agent/example-domain/slo"
-	Pattern        = "/go-ai-agent/example-domain/slo/"
-	EntryV1Variant = "github.com/go-ai-agent/example-domain/slo/EntryV1"
+	PkgUri         = "github.com/advanced-go/example-domain/slo"
+	PkgPath        = "/advanced-go/example-domain/slo"
+	Pattern        = "/advanced-go/example-domain/slo/"
+	EntryV1Variant = "github.com/advanced-go/example-domain/slo/EntryV1"
 
 	postEntryLoc = PkgUri + "/PostEntry"
 )

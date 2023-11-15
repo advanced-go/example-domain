@@ -3,7 +3,7 @@ package action
 import (
 	"context"
 	"encoding/json"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/runtime"
 	"net/url"
 	"time"
 )

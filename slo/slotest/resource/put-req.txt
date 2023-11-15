@@ -1,7 +1,7 @@
 PUT /example-domain/slo/entry HTTP/1.1
 Host: access-log.com
 Content-Type: application/json
-Content-Location: github.com/go-ai-agent/example-domain/slo/EntryV1
+Content-Location: github.com/advanced-go/example-domain/slo/EntryV1
 
 [
   {

@@ -2,7 +2,7 @@ package slo
 
 import (
 	"fmt"
-	"github.com/go-ai-agent/core/runtime"
+	"github.com/advanced-go/core/runtime"
 	"reflect"
 )
 
@@ -17,9 +17,9 @@ func Example_PkgUri() {
 	fmt.Printf("test: EntryV1Variant = \"%v\"\n", entryV1)
 
 	//Output:
-	//test: PkgUri         = "github.com/go-ai-agent/example-domain/slo"
-	//test: PkgPath        = "/go-ai-agent/example-domain/slo"
-	//test: Pattern        = "/go-ai-agent/example-domain/slo/"
-	//test: EntryV1Variant = "github.com/go-ai-agent/example-domain/slo/EntryV1"
+	//test: PkgUri         = "github.com/advanced-go/example-domain/slo"
+	//test: PkgPath        = "/advanced-go/example-domain/slo"
+	//test: Pattern        = "/advanced-go/example-domain/slo/"
+	//test: EntryV1Variant = "github.com/advanced-go/example-domain/slo/EntryV1"
 
 }
