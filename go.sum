@@ -1,6 +1,4 @@
-github.com/advanced-go/core v0.0.0-20231115142649-0edc6ed27765 h1:PNGl60cesn3HzaHOKGNvFwOmHVmzTri38WlbBU6IwBc=
-github.com/advanced-go/core v0.0.0-20231115142649-0edc6ed27765/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
-github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
-github.com/felixge/httpsnoop v1.0.4/go.mod h1:m8KPJKqk1gH5J9DgRY2ASl2lWCfGKXixSwevea8zH2U=
+github.com/advanced-go/core v0.0.0-20231115182833-b26c23c88dac h1:aB/99665nxnSaljAe7iy3ULEQk+Zi7+s5IsMxLjG/Gk=
+github.com/advanced-go/core v0.0.0-20231115182833-b26c23c88dac/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
 github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
