@@ -28,9 +28,9 @@ func Example_searchEndpoint() {
 	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
 
 	//Output:
-	//test: searchUrl(github.com/go-ai-agent/example-domain/google) /google/search
-	//test: searchUrl(github.com/go-ai-agent/example-domain/google) https://www.google.com/search
-	//test: searchUrl(github.com/go-ai-agent/example-domain/google?q=testrlz=1C1CHBF) /google/search?q=testrlz=1C1CHBF
-	//test: searchUrl(github.com/go-ai-agent/example-domain/google?q=testrlz=1C1CHBF) https://www.google.com/search?q=testrlz=1C1CHBF
+	//test: searchUrl(github.com/advanced-go/example-domain/google) /google/search
+	//test: searchUrl(github.com/advanced-go/example-domain/google) https://www.google.com/search
+	//test: searchUrl(github.com/advanced-go/example-domain/google?q=testrlz=1C1CHBF) /google/search?q=testrlz=1C1CHBF
+	//test: searchUrl(github.com/advanced-go/example-domain/google?q=testrlz=1C1CHBF) https://www.google.com/search?q=testrlz=1C1CHBF
 
 }

@@ -4,16 +4,11 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
 
-var (
-	wrapper = log2.WrapDo(newDoHandler[runtime.LogError]())
-)
-
-func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func getHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -42,11 +37,4 @@ func doHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any,
 		return buf, status
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
-}
-
-// newDoHandler - templated function providing a DoHandler
-func newDoHandler[E runtime.ErrorHandler]() runtime.DoHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return doHandler[E](ctx, r, body)
-	}
 }

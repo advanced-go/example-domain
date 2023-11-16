@@ -37,15 +37,15 @@ func Example_Resolver() {
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
 	req, _ := http.NewRequest("", PkgPath, nil)
-	result, status := doHandler[runtimetest.DebugError](nil, req, nil)
+	result, status := getHandler[runtimetest.DebugError](req)
 	str := ""
 	if buf1, ok := result.([]byte); ok {
 		str = string(buf1)
 	}
-	fmt.Printf("test: doHandler() [status:%v] [content:%v]\n", status, str)
+	fmt.Printf("test: getHandler() [status:%v] [content:%v]\n", status, str)
 
 	//Output:
 	//test: ReadFile() -> [err:<nil>] [buf:This is an alternate result for a Google query.]
-	//test: doHandler() [status:OK] [content:This is an alternate result for a Google query.]
+	//test: getHandler() [status:OK] [content:This is an alternate result for a Google query.]
 
 }
