@@ -31,21 +31,21 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
-		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+		e.Handle(statusVar, runtime.RequestId(r), postLoc)
 		return nil, statusVar
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(nil, r.Header.Get(http2.ContentLocation), body)
+		status := putEntry(r.Header.Get(http2.ContentLocation), body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), postLoc)
+			e.Handle(status, runtime.RequestId(r), postLoc)
 			return nil, status
 		}
 		return nil, runtime.NewStatusOK()
 	case http.MethodDelete:
-		status := deleteEntry(ctx, r.Header.Get(http2.ContentLocation))
+		status := deleteEntry(r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), postLoc)
+			e.Handle(status, runtime.RequestId(r), postLoc)
 		}
 		return nil, status
 	default:
@@ -53,7 +53,7 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func putEntry(ctx any, variant string, body any) *runtime.Status {
+func putEntry(variant string, body any) *runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -118,7 +118,7 @@ func putEntry(ctx any, variant string, body any) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func deleteEntry(ctx any, variant string) *runtime.Status {
+func deleteEntry(variant string) *runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntriesV1()
@@ -147,33 +147,3 @@ func verifyVariant(u *url.URL, variant string) string {
 	}
 	return variant
 }
-
-/*
-	case http.MethodGet:
-		switch variant {
-		case EntryV2Variant:
-			entries, status := getEntry[[]EntryV2](ctx, variant, r.URL)
-			if !status.OK() {
-				e.Handle(status, runtime.RequestId(r), doLoc)
-				return nil, status
-			}
-			//if len(entries) == 0 {
-			//	return nil, runtime.NewStatus(http.StatusNotFound)
-			//}
-			return entries, runtime.NewStatusOK()
-		case EntryV1Variant:
-			entries, status := getEntry[[]EntryV1](ctx, variant, r.URL)
-			if !status.OK() {
-				e.Handle(status, runtime.RequestId(r), doLoc)
-				return nil, status
-			}
-			//entries := queryEntriesV1(r.URL)
-			//if len(entries) == 0 {
-			//	return nil, runtime.NewStatus(http.StatusNotFound)
-			//}
-			return entries, runtime.NewStatusOK()
-		default:
-		}
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-
-*/

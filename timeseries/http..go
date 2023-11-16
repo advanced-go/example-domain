@@ -1,11 +1,9 @@
 package timeseries
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"strings"
@@ -16,8 +14,7 @@ type httpEntryHandlerFn func(w http.ResponseWriter, r *http.Request) *runtime.St
 const (
 	httpLoc        = PkgUri + "/httpHandler"
 	validateVarLoc = PkgUri + "/validateVariant"
-
-
+)
 
 func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
@@ -58,7 +55,7 @@ func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.Respon
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		status := deleteEntry(newCtx, r.Header.Get(http2.ContentLocation))
+		status := deleteEntry(r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 		}

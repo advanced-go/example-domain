@@ -4,10 +4,6 @@ import (
 	"net/url"
 )
 
-var (
-	ConrollerName = "ctrl"
-)
-
 var listV1 []EntryV1
 
 func getEntriesV1() []EntryV1 {

@@ -3,10 +3,10 @@ package timeseries
 import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
+	"net/url"
 	"reflect"
 	"time"
 )
@@ -18,10 +18,6 @@ var entries = []EntryV1{{
 	RequestId: "98765",
 	Url:       "https://www.somestupiddomain.com/help",
 }}
-
-func init() {
-	log2.EnableDebugAccessHandler()
-}
 
 func Example_PkgUri() {
 	pkgUri2 := reflect.TypeOf(any(pkg{})).PkgPath()
@@ -44,15 +40,17 @@ func Example_PkgUri() {
 
 }
 
-func getProxy(ctx any, uri, variant string) (any, *runtime.Status) {
+func getProxy(h http.Header, uri *url.URL) (any, *runtime.Status) {
 	fmt.Printf("test: getProxy() -> in proxy\n")
 	return entries, runtime.NewStatusOK() //http.StatusInternalServerError)
 }
 
 func Example_GetWithProxy() {
-	ctx := runtime.NewRequestIdContext(nil, "get-654-321")
-	ctx = runtime.NewProxyContext(ctx, getProxy)
-	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](ctx, "https://google.com/search")
+	//ctx := runtime.NewRequestIdContext(nil, "get-654-321")
+	//ctx = runtime.NewProxyContext(ctx, getProxy)
+	h := make(http.Header)
+	u, _ := url.Parse("https://google.com/search")
+	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](getProxy, h, u)
 	fmt.Printf("test: getEntryHandler[[]EntryV1]() -> [status:%v] [entries:%v]\n", status, len(e))
 
 	//Output:
@@ -61,7 +59,7 @@ func Example_GetWithProxy() {
 
 }
 
-func postProxy(ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postProxy(r *http.Request, body any) (any, *runtime.Status) {
 	fmt.Printf("test: postProxy() -> in proxy\n")
 	return nil, runtime.NewStatus(http.StatusServiceUnavailable)
 }
@@ -70,7 +68,7 @@ func Example_PostWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "post-123-456")
 	ctx = runtime.NewProxyContext(ctx, postProxy)
 	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
-	e, status := postEntryHandler[runtimetest.DebugError](ctx, req, nil)
+	e, status := postEntryHandler[runtimetest.DebugError](postProxy, req, nil)
 	fmt.Printf("test: postEntryHandler[runtimetest.DebugError]() -> [status:%v] %v\n", status, e)
 
 	//Output:
@@ -79,7 +77,7 @@ func Example_PostWithProxy() {
 
 }
 
-func httpProxy(ctx any, w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpProxy(w http.ResponseWriter, r *http.Request) *runtime.Status {
 	fmt.Printf("test: httpProxy() -> in proxy\n")
 	return runtime.NewStatus(http.StatusGatewayTimeout)
 }
@@ -90,7 +88,7 @@ func Example_HttpWithProxy() {
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequestWithContext(ctx, "DELETE", "https://www.google.com/search", nil)
 	req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	status := httpHandler[runtimetest.DebugError](ctx, rec, req)
+	status := httpHandler[runtimetest.DebugError](httpProxy, rec, req)
 	fmt.Printf("test: httpHandler() -> [status:%v]\n", status)
 
 	//Output:

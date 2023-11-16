@@ -17,8 +17,7 @@ const (
 	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
 	postEntryLoc = PkgUri + "/PostEntry"
-
-	getEntryLoc = PkgUri + "/GetEntry"
+	getEntryLoc  = PkgUri + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints
@@ -49,20 +48,24 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (any, *runtime.Status) {
 	var e runtime.LogError
 
-	req, status := http2.NewRequest(ctx, method, uri, variant, nil)
+	r, status := http2.NewRequest(h, method, uri, variant, nil)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(ctx), postEntryLoc)
+		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status
 	}
-	return postWrapper(ctx, req, body)
+	return postEntryHandler[runtime.LogError](nil, r, body)
 }
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpWrapper(nil, w, r)
+	http2.AddRequestId(r)
+	func() (status *runtime.Status) {
+		defer log2.Log(r.Header, r.Method, r.URL.String(), log2.NewStatusCodeClosure(&status))()
+		return httpHandler[runtime.LogError](nil, w, r)
+	}()
 }
 
 type EntryV1 struct {

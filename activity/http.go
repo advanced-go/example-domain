@@ -11,7 +11,7 @@ import (
 
 type httpEntryHandlerFn func(w http.ResponseWriter, r *http.Request) *runtime.Status
 
-var (
+const (
 	httpLoc        = PkgUri + "/httpHandler"
 	validateVarLoc = PkgUri + "/validateVariant"
 )
