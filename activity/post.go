@@ -1,56 +1,50 @@
 package activity
 
 import (
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
 	"strings"
 )
 
+const (
+	ContentLocation = "Content-Location"
+)
+
+type postEntryHandlerFn func(r *http.Request, body any) (any, *runtime.Status)
+
 var (
-	postWrapper = log2.WrapPost(newPostEntryHandler[runtime.LogError]())
 	postLoc     = PkgUri + "/postEntryHandler"
 	putEntryLoc = PkgUri + "/putEntry"
 )
 
-// newPostEntryHandler - templated function providing a PostHandler
-func newPostEntryHandler[E runtime.ErrorHandler]() runtime.PostHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return postEntryHandler[E](ctx, r, body)
-	}
-}
-
-func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
 	var e E
 
+	if proxy != nil {
+		return proxy(r, body)
+	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
-		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
+		e.Handle(statusVar, runtime.RequestId(r), postLoc)
 		return nil, statusVar
-	}
-	if runtime.IsDebugEnvironment() {
-		if fn := http2.PostHandlerProxy(ctx); fn != nil {
-			return fn(ctx, r, body)
-		}
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(nil, r.Header.Get(http2.ContentLocation), body)
+		status := putEntry(r.Header.Get(ContentLocation), body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), postLoc)
+			e.Handle(status, runtime.RequestId(r), postLoc)
 			return nil, status
 		}
 	case http.MethodDelete:
-		status := deleteEntry(ctx, r.Header.Get(http2.ContentLocation))
+		status := deleteEntry(r.Header.Get(ContentLocation))
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(ctx), postLoc)
+			e.Handle(status, runtime.RequestId(r), postLoc)
 		}
 		deleteEntries()
 		return nil, runtime.NewStatusOK()
@@ -59,7 +53,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func putEntry(ctx any, variant string, body any) *runtime.Status {
+func putEntry(variant string, body any) *runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -97,7 +91,7 @@ func putEntry(ctx any, variant string, body any) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func deleteEntry(ctx any, variant string) *runtime.Status {
+func deleteEntry(variant string) *runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntries()

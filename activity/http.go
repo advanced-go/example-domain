@@ -1,36 +1,31 @@
 package activity
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"strings"
 )
 
+type httpHandlerFn func(w http.ResponseWriter, r *http.Request) *runtime.Status
+
 var (
-	httpWrapper    = log2.WrapHttp(newHttpHandler[runtime.LogError]())
 	httpLoc        = PkgUri + "/httpHandler"
 	validateVarLoc = PkgUri + "/validateVariant"
 )
 
-// newHttpHandler - templated function providing a DoHandler
-func newHttpHandler[E runtime.ErrorHandler]() runtime.HttpHandler {
-	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) *runtime.Status {
-		return httpHandler[E](ctx, w, r)
-	}
-}
-
-func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpHandler[E runtime.ErrorHandler](proxy httpHandlerFn, w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
 	var e E
 
+	if proxy != nil {
+		return proxy(w, r)
+	}
 	/*
 		statusVar := validateVariant(r)
 		if !statusVar.OK() {
@@ -40,21 +35,9 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		}
 
 	*/
-	var newCtx any
-	if ctx != nil {
-		newCtx = ctx
-	} else {
-		newCtx = r
-	}
-	if runtime.IsDebugEnvironment() {
-		if fn := http2.HttpHandlerProxy(ctx); fn != nil {
-			return fn(ctx, w, r)
-		}
-	}
-	http2.AddRequestId(r)
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntry[[]byte](newCtx, r.URL, r.Header.Get(http2.ContentLocation))
+		buf, status := getEntry[[]byte](r.URL, r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
@@ -63,7 +46,7 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		status := putEntry(newCtx, r.Header.Get(http2.ContentLocation), r.Body)
+		status := putEntry(r.Header.Get(http2.ContentLocation), r.Body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
@@ -72,7 +55,7 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		status := deleteEntry(newCtx, r.Header.Get(http2.ContentLocation))
+		status := deleteEntry(r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 		}

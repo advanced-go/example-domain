@@ -5,6 +5,7 @@ import (
 	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
+	"net/url"
 )
 
 type pkg struct{}
@@ -24,9 +25,20 @@ type GetEntryConstraints interface {
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
-func GetEntry[T GetEntryConstraints](ctx any, uri string) (t T, status *runtime.Status) {
-	defer log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))()
-	return getEntryHandler[T, runtime.LogError](ctx, uri)
+func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status *runtime.Status) {
+	u, err := url.Parse(uri)
+	if err != nil {
+		var e runtime.LogError
+		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
+		e.Handle(status, runtime.RequestId(h), "")
+		return
+	}
+	if h == nil {
+		h = make(http.Header)
+	}
+	http2.AddRequestIdHeader(h)
+	defer log2.Log(h, "GET", uri, log2.NewStatusCodeClosure(&status))()
+	return getEntryHandler[T, runtime.LogError](nil, h, u)
 }
 
 // PostEntryConstraints - Post constraints
@@ -35,19 +47,25 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](ctx any, method, uri, variant string, body T) (any, *runtime.Status) {
-	req, status := http2.NewRequest(ctx, method, uri, variant, nil)
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (any, *runtime.Status) {
+	r, status := http2.NewRequest(h, method, uri, variant, nil)
 	if !status.OK() {
 		var e runtime.LogError
-		e.Handle(status, runtime.RequestId(ctx), postEntryLoc)
+		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status
 	}
-	return postWrapper(ctx, req, body)
+	http2.AddRequestId(r)
+	defer log2.Log(h, method, uri, log2.NewStatusCodeClosure(&status))()
+	return postEntryHandler[runtime.LogError](nil, r, body)
 }
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpWrapper(nil, w, r)
+	http2.AddRequestId(r)
+	func() (status *runtime.Status) {
+		defer log2.Log(r.Header, r.Method, r.URL.String(), log2.NewStatusCodeClosure(&status))()
+		return httpHandler[runtime.LogError](nil, w, r)
+	}()
 }
 
 type EntryV1 struct {
