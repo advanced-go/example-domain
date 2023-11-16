@@ -9,14 +9,14 @@ import (
 	"strings"
 )
 
-type httpHandlerFn func(w http.ResponseWriter, r *http.Request) *runtime.Status
+type httpEntryHandlerFn func(w http.ResponseWriter, r *http.Request) *runtime.Status
 
 var (
 	httpLoc        = PkgUri + "/httpHandler"
 	validateVarLoc = PkgUri + "/validateVariant"
 )
 
-func httpHandler[E runtime.ErrorHandler](proxy httpHandlerFn, w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
