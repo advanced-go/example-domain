@@ -11,14 +11,11 @@ import (
 
 const (
 	ContentLocation = "Content-Location"
+	postLoc         = PkgUri + "/postEntryHandler"
+	putEntryLoc     = PkgUri + "/putEntry"
 )
 
 type postEntryHandlerFn func(r *http.Request, body any) (any, *runtime.Status)
-
-var (
-	postLoc     = PkgUri + "/postEntryHandler"
-	putEntryLoc = PkgUri + "/putEntry"
-)
 
 func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {

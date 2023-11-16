@@ -4,7 +4,6 @@ import (
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
-	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
@@ -14,33 +13,26 @@ import (
 
 type pkg struct{}
 
-var (
-	postWrapper = log2.WrapPost(newPostEntryHandler[runtime.LogError]())
-	postLoc     = PkgUri + "/postEntryHandler"
-	putLoc      = PkgUri + "/putEntry"
+type postEntryHandlerFn func(r *http.Request, body any) (any, *runtime.Status)
+
+const (
+	postLoc = PkgUri + "/postEntryHandler"
+	putLoc  = PkgUri + "/putEntry"
 )
 
-func newPostEntryHandler[E runtime.ErrorHandler]() runtime.PostHandler {
-	return func(ctx any, r *http.Request, body any) (any, *runtime.Status) {
-		return postEntryHandler[E](ctx, r, body)
-	}
-}
-
-func postEntryHandler[E runtime.ErrorHandler](ctx any, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, *runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	var e E
 
+	if proxy != nil {
+		return proxy(r, body)
+	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
 		e.Handle(statusVar, runtime.RequestId(r), httpLoc)
 		return nil, statusVar
-	}
-	if runtime.IsDebugEnvironment() {
-		if fn := http2.PostHandlerProxy(ctx); fn != nil {
-			return fn(ctx, r, body)
-		}
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:

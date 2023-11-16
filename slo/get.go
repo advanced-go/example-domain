@@ -10,7 +10,7 @@ import (
 
 type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, *runtime.Status)
 
-var (
+const (
 	getEntryLoc        = PkgUri + "/getEntry"
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"

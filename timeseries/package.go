@@ -5,6 +5,7 @@ import (
 	"github.com/advanced-go/core/log2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -16,6 +17,8 @@ const (
 	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
 	postEntryLoc = PkgUri + "/PostEntry"
+
+	getEntryLoc = PkgUri + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints
@@ -24,9 +27,20 @@ type GetEntryConstraints interface {
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
-func GetEntry[T GetEntryConstraints](ctx any, uri string) (t T, status *runtime.Status) {
-	defer log2.Log(ctx, "GET", uri, log2.NewStatusCodeClosure(&status))()
-	return getEntryHandler[T, runtime.LogError](ctx, uri)
+func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status *runtime.Status) {
+	u, err := url.Parse(uri)
+	if err != nil {
+		var e runtime.LogError
+		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
+		e.Handle(status, runtime.RequestId(h), "")
+		return
+	}
+	if h == nil {
+		h = make(http.Header)
+	}
+	http2.AddRequestIdHeader(h)
+	defer log2.Log(h, "GET", uri, log2.NewStatusCodeClosure(&status))()
+	return getEntryHandler[T, runtime.LogError](nil, h, u)
 }
 
 // PostEntryConstraints - Post constraints

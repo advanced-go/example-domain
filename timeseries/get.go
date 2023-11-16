@@ -2,41 +2,34 @@ package timeseries
 
 import (
 	"errors"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
 )
 
-var (
+type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, *runtime.Status)
+
+const (
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
-	getLoc             = PkgUri + "/getEntry"
+	getEntryLoc2       = PkgUri + "/getEntry"
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
-func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx any, uri string) (t T, status *runtime.Status) {
+func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEntryHandlerFn, h http.Header, uri *url.URL) (t T, status *runtime.Status) {
 	var e E
 
-	u, err := url.Parse(uri)
-	if err != nil {
-		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryHandlerLoc, err)
-		e.Handle(status, runtime.RequestId(ctx), "")
-		return
-	}
-	if runtime.IsDebugEnvironment() {
-		if fn := http2.GetHandlerProxy(ctx); fn != nil {
-			a, status1 := fn(ctx, uri, "")
-			if !status1.OK() {
-				e.Handle(status, runtime.RequestId(ctx), "")
-				return t, status1
-			}
-			return entryFromAny[T](a)
+	if proxy != nil {
+		a, status1 := proxy(h, uri)
+		if !status1.OK() {
+			e.Handle(status, runtime.RequestId(h), "")
+			return t, status1
 		}
+		return entryFromAny[T](a)
 	}
-	t, status = getEntry[T](ctx, u, "")
+	t, status = getEntry[T](uri, "")
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(ctx), getEntryHandlerLoc)
+		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 	}
 	return
 }
@@ -74,7 +67,7 @@ type getEntryConstraints interface {
 	[]EntryV1 | []EntryV2 | []byte
 }
 
-func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *runtime.Status) {
+func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, *runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
@@ -99,7 +92,7 @@ func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *r
 			}
 			buf, status := json2.Marshal(entries)
 			if !status.OK() {
-				return nil, status.AddLocation(getLoc)
+				return nil, status.AddLocation(getEntryLoc2)
 			}
 			*ptr = buf
 		} else {
@@ -109,7 +102,7 @@ func getEntry[T getEntryConstraints](ctx any, u *url.URL, variant string) (T, *r
 			}
 			buf, status := json2.Marshal(entries)
 			if !status.OK() {
-				return nil, status.AddLocation(getLoc)
+				return nil, status.AddLocation(getEntryLoc2)
 			}
 			*ptr = buf
 		}
