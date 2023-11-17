@@ -1,6 +1,9 @@
 package timeseries
 
 import (
+	"fmt"
+	"github.com/advanced-go/core/access"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -8,6 +11,20 @@ import (
 	"reflect"
 	"testing"
 )
+
+func _Example_HttpHandler() {
+	access.EnableDebugLogHandler()
+
+	rec := http2.NewRecorder()
+	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
+	req.Header.Add(http2.ContentLocation, EntryV1Variant)
+	HttpHandler(rec, req)
+	fmt.Printf("test: HttpHandler() -> %v", rec.Code)
+
+	//Output:
+	//test: HttpHandler() -> 404
+
+}
 
 func Test_httpHandlerV2(t *testing.T) {
 	deleteEntriesV2()
