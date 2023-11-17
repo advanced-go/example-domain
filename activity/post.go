@@ -33,17 +33,17 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(r.Header.Get(ContentLocation), body)
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postLoc)
-		}
-		return nil, status
+		//status := putEntry(r.Header.Get(ContentLocation), body)
+		//if !status.OK() {
+		//	e.Handle(status, runtime.RequestId(r), postLoc)
+		//}
+		return nil, e.Handle(putEntry(r.Header.Get(ContentLocation), body), runtime.RequestId(r), postLoc)
 	case http.MethodDelete:
-		status := deleteEntry(r.Header.Get(ContentLocation))
-		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postLoc)
-		}
-		return nil, runtime.NewStatusOK()
+		//status := deleteEntry(r.Header.Get(ContentLocation))
+		//if !status.OK() {
+		//	e.Handle(status, runtime.RequestId(r), postLoc)
+		//}
+		return nil, e.Handle(deleteEntry(r.Header.Get(ContentLocation)), runtime.RequestId(r), postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}
