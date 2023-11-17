@@ -78,18 +78,18 @@ func putEntry(variant string, body any) runtime.Status {
 			return runtime.NewStatus(runtime.StatusInvalidContent)
 		}
 		addEntry(entries)
+		return runtime.NewStatusOK()
 	default:
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return runtime.NewStatusOK()
 }
 
 func deleteEntry(variant string) runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntries()
+		return runtime.NewStatusOK()
 	default:
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return runtime.NewStatusOK()
 }

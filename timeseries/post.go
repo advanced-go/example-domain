@@ -76,6 +76,7 @@ func putEntry(variant string, body any) runtime.Status {
 			return runtime.NewStatus(runtime.StatusInvalidContent)
 		}
 		addEntryV1(entries)
+		return runtime.NewStatusOK()
 	case EntryV2Variant:
 		var entries []EntryV2
 
@@ -103,22 +104,23 @@ func putEntry(variant string, body any) runtime.Status {
 			return runtime.NewStatus(runtime.StatusInvalidContent)
 		}
 		addEntryV2(entries)
+		return runtime.NewStatusOK()
 	default:
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return runtime.NewStatusOK()
 }
 
 func deleteEntry(variant string) runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntriesV1()
+		return runtime.NewStatusOK()
 	case EntryV2Variant:
 		deleteEntriesV2()
+		return runtime.NewStatusOK()
 	default:
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return runtime.NewStatusOK()
 }
 
 func verifyVariant(u *url.URL, variant string) string {

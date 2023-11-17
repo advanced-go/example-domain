@@ -77,12 +77,14 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
 		*ptr = entries
+		return t, runtime.NewStatusOK()
 	case *[]EntryV2:
 		entries := queryEntriesV2(u)
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
 		}
 		*ptr = entries
+		return t, runtime.NewStatusOK()
 	case *[]byte:
 		variant = verifyVariant(u, variant)
 		if variant == EntryV1Variant {
@@ -95,6 +97,7 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 				return nil, status.AddLocation(getEntryLoc2)
 			}
 			*ptr = buf
+			return t, runtime.NewStatusOK()
 		} else {
 			entries := queryEntriesV2(u)
 			if len(entries) == 0 {
@@ -105,9 +108,9 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 				return nil, status.AddLocation(getEntryLoc2)
 			}
 			*ptr = buf
+			return t, runtime.NewStatusOK()
 		}
 	default:
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	return t, runtime.NewStatusOK()
 }
