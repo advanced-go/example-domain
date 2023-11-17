@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func getHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status) {
+func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -32,8 +32,8 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, *runtime.Status) 
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
-		status.Header().Set(http2.ContentType, resp.Header.Get(http2.ContentType))
-		status.Header().Set(http2.ContentLength, fmt.Sprintf("%v", len(buf)))
+		status.ContentHeader().Set(http2.ContentType, resp.Header.Get(http2.ContentType))
+		status.ContentHeader().Set(http2.ContentLength, fmt.Sprintf("%v", len(buf)))
 		return buf, status
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)

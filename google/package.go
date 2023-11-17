@@ -28,7 +28,7 @@ const (
 )
 
 // Get - exchange handler
-func Get(r *http.Request) (any, *runtime.Status) {
+func Get(r *http.Request) (any, runtime.Status) {
 	return getHandler[runtime.LogError](r)
 }
 

@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, *runtime.Status)
+type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, runtime.Status)
 
 const (
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
@@ -16,7 +16,7 @@ const (
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
-func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEntryHandlerFn, h http.Header, uri *url.URL) (t T, status *runtime.Status) {
+func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEntryHandlerFn, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	var e E
 
 	if proxy != nil {
@@ -34,7 +34,7 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEnt
 	return
 }
 
-func entryFromAny[T GetEntryConstraints](a any) (t T, status *runtime.Status) {
+func entryFromAny[T GetEntryConstraints](a any) (t T, status runtime.Status) {
 	if a == nil {
 		return
 	}
@@ -61,7 +61,7 @@ type getEntryConstraints interface {
 	[]EntryV1 | []byte
 }
 
-func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, *runtime.Status) {
+func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {

@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
 	result, status := Get(r)
-	http2.WriteResponse[E](w, result, status, status.Header())
+	http2.WriteResponse[E](w, result, status, status.ContentHeader())
 	return status
 }

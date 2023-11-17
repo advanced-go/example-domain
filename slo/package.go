@@ -26,7 +26,7 @@ type GetEntryConstraints interface {
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
-func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status *runtime.Status) {
+func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status runtime.Status) {
 	u, err := url.Parse(uri)
 	if err != nil {
 		var e runtime.LogError
@@ -48,7 +48,7 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (any, *runtime.Status) {
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (any, runtime.Status) {
 	var e runtime.LogError
 
 	r, status := http2.NewRequest(h, method, uri, variant, nil)
@@ -64,7 +64,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	http2.AddRequestId(r)
-	func() (status *runtime.Status) {
+	func() (status runtime.Status) {
 		defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
 		return httpHandler[runtime.LogError](nil, w, r)
 	}()

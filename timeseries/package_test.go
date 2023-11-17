@@ -40,7 +40,7 @@ func Example_PkgUri() {
 
 }
 
-func getProxy(h http.Header, uri *url.URL) (any, *runtime.Status) {
+func getProxy(h http.Header, uri *url.URL) (any, runtime.Status) {
 	fmt.Printf("test: getProxy() -> in proxy\n")
 	return entries, runtime.NewStatusOK() //http.StatusInternalServerError)
 }
@@ -59,7 +59,7 @@ func Example_GetWithProxy() {
 
 }
 
-func postProxy(r *http.Request, body any) (any, *runtime.Status) {
+func postProxy(r *http.Request, body any) (any, runtime.Status) {
 	fmt.Printf("test: postProxy() -> in proxy\n")
 	return nil, runtime.NewStatus(http.StatusServiceUnavailable)
 }
@@ -77,7 +77,7 @@ func Example_PostWithProxy() {
 
 }
 
-func httpProxy(w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpProxy(w http.ResponseWriter, r *http.Request) runtime.Status {
 	fmt.Printf("test: httpProxy() -> in proxy\n")
 	return runtime.NewStatus(http.StatusGatewayTimeout)
 }

@@ -13,14 +13,14 @@ import (
 
 type pkg struct{}
 
-type postEntryHandlerFn func(r *http.Request, body any) (any, *runtime.Status)
+type postEntryHandlerFn func(r *http.Request, body any) (any, runtime.Status)
 
 const (
 	postLoc = PkgUri + "/postEntryHandler"
 	putLoc  = PkgUri + "/putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -44,7 +44,7 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 	}
 }
 
-func putEntry(variant string, body any) *runtime.Status {
+func putEntry(variant string, body any) runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -109,7 +109,7 @@ func putEntry(variant string, body any) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func deleteEntry(variant string) *runtime.Status {
+func deleteEntry(variant string) runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntriesV1()

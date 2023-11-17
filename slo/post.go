@@ -15,9 +15,9 @@ const (
 	putEntryLoc     = PkgUri + "/putEntry"
 )
 
-type postEntryHandlerFn func(r *http.Request, body any) (any, *runtime.Status)
+type postEntryHandlerFn func(r *http.Request, body any) (any, runtime.Status)
 
-func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, *runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -46,7 +46,7 @@ type putEntryConstraints interface {
 	[]EntryV1 | []byte
 }
 
-func putEntry(variant string, body any) *runtime.Status {
+func putEntry(variant string, body any) runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent)
 	}
@@ -84,7 +84,7 @@ func putEntry(variant string, body any) *runtime.Status {
 	return runtime.NewStatusOK()
 }
 
-func deleteEntry(variant string) *runtime.Status {
+func deleteEntry(variant string) runtime.Status {
 	switch variant {
 	case EntryV1Variant:
 		deleteEntries()
