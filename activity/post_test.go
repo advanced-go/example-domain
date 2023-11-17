@@ -2,9 +2,11 @@ package activity
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/runtime/runtimetest"
+	"net/http"
 )
 
 func Example_postEntryHandler() {
@@ -27,6 +29,41 @@ func Example_postEntryHandler() {
 	//test: postEntryHandler() -> [status:Invalid Argument [error invalid variant: [<empty>] for [github.com/advanced-go/example-domain/activity]]]
 	//{ "code":90, "status":"Invalid Content", "id":"8765-4321", "trace" : [ "github.com/advanced-go/example-domain/activity/postEntryHandler","github.com/advanced-go/example-domain/activity/putEntry" ], "err" : [ "invalid body type: string" ] }
 	//test: postEntryHandler() -> [status:Invalid Content [invalid body type: string]]
+
+}
+
+func Example_PostEntry() {
+	access.EnableDebugLogHandler()
+	entries := []EntryV1{
+		{
+			ActivityID:   "",
+			ActivityType: "trace",
+			Agent:        "agent-test",
+			AgentUri:     "",
+			Assignment:   "",
+			Controller:   "controller-test",
+			Behavior:     "",
+			Description:  "desc-1",
+		}, {
+			ActivityID:   "",
+			ActivityType: "trace",
+			Agent:        "agent-test",
+			AgentUri:     "",
+			Assignment:   "",
+			Controller:   "controller-test",
+			Behavior:     "",
+			Description:  "desc-2",
+		}}
+
+	h := make(http.Header)
+	h.Add(runtime.XRequestId, "123-456")
+	_, status := PostEntry[[]EntryV1](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", EntryV1Variant, entries)
+	fmt.Printf("test: PostEntry() -> [status:%v]\n", status)
+
+	//Output:
+	//{ "activity": "trace" "agent": "agent-test"  "controller": "controller-test"  "message": "desc-1"  }
+	//{ "activity": "trace" "agent": "agent-test"  "controller": "controller-test"  "message": "desc-2"  }
+	//test: PostEntry() -> [status:OK]
 
 }
 

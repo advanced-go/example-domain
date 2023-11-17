@@ -36,18 +36,17 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 		status := putEntry(r.Header.Get(ContentLocation), body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc)
-			return nil, status
 		}
+		return nil, status
 	case http.MethodDelete:
 		status := deleteEntry(r.Header.Get(ContentLocation))
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc)
 		}
-		deleteEntries()
-		return nil, runtime.NewStatusOK()
+		return nil, status
 	default:
+		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}
-	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
 // putEntryConstraints - Get constraints

@@ -55,8 +55,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	fn := access.LogDeferred(h, method, uri, access.NewStatusCodeClosure(&status))
-	defer fn()
+	defer access.LogDeferred(h, method, uri, access.NewStatusCodeClosure(&status))()
 	return postEntryHandler[runtime.LogError](nil, r, body)
 }
 

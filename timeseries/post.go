@@ -39,9 +39,8 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 		status := putEntry(r.Header.Get(http2.ContentLocation), body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc)
-			return nil, status
 		}
-		return nil, runtime.NewStatusOK()
+		return nil, status
 	case http.MethodDelete:
 		status := deleteEntry(r.Header.Get(http2.ContentLocation))
 		if !status.OK() {
@@ -49,8 +48,8 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 		}
 		return nil, status
 	default:
+		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}
-	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
 func putEntry(variant string, body any) *runtime.Status {
