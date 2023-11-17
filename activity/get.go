@@ -2,6 +2,7 @@ package activity
 
 import (
 	"errors"
+	"fmt"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -82,6 +83,8 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 				return nil, status.AddLocation(getEntryLoc)
 			}
 			*ptr = buf
+		} else {
+			return nil, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, errors.New(fmt.Sprintf("invalid variant")))
 		}
 	default:
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)

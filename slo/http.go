@@ -35,6 +35,7 @@ func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.Respon
 		}
 
 	*/
+	r.Header.Set(http2.ContentLocation, EntryV1Variant)
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
 		buf, status := getEntry[[]byte](r.URL, r.Header.Get(http2.ContentLocation))

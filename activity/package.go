@@ -62,11 +62,10 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	http2.AddRequestId(r)
-	fn := func() (status runtime.Status) {
+	func() (status runtime.Status) {
 		defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
 		return httpHandler[runtime.LogError](nil, w, r)
-	}
-	fn()
+	}()
 }
 
 type EntryV1 struct {

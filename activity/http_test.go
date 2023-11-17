@@ -2,13 +2,43 @@ package activity
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/access"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
 )
+
+func _Example_HttpHandler() {
+	access.EnableDebugLogHandler()
+
+	addEntry([]EntryV1{{ActivityID: "activity-uuid",
+		ActivityType: "trace",
+		Agent:        "agent-controller",
+		AgentUri:     "https://host/agent-path",
+		Assignment:   "usa:west::test-service:0123456789",
+		Controller:   "host-controller",
+		Behavior:     "RateLimiting",
+		Description:  "Analyzing observation",
+	}},
+	)
+
+	rec := http2.NewRecorder()
+	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
+	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
+	HttpHandler(rec, req)
+	resp := rec.Result()
+	buf, status := io2.ReadAll(resp.Body)
+	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
+
+	//Output:
+	//test: HttpHandler() -> 404
+
+}
 
 func Test_httpHandler(t *testing.T) {
 	deleteEntries()
