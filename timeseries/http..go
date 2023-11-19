@@ -31,7 +31,6 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 			http2.WriteResponse[E](w, nil, statusVar, nil)
 			return statusVar
 		}
-
 	*/
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:

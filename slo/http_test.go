@@ -1,6 +1,7 @@
 package slo
 
 import (
+	"context"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/runtime/runtimetest"
@@ -30,10 +31,14 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
+		var ctx context.Context
+		if tt.args.status != nil {
+			ctx = runtime.NewStatusContext(nil, tt.args.status)
+		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtimetest.DebugError](nil, w, req)
+			httpHandler[runtimetest.DebugError](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

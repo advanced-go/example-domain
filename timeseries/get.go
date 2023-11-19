@@ -37,33 +37,63 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.
 	return
 }
 
-func getEntryFromLocation[T GetEntryConstraints](a any) (t T, status runtime.Status) {
-	if a == nil {
-		return
+func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status runtime.Status) {
+	buf, status2 := http2.ReadContentFromLocation(location)
+	if !status2.OK() {
+		return t, status2
+	}
+	v1 := strings.Index(location, "entry-v1") != -1
+	v2 := strings.Index(location, "entry-v2") != -1
+	if !v1 && !v2 {
+		return t, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
-		if e, ok := a.([]EntryV1); ok {
-			*ptr = e
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		status = json2.Unmarshal(buf, ptr)
+		if !status.OK() {
+			return t, status
 		}
+		return t, runtime.NewStatusOK()
 	case *[]EntryV2:
-		if e, ok := a.([]EntryV2); ok {
-			*ptr = e
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		status = json2.Unmarshal(buf, ptr)
+		if !status.OK() {
+			return t, status
 		}
+		return t, runtime.NewStatusOK()
 	case *[]byte:
-		if b, ok := a.([]byte); ok {
-			*ptr = b
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-		}
+		*ptr = buf
+		return t, runtime.NewStatusOK()
 	default:
 		return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
 	}
-	return t, runtime.NewStatusOK()
+	/*
+		if a == nil {
+			return
+		}
+		switch ptr := any(&t).(type) {
+		case *[]EntryV1:
+			if e, ok := a.([]EntryV1); ok {
+				*ptr = e
+			} else {
+				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+			}
+		case *[]EntryV2:
+			if e, ok := a.([]EntryV2); ok {
+				*ptr = e
+			} else {
+				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+			}
+		case *[]byte:
+			if b, ok := a.([]byte); ok {
+				*ptr = b
+			} else {
+				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+			}
+		default:
+			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
+		}
+
+	*/
 }
 
 type getEntryConstraints interface {

@@ -16,7 +16,7 @@ Connection: Closed
     "Path":        "/example-domain/timeseries/entry",
     "Method":      "GET",
     "StatusCode":  200,
-    "StatusFlags": "",
+    "ThresholdFlags": "",
     "Threshold":     50
    },
    {
@@ -29,7 +29,7 @@ Connection: Closed
     "Path":        "/example-domain/timeseries/entry",
     "Method":      "PUT",
     "StatusCode":  202,
-    "StatusFlags": "",
+    "ThresholdFlags": "",
     "Threshold":     60
    }
 ]

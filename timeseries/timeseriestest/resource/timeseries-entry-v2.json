@@ -9,8 +9,8 @@
     "Path":        "/example-domain/timeseries/entry",
     "Method":      "GET",
     "StatusCode":  200,
-    "StatusFlags": "",
-    "Threshold": -1
+    "ThresholdFlags": "",
+    "Threshold": 50
   },
   {
     "Traffic":     "egress",
@@ -23,6 +23,6 @@
     "Method":      "PUT",
     "StatusCode":  202,
     "StatusFlags": "",
-    "Threshold": -1
+    "Threshold": 60
    }
 ]
