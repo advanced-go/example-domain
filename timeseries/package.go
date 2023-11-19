@@ -22,7 +22,7 @@ const (
 
 // GetEntryConstraints - Get constraints
 type GetEntryConstraints interface {
-	[]EntryV1 | []EntryV2
+	[]EntryV1 | []EntryV2 | []byte
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering

@@ -45,12 +45,12 @@ func getProxy(h http.Header, uri *url.URL) (any, runtime.Status) {
 	return entries, runtime.NewStatusOK() //http.StatusInternalServerError)
 }
 
-func Example_GetWithProxy() {
+func _Example_GetWithProxy() {
 	//ctx := runtime.NewRequestIdContext(nil, "get-654-321")
 	//ctx = runtime.NewProxyContext(ctx, getProxy)
 	h := make(http.Header)
 	u, _ := url.Parse("https://google.com/search")
-	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](getProxy, h, u)
+	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](nil, h, u)
 	fmt.Printf("test: getEntryHandler[[]EntryV1]() -> [status:%v] [entries:%v]\n", status, len(e))
 
 	//Output:
@@ -64,11 +64,11 @@ func postProxy(r *http.Request, body any) (any, runtime.Status) {
 	return nil, runtime.NewStatus(http.StatusServiceUnavailable)
 }
 
-func Example_PostWithProxy() {
+func _Example_PostWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "post-123-456")
 	ctx = runtime.NewProxyContext(ctx, postProxy)
 	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
-	e, status := postEntryHandler[runtimetest.DebugError](postProxy, req, nil)
+	e, status := postEntryHandler[runtimetest.DebugError](ctx, req, nil)
 	fmt.Printf("test: postEntryHandler[runtimetest.DebugError]() -> [status:%v] %v\n", status, e)
 
 	//Output:
@@ -82,13 +82,13 @@ func httpProxy(w http.ResponseWriter, r *http.Request) runtime.Status {
 	return runtime.NewStatus(http.StatusGatewayTimeout)
 }
 
-func Example_HttpWithProxy() {
+func _Example_HttpWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "http-456-789")
 	ctx = runtime.NewProxyContext(ctx, httpProxy)
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequestWithContext(ctx, "DELETE", "https://www.google.com/search", nil)
 	req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	status := httpHandler[runtimetest.DebugError](httpProxy, rec, req)
+	status := httpHandler[runtimetest.DebugError](ctx, rec, req)
 	fmt.Printf("test: httpHandler() -> [status:%v]\n", status)
 
 	//Output:

@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"context"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
@@ -13,21 +14,22 @@ import (
 
 type pkg struct{}
 
-type postEntryHandlerFn func(r *http.Request, body any) (any, runtime.Status)
-
 const (
 	postLoc = PkgUri + "/postEntryHandler"
 	putLoc  = PkgUri + "/putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	var e E
 
-	if proxy != nil {
-		return proxy(r, body)
+	if runtime.IsDebugEnvironment() {
+		status2 := runtime.StatusFromContext(ctx)
+		if status2 != nil {
+			return nil, status2
+		}
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {

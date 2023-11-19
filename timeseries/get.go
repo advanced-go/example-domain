@@ -1,14 +1,15 @@
 package timeseries
 
 import (
+	"context"
 	"errors"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
+	"strings"
 )
-
-type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, runtime.Status)
 
 const (
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
@@ -16,25 +17,27 @@ const (
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
-func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEntryHandlerFn, h http.Header, uri *url.URL) (t T, status runtime.Status) {
+func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	var e E
 
-	if proxy != nil {
-		a, status1 := proxy(h, uri)
-		if !status1.OK() {
-			e.Handle(status, runtime.RequestId(h), "")
-			return t, status1
+	if runtime.IsDebugEnvironment() {
+		status2 := runtime.StatusFromContext(ctx)
+		if status2 != nil {
+			return t, status2
 		}
-		return entryFromAny[T](a)
+		location := h.Get(http2.ContentLocation)
+		if strings.HasPrefix(location, "file://") {
+			return getEntryFromLocation[T](location)
+		}
 	}
-	t, status = getEntry[T](uri, "")
+	t, status = getEntry[T](uri, h.Get(http2.ContentLocation))
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 	}
 	return
 }
 
-func entryFromAny[T GetEntryConstraints](a any) (t T, status runtime.Status) {
+func getEntryFromLocation[T GetEntryConstraints](a any) (t T, status runtime.Status) {
 	if a == nil {
 		return
 	}
