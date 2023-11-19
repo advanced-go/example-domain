@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"context"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
@@ -17,14 +18,16 @@ const (
 
 type postEntryHandlerFn func(r *http.Request, body any) (any, runtime.Status)
 
-func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
 	var e E
-
-	if proxy != nil {
-		return proxy(r, body)
+	if runtime.IsDebugEnvironment() {
+		status2 := runtime.StatusFromContext(ctx)
+		if status2 != nil {
+			return nil, status2
+		}
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
@@ -33,16 +36,8 @@ func postEntryHandler[E runtime.ErrorHandler](proxy postEntryHandlerFn, r *http.
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		//status := putEntry(r.Header.Get(ContentLocation), body)
-		//if !status.OK() {
-		//	e.Handle(status, runtime.RequestId(r), postLoc)
-		//}
 		return nil, e.Handle(putEntry(r.Header.Get(ContentLocation), body), runtime.RequestId(r), postLoc)
 	case http.MethodDelete:
-		//status := deleteEntry(r.Header.Get(ContentLocation))
-		//if !status.OK() {
-		//	e.Handle(status, runtime.RequestId(r), postLoc)
-		//}
 		return nil, e.Handle(deleteEntry(r.Header.Get(ContentLocation)), runtime.RequestId(r), postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)

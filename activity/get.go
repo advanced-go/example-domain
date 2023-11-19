@@ -9,9 +9,8 @@ import (
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
+	"strings"
 )
-
-type getEntryHandlerFn func(h http.Header, uri *url.URL) (any, runtime.Status)
 
 const (
 	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
@@ -23,16 +22,13 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.
 	var e E
 
 	if runtime.IsDebugEnvironment() {
-		if proxies, ok := runtime.IsProxyable(ctx); ok {
-			proxy := findGetProxy(proxies)
-			if proxy != nil {
-				a, status1 := proxy(h, uri)
-				if !status1.OK() {
-					e.Handle(status, runtime.RequestId(h), "")
-					return t, status1
-				}
-				return entryFromAny[T](a)
-			}
+		status2 := runtime.StatusFromContext(ctx)
+		if status2 != nil {
+			return t, status2
+		}
+		location := h.Get(http2.ContentLocation)
+		if strings.HasPrefix(location, "file://") {
+			return getEntryFromLocation[T](location)
 		}
 	}
 	t, status = getEntry[T](uri, h.Get(http2.ContentLocation))
@@ -42,27 +38,28 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.
 	return
 }
 
-func entryFromAny[T GetEntryConstraints](a any) (t T, status runtime.Status) {
-	if a == nil {
-		return t, runtime.NewStatusOK()
+func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status runtime.Status) {
+	buf, status2 := http2.ReadContentFromLocation(location)
+	if !status2.OK() {
+		return t, status2
+	}
+	v1 := strings.Index(location, "entryv1")
+	if v1 == -1 {
+		return t, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
-		if e, ok := a.([]EntryV1); ok {
-			*ptr = e
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
+		status = json2.Unmarshal(buf, ptr)
+		if !status.OK() {
+			return t, status
 		}
+		return t, runtime.NewStatusOK()
 	case *[]byte:
-		if b, ok := a.([]byte); ok {
-			*ptr = b
-		} else {
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-		}
+		*ptr = buf
+		return t, runtime.NewStatusOK()
 	default:
 		return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
 	}
-	return t, runtime.NewStatusOK()
 }
 
 type getEntryConstraints interface {

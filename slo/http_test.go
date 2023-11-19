@@ -2,6 +2,7 @@ package slo
 
 import (
 	"github.com/advanced-go/core/http2/http2test"
+	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
@@ -11,8 +12,9 @@ import (
 
 func Test_httpHandler(t *testing.T) {
 	type args struct {
-		req  string
-		resp string
+		req    string
+		resp   string
+		status runtime.Status
 	}
 	tests := []struct {
 		name string

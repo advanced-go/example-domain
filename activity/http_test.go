@@ -1,11 +1,13 @@
 package activity
 
 import (
+	"context"
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
@@ -41,31 +43,37 @@ func _Example_HttpHandler() {
 }
 
 func Test_httpHandler(t *testing.T) {
+	basePath := "file://[cwd]/activitytest/resource/"
 	deleteEntries()
 	fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
-		req  string
-		resp string
+		req    string
+		resp   string
+		status runtime.Status
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		//{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
+		{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
 		{"get-entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
-		//{"get-entries-by-type", args{req: "get-type-req.txt", resp: "get-type-resp.txt"}},
-		//{"delete-entries", args{req: "delete-req.txt", resp: "delete-resp.txt"}},
+		{"get-entries-by-type", args{req: "get-type-req.txt", resp: "get-type-resp.txt"}},
+		{"delete-entries", args{req: "delete-req.txt", resp: "delete-resp.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp("file://[cwd]/activitytest/resource/", tt.args.req, tt.args.resp)
+		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
+		var ctx context.Context
+		if tt.args.status != nil {
+			ctx = runtime.NewStatusContext(nil, tt.args.status)
+		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtimetest.DebugError](nil, w, req)
+			httpHandler[runtimetest.DebugError](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
