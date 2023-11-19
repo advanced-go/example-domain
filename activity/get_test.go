@@ -30,7 +30,7 @@ func getProxy(h http.Header, uri *url.URL) (any, runtime.Status) {
 func _Example_getEntryHandler() {
 	ctx := runtime.NewProxyContext(nil, getProxy)
 	h := make(http.Header)
-	h.Add(http2.ContentLocation, "file://[cwd]/activitytest/resource/activity_entryv1.json")
+	h.Add(http2.ContentLocation, "file://[cwd]/activitytest/resource/activity-entry-v1.json")
 	u, _ := url.Parse("http://advanced-go/example-domain/activity/entry")
 
 	entries, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](ctx, h, u)
@@ -42,7 +42,7 @@ func _Example_getEntryHandler() {
 }
 
 func Example_getEntryFromLocation() {
-	location := "file://[cwd]/activitytest/resource/activity_entryv1.json"
+	location := "file://[cwd]/activitytest/resource/activity-entry-v1.json"
 
 	buf, status := getEntryFromLocation[[]byte](location)
 	fmt.Printf("test: getEntryFromLocation() -> [buf:%v] [status:%v]\n", len(buf), status)

@@ -43,7 +43,7 @@ func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status r
 	if !status2.OK() {
 		return t, status2
 	}
-	v1 := strings.Index(location, "entryv1")
+	v1 := strings.Index(location, "entry-v1")
 	if v1 == -1 {
 		return t, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
