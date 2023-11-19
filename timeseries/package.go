@@ -101,12 +101,12 @@ type EntryV2 struct {
 	RequestId string
 
 	// Request attributes
-	Url         string // {scheme}://{host}/{path} No query
-	Protocol    string
-	Host        string
-	Path        string
-	Method      string
-	StatusCode  int32
-	StatusFlags string
-	Threshold   int
+	Url            string // {scheme}://{host}/{path} No query
+	Protocol       string
+	Host           string
+	Path           string
+	Method         string
+	StatusCode     int32
+	ThresholdFlags string
+	Threshold      int
 }

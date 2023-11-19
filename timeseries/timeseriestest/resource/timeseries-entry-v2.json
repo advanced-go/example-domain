@@ -22,7 +22,7 @@
     "Path":        "/example-domain/timeseries/entry",
     "Method":      "PUT",
     "StatusCode":  202,
-    "StatusFlags": "",
+    "ThresholdsFlags": "",
     "Threshold": 60
    }
 ]
