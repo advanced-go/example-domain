@@ -7,7 +7,7 @@
     "Assignment": "case#",
     "Controller": "egress",
     "Behavior": "timeout",
-    "Description": "decreased timeout",
+    "Description": "decreased timeout"
   },
   {
     "ActivityID": "101010",

@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/advanced-go/core/http2"
@@ -16,16 +17,16 @@ const (
 	validateVarLoc = PkgUri + "/validateVariant"
 )
 
-func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.ResponseWriter, r *http.Request) runtime.Status {
+func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
 	var e E
 
-	if proxy != nil {
-		return proxy(w, r)
-	}
+	//if proxy != nil {
+	//	return proxy(w, r)
+	//}
 	/*
 		statusVar := validateVariant(r)
 		if !statusVar.OK() {
@@ -35,10 +36,12 @@ func httpHandler[E runtime.ErrorHandler](proxy httpEntryHandlerFn, w http.Respon
 		}
 
 	*/
-	r.Header.Set(http2.ContentLocation, EntryV1Variant)
+	if r.Header.Get(http2.ContentLocation) == "" {
+		r.Header.Set(http2.ContentLocation, EntryV1Variant)
+	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntry[[]byte](r.URL, r.Header.Get(http2.ContentLocation))
+		buf, status := getEntryHandler[[]byte, E](ctx, r.Header, r.URL)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)

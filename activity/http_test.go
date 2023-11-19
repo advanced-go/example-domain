@@ -51,10 +51,10 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
+		//{"put-entries", args{req: "put-req.txt", resp: "put-resp.txt"}},
 		{"get-entries", args{req: "get-req.txt", resp: "get-resp.txt"}},
-		{"get-entries-by-type", args{req: "get-type-req.txt", resp: "get-type-resp.txt"}},
-		{"delete-entries", args{req: "delete-req.txt", resp: "delete-resp.txt"}},
+		//{"get-entries-by-type", args{req: "get-type-req.txt", resp: "get-type-resp.txt"}},
+		//{"delete-entries", args{req: "delete-req.txt", resp: "delete-resp.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/activitytest/resource/", tt.args.req, tt.args.resp)

@@ -1,8 +1,10 @@
 package activity
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -17,18 +19,23 @@ const (
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
-func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEntryHandlerFn, h http.Header, uri *url.URL) (t T, status runtime.Status) {
+func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	var e E
 
-	if proxy != nil {
-		a, status1 := proxy(h, uri)
-		if !status1.OK() {
-			e.Handle(status, runtime.RequestId(h), "")
-			return t, status1
+	if runtime.IsDebugEnvironment() {
+		if proxies, ok := runtime.IsProxyable(ctx); ok {
+			proxy := findGetProxy(proxies)
+			if proxy != nil {
+				a, status1 := proxy(h, uri)
+				if !status1.OK() {
+					e.Handle(status, runtime.RequestId(h), "")
+					return t, status1
+				}
+				return entryFromAny[T](a)
+			}
 		}
-		return entryFromAny[T](a)
 	}
-	t, status = getEntry[T](uri, "")
+	t, status = getEntry[T](uri, h.Get(http2.ContentLocation))
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 	}
@@ -37,7 +44,7 @@ func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](proxy getEnt
 
 func entryFromAny[T GetEntryConstraints](a any) (t T, status runtime.Status) {
 	if a == nil {
-		return
+		return t, runtime.NewStatusOK()
 	}
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
