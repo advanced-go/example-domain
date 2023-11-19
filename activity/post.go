@@ -2,6 +2,7 @@ package activity
 
 import (
 	"context"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
@@ -27,6 +28,10 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
 			return nil, status2
+		}
+		location := r.Header.Get(http2.ContentLocation)
+		if strings.HasPrefix(location, "file://") {
+			return nil, runtime.NewStatusOK()
 		}
 	}
 	statusVar := validateVariant(r)

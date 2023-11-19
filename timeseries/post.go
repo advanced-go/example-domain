@@ -30,6 +30,10 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 		if status2 != nil {
 			return nil, status2
 		}
+		location := r.Header.Get(http2.ContentLocation)
+		if strings.HasPrefix(location, "file://") {
+			return nil, runtime.NewStatusOK()
+		}
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
