@@ -50,7 +50,7 @@ func _Example_GetWithProxy() {
 	//ctx = runtime.NewProxyContext(ctx, getProxy)
 	h := make(http.Header)
 	u, _ := url.Parse("https://google.com/search")
-	e, status := getEntryHandler[[]EntryV1, runtimetest.DebugError](nil, h, u)
+	e, status := getEntryHandler[[]EntryV1](nil, h, u)
 	fmt.Printf("test: getEntryHandler[[]EntryV1]() -> [status:%v] [entries:%v]\n", status, len(e))
 
 	//Output:
@@ -68,7 +68,7 @@ func _Example_PostWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "post-123-456")
 	ctx = runtime.NewProxyContext(ctx, postProxy)
 	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
-	e, status := postEntryHandler[runtimetest.DebugError](ctx, req, nil)
+	e, status := postEntryHandler(ctx, req, nil)
 	fmt.Printf("test: postEntryHandler[runtimetest.DebugError]() -> [status:%v] %v\n", status, e)
 
 	//Output:

@@ -3,7 +3,7 @@ package timeseries
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -17,28 +17,27 @@ const (
 	fromAnyLoc         = PkgUri + "/entryFromAny"
 )
 
-func getEntryHandler[T GetEntryConstraints, E runtime.ErrorHandler](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
-	var e E
-
+func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return t, status2
+			return t, status2.AddLocation(getEntryHandlerLoc)
 		}
-		location := h.Get(http2.ContentLocation)
+		location := h.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
-			return getEntryFromLocation[T](location)
+			t, status = getEntryFromLocation[T](location)
+			return t, status.AddLocation(getEntryHandlerLoc)
 		}
 	}
-	t, status = getEntry[T](uri, h.Get(http2.ContentLocation))
-	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-	}
-	return
+	t, status = getEntry[T](uri, h.Get(ContentLocation))
+	//if !status.OK() {
+	//	e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+	//}
+	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
 func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status runtime.Status) {
-	buf, status2 := http2.ReadContentFromLocation(location)
+	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
 		return t, status2
 	}

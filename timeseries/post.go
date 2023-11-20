@@ -15,20 +15,20 @@ import (
 type pkg struct{}
 
 const (
-	postLoc = PkgUri + "/postEntryHandler"
-	putLoc  = PkgUri + "/putEntry"
+	ContentLocation = "Content-Location"
+	postLoc         = PkgUri + "/postEntryHandler"
+	putLoc          = PkgUri + "/putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	var e E
 
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return nil, status2
+			return nil, status2.AddLocation(postLoc)
 		}
 		location := r.Header.Get(http2.ContentLocation)
 		if strings.HasPrefix(location, "file://") {
@@ -38,14 +38,16 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
-		e.Handle(statusVar, runtime.RequestId(r), postLoc)
-		return nil, statusVar
+		//e.Handle(statusVar, runtime.RequestId(r), postLoc)
+		return nil, statusVar.AddLocation(postLoc)
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		return nil, e.Handle(putEntry(r.Header.Get(http2.ContentLocation), body), runtime.RequestId(r), postLoc)
+		//return nil, e.Handle(putEntry(r.Header.Get(http2.ContentLocation), body), runtime.RequestId(r), postLoc)
+		return nil, putEntry(r.Header.Get(http2.ContentLocation), body).AddLocation(postLoc)
 	case http.MethodDelete:
-		return nil, e.Handle(deleteEntry(r.Header.Get(http2.ContentLocation)), runtime.RequestId(r), postLoc)
+		//return nil, e.Handle(deleteEntry(r.Header.Get(http2.ContentLocation)), runtime.RequestId(r), postLoc)
+		return nil, deleteEntry(r.Header.Get(http2.ContentLocation)).AddLocation(postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}

@@ -30,9 +30,6 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 		}
 	}
 	t, status = getEntry[T](uri, h.Get(ContentLocation))
-	//if !status.OK() {
-	//	e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-	//}
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
