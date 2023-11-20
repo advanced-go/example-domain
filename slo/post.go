@@ -14,6 +14,7 @@ const (
 	ContentLocation = "Content-Location"
 	postLoc         = PkgUri + "/postEntryHandler"
 	putEntryLoc     = PkgUri + "/putEntry"
+	deleteEntryLoc  = PkgUri + "/deleteEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
@@ -49,14 +50,9 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 	}
 }
 
-// putEntryConstraints - Get constraints
-type putEntryConstraints interface {
-	[]EntryV1 | []byte
-}
-
 func putEntry(variant string, body any) runtime.Status {
 	if body == nil {
-		runtime.NewStatus(runtime.StatusInvalidContent)
+		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
 	switch variant {
 	case EntryV1Variant:
@@ -83,12 +79,12 @@ func putEntry(variant string, body any) runtime.Status {
 			return runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
 		}
 		if len(entries) == 0 {
-			return runtime.NewStatus(runtime.StatusInvalidContent)
+			return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 		}
 		addEntry(entries)
 		return runtime.NewStatusOK()
 	default:
-		return runtime.NewStatus(runtime.StatusInvalidContent)
+		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
 }
 
@@ -98,6 +94,6 @@ func deleteEntry(variant string) runtime.Status {
 		deleteEntries()
 		return runtime.NewStatusOK()
 	default:
-		return runtime.NewStatus(runtime.StatusInvalidContent)
+		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(deleteEntryLoc)
 	}
 }
