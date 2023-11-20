@@ -18,6 +18,7 @@ const (
 	EntryV1Variant = "github.com/advanced-go/example-domain/slo/EntryV1"
 
 	postEntryLoc = PkgUri + "/PostEntry"
+	getEntryLoc  = PkgUri + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints
@@ -27,9 +28,10 @@ type GetEntryConstraints interface {
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
 func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status runtime.Status) {
+	var e runtime.LogError
+
 	u, err := url.Parse(uri)
 	if err != nil {
-		var e runtime.LogError
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
 		e.Handle(status, runtime.RequestId(h), "")
 		return
@@ -39,7 +41,11 @@ func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status run
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(h, "GET", uri, access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[T, runtime.LogError](nil, h, u)
+	t, status = getEntryHandler[T](nil, h, u)
+	if !status.OK() {
+		e.Handle(status, runtime.RequestId(h), getEntryLoc)
+	}
+	return
 }
 
 // PostEntryConstraints - Post constraints
@@ -48,17 +54,22 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (any, runtime.Status) {
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (t any, status runtime.Status) {
 	var e runtime.LogError
+	var r *http.Request
 
-	r, status := http2.NewRequest(h, method, uri, variant, nil)
+	r, status = http2.NewRequest(h, method, uri, variant, nil)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(h, method, uri, access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.LogError](nil, r, body)
+	t, status = postEntryHandler(nil, r, body)
+	if !status.OK() {
+		e.Handle(status, runtime.RequestId(h), postEntryLoc)
+	}
+	return
 }
 
 // HttpHandler - http endpoint
