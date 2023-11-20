@@ -39,17 +39,17 @@ func _Example_getEntryHandler() {
 
 }
 
-func Example_getEntryFromLocation() {
+func Example_getEntryFromPath() {
 	location := "file://[cwd]/activitytest/resource/v1/activity-entry-v1.json"
 
-	buf, status := getEntryFromLocation[[]byte](location)
-	fmt.Printf("test: getEntryFromLocation() -> [buf:%v] [status:%v]\n", len(buf), status)
+	buf, status := getEntryFromPath[[]byte](location)
+	fmt.Printf("test: getEntryFromPath() -> [buf:%v] [status:%v]\n", len(buf), status)
 
-	entries, status2 := getEntryFromLocation[[]EntryV1](location)
-	fmt.Printf("test: getEntryFromLocation() -> [entries:%v] [status:%v]\n", len(entries), status2)
+	entries, status2 := getEntryFromPath[[]EntryV1](location)
+	fmt.Printf("test: getEntryFromPath() -> [entries:%v] [status:%v]\n", len(entries), status2)
 
 	//Output:
-	//test: getEntryFromLocation() -> [buf:525] [status:OK]
-	//test: getEntryFromLocation() -> [entries:2] [status:OK]
+	//test: getEntryFromPath() -> [buf:525] [status:OK]
+	//test: getEntryFromPath() -> [entries:2] [status:OK]
 
 }

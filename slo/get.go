@@ -13,20 +13,21 @@ import (
 )
 
 const (
-	getEntryLoc2       = PkgUri + "/getEntry"
-	fromAnyLoc         = PkgUri + "/entryFromAny"
-	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
+	getEntryLoc2        = PkgUri + "/getEntry"
+	getEntryFromPathLoc = PkgUri + "/getEntryFromPath"
+	getEntryHandlerLoc  = PkgUri + "/getEntryHandler"
 )
 
 func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return t, status2
+			return t, status2.AddLocation(getEntryHandlerLoc)
 		}
 		location := h.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
-			return getEntryFromLocation[T](location)
+			t, status = getEntryFromPath[T](location)
+			return t, status.AddLocation(getEntryHandlerLoc)
 		}
 	}
 	t, status = getEntry[T](uri, h.Get(ContentLocation))
@@ -36,10 +37,10 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
-func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status runtime.Status) {
+func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runtime.Status) {
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
-		return t, status2
+		return t, status2.AddLocation(getEntryFromPathLoc)
 	}
 	v1 := strings.Index(location, "entry-v1")
 	if v1 == -1 {
@@ -49,23 +50,18 @@ func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status r
 	case *[]EntryV1:
 		status = json2.Unmarshal(buf, ptr)
 		if !status.OK() {
-			return t, status
+			return t, status.AddLocation(getEntryFromPathLoc)
 		}
 		return t, runtime.NewStatusOK()
 	case *[]byte:
 		*ptr = buf
 		return t, runtime.NewStatusOK()
 	default:
-		return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
+		return t, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryFromPathLoc, errors.New("invalid type"))
 	}
 }
 
-// getEntryConstraints - Get constraints
-type getEntryConstraints interface {
-	[]EntryV1 | []byte
-}
-
-func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
+func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
@@ -91,6 +87,6 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 		}
 		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc2, errors.New(fmt.Sprintf("invalid variant")))
 	default:
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(getEntryLoc2)
 	}
 }

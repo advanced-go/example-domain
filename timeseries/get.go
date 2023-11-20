@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	getEntryHandlerLoc = PkgUri + "/getEntryHandler"
-	getEntryLoc2       = PkgUri + "/getEntry"
-	fromAnyLoc         = PkgUri + "/entryFromAny"
+	getEntryHandlerLoc  = PkgUri + "/getEntryHandler"
+	getEntryLoc2        = PkgUri + "/getEntry"
+	getEntryFromPathLoc = PkgUri + "/getEntryFromPath"
 )
 
 func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
@@ -25,7 +25,7 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 		}
 		location := h.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
-			t, status = getEntryFromLocation[T](location)
+			t, status = getEntryFromPath[T](location)
 			return t, status.AddLocation(getEntryHandlerLoc)
 		}
 	}
@@ -36,10 +36,10 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
-func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status runtime.Status) {
+func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runtime.Status) {
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
-		return t, status2
+		return t, status2.AddLocation(getEntryFromPathLoc)
 	}
 	v1 := strings.Index(location, "entry-v1") != -1
 	v2 := strings.Index(location, "entry-v2") != -1
@@ -50,20 +50,20 @@ func getEntryFromLocation[T GetEntryConstraints](location string) (t T, status r
 	case *[]EntryV1:
 		status = json2.Unmarshal(buf, ptr)
 		if !status.OK() {
-			return t, status
+			return t, status.AddLocation(getEntryFromPathLoc)
 		}
 		return t, runtime.NewStatusOK()
 	case *[]EntryV2:
 		status = json2.Unmarshal(buf, ptr)
 		if !status.OK() {
-			return t, status
+			return t, status.AddLocation(getEntryFromPathLoc)
 		}
 		return t, runtime.NewStatusOK()
 	case *[]byte:
 		*ptr = buf
 		return t, runtime.NewStatusOK()
 	default:
-		return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
+		return t, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryFromPathLoc, errors.New("invalid type"))
 	}
 	/*
 		if a == nil {
