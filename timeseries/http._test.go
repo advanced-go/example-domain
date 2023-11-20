@@ -39,10 +39,10 @@ func Test_httpHandlerV1(t *testing.T) {
 		name string
 		args args
 	}{
-		//{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt"}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt"}},
 		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
-		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
-		//{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
+		//{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/timeseriestest/resource/v1/", tt.args.req, tt.args.resp)
@@ -101,10 +101,10 @@ func Test_httpHandlerV2(t *testing.T) {
 		name string
 		args args
 	}{
-		//{"put-entries", args{req: "put-req-v2.txt", resp: "put-resp-v2.txt"}},
+		{"put-entries", args{req: "put-req-v2.txt", resp: "put-resp-v2.txt"}},
 		{"get-entries", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt"}},
 		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
-		//{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt"}},
+		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt"}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/timeseriestest/resource/v2/", tt.args.req, tt.args.resp)

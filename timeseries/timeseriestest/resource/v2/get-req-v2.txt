@@ -1,4 +1,4 @@
 GET /example-domain/timeseries/entry HTTP/1.1
 Host: example-domain.com
-Content-Location: file://[cwd]/timeseriestest/resource/timeseries-entry-v2.json
+Content-Location: file://[cwd]/timeseriestest/resource/v2/timeseries-entry-v2.json
 
