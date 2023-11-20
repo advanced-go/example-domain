@@ -2,7 +2,6 @@ package activity
 
 import (
 	"context"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
@@ -17,34 +16,33 @@ const (
 	putEntryLoc     = PkgUri + "/putEntry"
 )
 
-type postEntryHandlerFn func(r *http.Request, body any) (any, runtime.Status)
-
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	var e E
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return nil, status2
+			return nil, status2.AddLocation(postLoc)
 		}
-		location := r.Header.Get(http2.ContentLocation)
+		location := r.Header.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
 			// Need to deserialize return any
 			return nil, runtime.NewStatusOK()
 		}
 	}
-	statusVar := validateVariant(r)
+	statusVar := validateVariant(r.Header)
 	if !statusVar.OK() {
-		e.Handle(statusVar, runtime.RequestId(r), postLoc)
-		return nil, statusVar
+		//e.Handle(statusVar, runtime.RequestId(r), postLoc)
+		return nil, statusVar.AddLocation(postLoc)
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		return nil, e.Handle(putEntry(r.Header.Get(ContentLocation), body), runtime.RequestId(r), postLoc)
+		//e.Handle(putEntry(r.Header.Get(ContentLocation), body), runtime.RequestId(r), postLoc)
+		return nil, putEntry(r.Header.Get(ContentLocation), body).AddLocation(postLoc)
 	case http.MethodDelete:
-		return nil, e.Handle(deleteEntry(r.Header.Get(ContentLocation)), runtime.RequestId(r), postLoc)
+		//return nil, e.Handle(deleteEntry(r.Header.Get(ContentLocation)), runtime.RequestId(r), postLoc)
+		return nil, deleteEntry(r.Header.Get(ContentLocation)).AddLocation(postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}

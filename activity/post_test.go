@@ -3,31 +3,28 @@ package activity
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 )
 
 func Example_postEntryHandler() {
-	req, status := http2.NewRequest(nil, "put", "", "", nil)
-	if !status.OK() {
-		fmt.Printf("test: NewRequest() -> [status%v]\n", status)
-	}
+	req, _ := http.NewRequest("put", "https://www.google.com", nil)
+	//if !status.OK() {
+	//	fmt.Printf("test: NewRequest() -> [status%v]\n", status)
+	//}
 
 	req.Header.Set(runtime.XRequestId, "1234-5678")
-	_, status = postEntryHandler[runtimetest.DebugError](nil, req, nil)
+	_, status := postEntryHandler(nil, req, nil)
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
-	req, status = http2.NewRequest(nil, "put", "", EntryV1Variant, nil)
+	req, _ = http.NewRequest("PUT", "https://www.google.com", nil)
+	req.Header.Set(ContentLocation, EntryV1Variant)
 	req.Header.Set(runtime.XRequestId, "8765-4321")
-	_, status = postEntryHandler[runtimetest.DebugError](nil, req, "invalid string type")
+	_, status = postEntryHandler(nil, req, "invalid string type")
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	//Output:
-	//{ "code":3, "status":"Invalid Argument", "id":"1234-5678", "trace" : [ "github.com/advanced-go/example-domain/activity/postEntryHandler","github.com/advanced-go/example-domain/activity/validateVariant" ], "err" : [ "error invalid variant: [<empty>] for [github.com/advanced-go/example-domain/activity]" ] }
 	//test: postEntryHandler() -> [status:Invalid Argument [error invalid variant: [<empty>] for [github.com/advanced-go/example-domain/activity]]]
-	//{ "code":90, "status":"Invalid Content", "id":"8765-4321", "trace" : [ "github.com/advanced-go/example-domain/activity/postEntryHandler","github.com/advanced-go/example-domain/activity/putEntry" ], "err" : [ "invalid body type: string" ] }
 	//test: postEntryHandler() -> [status:Invalid Content [invalid body type: string]]
 
 }
@@ -63,6 +60,8 @@ func Example_PostEntry() {
 	//Output:
 	//{ "activity": "trace" "agent": "agent-test"  "controller": "controller-test"  "message": "desc-1"  }
 	//{ "activity": "trace" "agent": "agent-test"  "controller": "controller-test"  "message": "desc-2"  }
+	//function StatusOK.AddLocation() is not implemented
+	//{ "traffic":"internal", "start":2023-11-20 11:34:15.729060, "duration":0, "request-id":"123-456", "protocol":"HTTP/1.1", "method":"PUT", "url":"http://localhost:8080/advanced-go/example-domain/activity", "host":"localhost:8080", "path":"/advanced-go/example-domain/activity", "status-code":200, "threshold":-1, "threshold-flags":null }
 	//test: PostEntry() -> [status:OK]
 
 }

@@ -32,7 +32,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 		}
 		location := r.Header.Get(http2.ContentLocation)
 		if strings.HasPrefix(location, "file://") {
-			// Need to deserialize return any 
+			// Need to deserialize return any
 			return nil, runtime.NewStatusOK()
 		}
 	}

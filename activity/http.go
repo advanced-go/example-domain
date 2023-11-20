@@ -22,7 +22,7 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	//var e E
+	var e E
 	/*
 		statusVar := validateVariant(r)
 		if !statusVar.OK() {
@@ -37,27 +37,27 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntryHandler[[]byte, E](ctx, r.Header, r.URL)
+		buf, status := getEntryHandler[[]byte](ctx, r.Header, r.URL)
 		if !status.OK() {
-			//e.Handle(status, runtime.RequestId(r), httpLoc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		_, status := postEntryHandler[E](ctx, r, r.Body)
+		_, status := postEntryHandler(ctx, r, r.Body)
 		if !status.OK() {
-			//e.Handle(status, runtime.RequestId(r), httpLoc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := postEntryHandler[E](ctx, r, nil)
+		_, status := postEntryHandler(ctx, r, nil)
 		if !status.OK() {
-			//e.Handle(status, runtime.RequestId(r), httpLoc)
+			e.Handle(status, runtime.RequestId(r), httpLoc)
 		}
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
@@ -67,11 +67,11 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
 
-func validateVariant(r *http.Request) runtime.Status {
-	if r == nil {
+func validateVariant(h http.Header) runtime.Status {
+	if h == nil {
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
-	variant := r.Header.Get(http2.ContentLocation)
+	variant := h.Get(http2.ContentLocation)
 	if variant != EntryV1Variant {
 		s := variant
 		if len(variant) == 0 {
