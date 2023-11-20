@@ -44,7 +44,7 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	v1 := strings.Index(location, "entry-v1") != -1
 	v2 := strings.Index(location, "entry-v2") != -1
 	if !v1 && !v2 {
-		return t, runtime.NewStatus(runtime.StatusInvalidContent)
+		return t, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(getEntryFromPathLoc)
 	}
 	switch ptr := any(&t).(type) {
 	case *[]EntryV1:
@@ -65,41 +65,10 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	default:
 		return t, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryFromPathLoc, errors.New("invalid type"))
 	}
-	/*
-		if a == nil {
-			return
-		}
-		switch ptr := any(&t).(type) {
-		case *[]EntryV1:
-			if e, ok := a.([]EntryV1); ok {
-				*ptr = e
-			} else {
-				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-			}
-		case *[]EntryV2:
-			if e, ok := a.([]EntryV2); ok {
-				*ptr = e
-			} else {
-				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-			}
-		case *[]byte:
-			if b, ok := a.([]byte); ok {
-				*ptr = b
-			} else {
-				return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("T and any types do not match"))
-			}
-		default:
-			return t, runtime.NewStatusError(runtime.StatusInvalidContent, fromAnyLoc, errors.New("invalid type"))
-		}
 
-	*/
 }
 
-type getEntryConstraints interface {
-	[]EntryV1 | []EntryV2 | []byte
-}
-
-func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
+func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
@@ -143,6 +112,6 @@ func getEntry[T getEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 			return t, runtime.NewStatusOK()
 		}
 	default:
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(getEntryLoc2)
 	}
 }

@@ -18,6 +18,7 @@ const (
 	ContentLocation = "Content-Location"
 	postLoc         = PkgUri + "/postEntryHandler"
 	putLoc          = PkgUri + "/putEntry"
+	deleteLoc       = PkgUri + "/deleteEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
@@ -55,7 +56,7 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 
 func putEntry(variant string, body any) runtime.Status {
 	if body == nil {
-		runtime.NewStatus(runtime.StatusInvalidContent)
+		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putLoc)
 	}
 	switch variant {
 	case EntryV1Variant:
@@ -115,7 +116,7 @@ func putEntry(variant string, body any) runtime.Status {
 		addEntryV2(entries)
 		return runtime.NewStatusOK()
 	default:
-		return runtime.NewStatus(runtime.StatusInvalidContent)
+		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putLoc)
 	}
 }
 
@@ -128,7 +129,7 @@ func deleteEntry(variant string) runtime.Status {
 		deleteEntriesV2()
 		return runtime.NewStatusOK()
 	default:
-		return runtime.NewStatus(runtime.StatusInvalidContent)
+		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(deleteLoc)
 	}
 }
 
