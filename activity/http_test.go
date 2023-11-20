@@ -42,8 +42,8 @@ func _Example_HttpHandler() {
 
 }
 
-func Test_httpHandler(t *testing.T) {
-	basePath := "file://[cwd]/activitytest/resource/"
+func Test_httpHandlerV1(t *testing.T) {
+	basePath := "file://[cwd]/activitytest/resource/v1/"
 	deleteEntries()
 	fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {

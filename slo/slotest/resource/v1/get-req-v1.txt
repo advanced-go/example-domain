@@ -1,0 +1,4 @@
+GET /example-domain/slo/entry HTTP/1.1
+Host: example-domain.com
+Content-Location: file://[cwd]/slotest/resource/v1/slo-entry-v1.json
+

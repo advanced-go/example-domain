@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-func Test_httpHandler(t *testing.T) {
+func Test_httpHandlerV1(t *testing.T) {
 	type args struct {
 		req    string
 		resp   string
@@ -26,7 +26,7 @@ func Test_httpHandler(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp("file://[cwd]/slotest/resource/", tt.args.req, tt.args.resp)
+		failures, req, resp := http2test.ReadHttp("file://[cwd]/slotest/resource/v1/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
