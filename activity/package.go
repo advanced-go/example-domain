@@ -12,6 +12,7 @@ type pkg struct{}
 
 const (
 	PkgPath        = "github.com/advanced-go/example-domain/activity"
+	Pattern        = "/" + PkgPath + "/"
 	EntryV1Variant = "github.com/advanced-go/example-domain/activity/EntryV1"
 
 	postEntryLoc = PkgPath + "/PostEntry"

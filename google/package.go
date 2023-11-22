@@ -8,10 +8,10 @@ import (
 type pkg struct{}
 
 // https://www.google.com/search?q=test&rlz=1C1CHBF
+
 const (
 	PkgPath = "github.com/advanced-go/example-domain/google"
-	//PkgPath = "/advanced-go/example-domain/google"
-	//Pattern = "/advanced-go/example-domain/google/"
+	Pattern = "/" + PkgPath + "/"
 )
 
 const (

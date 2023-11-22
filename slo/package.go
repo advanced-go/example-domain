@@ -12,9 +12,8 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/slo"
-	//PkgPath        = "/advanced-go/example-domain/slo"
-	//Pattern        = "/advanced-go/example-domain/slo/"
+	PkgPath        = "github.com/advanced-go/example-domain/slo"
+	Pattern        = "/" + PkgPath + "/"
 	EntryV1Variant = "github.com/advanced-go/example-domain/slo/EntryV1"
 
 	postEntryLoc = PkgPath + "/PostEntry"
