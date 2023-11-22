@@ -9,7 +9,7 @@ func Example_searchEndpoint() {
 	endpoint := "/google/search"
 	googleUri := "https://www.google.com/search"
 
-	s := PkgUri
+	s := PkgPath
 	uri, _ := url.Parse(s)
 
 	result := searchUri(uri, endpoint)
@@ -18,7 +18,7 @@ func Example_searchEndpoint() {
 	result = searchUri(uri, googleUri)
 	fmt.Printf("test: searchUrl(%v) %v\n", s, result)
 
-	s = PkgUri + "?q=testrlz=1C1CHBF"
+	s = PkgPath + "?q=testrlz=1C1CHBF"
 	uri, _ = url.Parse(s)
 
 	result = searchUri(uri, endpoint)

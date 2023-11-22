@@ -9,13 +9,13 @@ type pkg struct{}
 
 // https://www.google.com/search?q=test&rlz=1C1CHBF
 const (
-	PkgUri  = "github.com/advanced-go/example-domain/google"
-	PkgPath = "/advanced-go/example-domain/google"
-	Pattern = "/advanced-go/example-domain/google/"
+	PkgPath = "github.com/advanced-go/example-domain/google"
+	//PkgPath = "/advanced-go/example-domain/google"
+	//Pattern = "/advanced-go/example-domain/google/"
 )
 
 const (
-	searchLocation     = PkgUri + "/searchHandler"
+	searchLocation     = PkgPath + "/searchHandler"
 	googleQueryArgName = "q"
 
 	// As a rule do not create/use embedded URI's, use endpoints with a sidecar like Envoy for endpoint -> URI resolution.

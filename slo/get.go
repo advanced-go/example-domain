@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	getEntryLoc2        = PkgUri + "/getEntry"
-	getEntryFromPathLoc = PkgUri + "/getEntryFromPath"
-	getEntryHandlerLoc  = PkgUri + "/getEntryHandler"
+	getEntryLoc2        = PkgPath + "/getEntry"
+	getEntryFromPathLoc = PkgPath + "/getEntryFromPath"
+	getEntryHandlerLoc  = PkgPath + "/getEntryHandler"
 )
 
 func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {

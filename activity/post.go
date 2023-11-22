@@ -12,9 +12,9 @@ import (
 
 const (
 	ContentLocation = "Content-Location"
-	postLoc         = PkgUri + "/postEntryHandler"
-	putEntryLoc     = PkgUri + "/putEntry"
-	deleteEntryLoc  = PkgUri + "/deleteEntry"
+	postLoc         = PkgPath + "/postEntryHandler"
+	putEntryLoc     = PkgPath + "/putEntry"
+	deleteEntryLoc  = PkgPath + "/deleteEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {

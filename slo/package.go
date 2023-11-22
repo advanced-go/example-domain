@@ -12,13 +12,13 @@ import (
 type pkg struct{}
 
 const (
-	PkgUri         = "github.com/advanced-go/example-domain/slo"
-	PkgPath        = "/advanced-go/example-domain/slo"
-	Pattern        = "/advanced-go/example-domain/slo/"
+	PkgPath = "github.com/advanced-go/example-domain/slo"
+	//PkgPath        = "/advanced-go/example-domain/slo"
+	//Pattern        = "/advanced-go/example-domain/slo/"
 	EntryV1Variant = "github.com/advanced-go/example-domain/slo/EntryV1"
 
-	postEntryLoc = PkgUri + "/PostEntry"
-	getEntryLoc  = PkgUri + "/GetEntry"
+	postEntryLoc = PkgPath + "/PostEntry"
+	getEntryLoc  = PkgPath + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints

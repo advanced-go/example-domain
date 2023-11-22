@@ -12,5 +12,11 @@ github.com/advanced-go/core v0.0.0-20231119180315-5502a65ba676 h1:dQLN3VRI8WVQFL
 github.com/advanced-go/core v0.0.0-20231119180315-5502a65ba676/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20231120111546-da25a3403a3e h1:2WHHxzi6xyvoE9kle1nuFg0Ziv9Av17IbxEsdCL950Y=
 github.com/advanced-go/core v0.0.0-20231120111546-da25a3403a3e/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231120123810-0674ef2b3534 h1:jlFPuUpThwKtcgulyoTddz+rZzVYUX/nnTqMicYiSVs=
+github.com/advanced-go/core v0.0.0-20231120123810-0674ef2b3534/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231120161320-6800d703d3ff h1:N4d6hg/Xc27Y9Ch5O66UP2gV8bPc4VkqpP9WABWPTlE=
+github.com/advanced-go/core v0.0.0-20231120161320-6800d703d3ff/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231121124247-a3dc77dc3a62 h1:kqzssU6ux5OyAWdaTjPey34mFSfKqRvgXhbTrPR3ihg=
+github.com/advanced-go/core v0.0.0-20231121124247-a3dc77dc3a62/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
 github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

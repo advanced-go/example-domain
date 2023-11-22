@@ -13,8 +13,8 @@ import (
 type httpEntryHandlerFn func(w http.ResponseWriter, r *http.Request) runtime.Status
 
 const (
-	httpLoc        = PkgUri + "/httpHandler"
-	validateVarLoc = PkgUri + "/validateVariant"
+	httpLoc        = PkgPath + "/httpHandler"
+	validateVarLoc = PkgPath + "/validateVariant"
 )
 
 func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
@@ -74,7 +74,7 @@ func validateVariant(r *http.Request) runtime.Status {
 		if len(variant) == 0 {
 			s = "<empty>"
 		}
-		err := errors.New(fmt.Sprintf("error invalid variant: [%v] for [%v]", s, PkgUri))
+		err := errors.New(fmt.Sprintf("error invalid variant: [%v] for [%v]", s, PkgPath))
 		return runtime.NewStatusError(runtime.StatusInvalidArgument, validateVarLoc, err).SetContent(err, false)
 	}
 	return runtime.NewStatusOK()

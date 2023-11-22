@@ -10,14 +10,14 @@ import (
 )
 
 const (
-	PkgUri         = "github.com/advanced-go/example-domain/timeseries"
-	PkgPath        = "/advanced-go/example-domain/timeseries"
-	Pattern        = "/advanced-go/example-domain/timeseries/"
+	PkgPath = "github.com/advanced-go/example-domain/timeseries"
+	//PkgPath        = "/advanced-go/example-domain/timeseries"
+	//Pattern        = "/advanced-go/example-domain/timeseries/"
 	EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
 	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
-	postEntryLoc = PkgUri + "/PostEntry"
-	getEntryLoc  = PkgUri + "/GetEntry"
+	postEntryLoc = PkgPath + "/PostEntry"
+	getEntryLoc  = PkgPath + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints

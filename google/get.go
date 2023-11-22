@@ -1,7 +1,6 @@
 package google
 
 import (
-	"fmt"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
@@ -22,7 +21,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 		if err != nil {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
-		// exchange.Do() will always return a non nil *http.Response
+		// http2.Do() will always return a non nil *http.Response
 		resp, status := http2.Do(req)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
@@ -32,8 +31,8 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
-		status.ContentHeader().Set(http2.ContentType, resp.Header.Get(http2.ContentType))
-		status.ContentHeader().Set(http2.ContentLength, fmt.Sprintf("%v", len(buf)))
+		//status.ContentHeader().Set(http2.ContentType, resp.Header.Get(http2.ContentType))
+		//status.ContentHeader().Set(http2.ContentLength, fmt.Sprintf("%v", len(buf)))
 		return buf, status
 	}
 	return nil, runtime.NewStatus(http.StatusMethodNotAllowed)

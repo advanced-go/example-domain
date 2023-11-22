@@ -16,9 +16,9 @@ type pkg struct{}
 
 const (
 	ContentLocation = "Content-Location"
-	postLoc         = PkgUri + "/postEntryHandler"
-	putLoc          = PkgUri + "/putEntry"
-	deleteLoc       = PkgUri + "/deleteEntry"
+	postLoc         = PkgPath + "/postEntryHandler"
+	putLoc          = PkgPath + "/putEntry"
+	deleteLoc       = PkgPath + "/deleteEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {

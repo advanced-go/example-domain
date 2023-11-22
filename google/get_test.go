@@ -3,12 +3,12 @@ package google
 import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/runtime/runtimetest"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
 
 func Example_Get() {
-	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080"+"/"+PkgPath+"?q=test", nil)
 	resp, status := Get(req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
@@ -24,7 +24,7 @@ func Example_Get() {
 
 func Example_getHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
-	resp, status := getHandler[runtimetest.DebugError](req)
+	resp, status := getHandler[runtime.DebugError](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}

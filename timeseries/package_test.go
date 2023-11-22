@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -21,20 +20,16 @@ var entries = []EntryV1{{
 
 func Example_PkgUri() {
 	pkgUri2 := reflect.TypeOf(any(pkg{})).PkgPath()
-	pkgPath2 := runtime.PathFromUri(pkgUri2)
+	//pkgPath2 := runtime.PathFromUri(pkgUri2)
 	entryV1 := pkgUri2 + "/" + reflect.TypeOf(EntryV1{}).Name()
 	entryV2 := pkgUri2 + "/" + reflect.TypeOf(EntryV2{}).Name()
 
-	fmt.Printf("test: PkgUri         = \"%v\"\n", pkgUri2)
-	fmt.Printf("test: PkgPath        = \"%v\"\n", pkgPath2)
-	fmt.Printf("test: Pattern        = \"%v\"\n", pkgPath2+"/")
+	fmt.Printf("test: PkgPath        = \"%v\"\n", pkgUri2)
 	fmt.Printf("test: EntryV1Variant = \"%v\"\n", entryV1)
 	fmt.Printf("test: EntryV2Variant = \"%v\"\n", entryV2)
 
 	//Output:
-	//test: PkgUri         = "github.com/advanced-go/example-domain/timeseries"
-	//test: PkgPath        = "/advanced-go/example-domain/timeseries"
-	//test: Pattern        = "/advanced-go/example-domain/timeseries/"
+	//test: PkgPath        = "github.com/advanced-go/example-domain/timeseries"
 	//test: EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
 	//test: EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
 
@@ -88,7 +83,7 @@ func _Example_HttpWithProxy() {
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequestWithContext(ctx, "DELETE", "https://www.google.com/search", nil)
 	req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	status := httpHandler[runtimetest.DebugError](ctx, rec, req)
+	status := httpHandler[runtime.DebugError](ctx, rec, req)
 	fmt.Printf("test: httpHandler() -> [status:%v]\n", status)
 
 	//Output:
