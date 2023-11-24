@@ -83,7 +83,7 @@ func _Example_HttpWithProxy() {
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequestWithContext(ctx, "DELETE", "https://www.google.com/search", nil)
 	req.Header.Add(http2.ContentLocation, EntryV1Variant)
-	status := httpHandler[runtime.DebugError](ctx, rec, req)
+	status := httpHandler[runtime.TestError](ctx, rec, req)
 	fmt.Printf("test: httpHandler() -> [status:%v]\n", status)
 
 	//Output:

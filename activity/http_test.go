@@ -8,7 +8,6 @@ import (
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/runtime/runtimetest"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -73,7 +72,7 @@ func Test_httpHandlerV1(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtimetest.DebugError](ctx, w, req)
+			httpHandler[runtime.TestError](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

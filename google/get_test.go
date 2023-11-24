@@ -24,7 +24,7 @@ func Example_Get() {
 
 func Example_getHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+PkgPath+"?q=test", nil)
-	resp, status := getHandler[runtime.DebugError](req)
+	resp, status := getHandler[runtime.TestError](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}

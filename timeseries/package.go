@@ -12,8 +12,8 @@ import (
 const (
 	PkgPath        = "github.com/advanced-go/example-domain/timeseries"
 	Pattern        = "/" + PkgPath + "/"
-	EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
-	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
+	EntryV1Variant = "github.com/advanced-go/example-domain/timeseries:EntryV1"
+	EntryV2Variant = "github.com/advanced-go/example-domain/timeseries:EntryV2"
 
 	postEntryLoc = PkgPath + "/PostEntry"
 	getEntryLoc  = PkgPath + "/GetEntry"
