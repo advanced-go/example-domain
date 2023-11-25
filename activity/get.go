@@ -29,7 +29,7 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 			return t, status.AddLocation(getEntryHandlerLoc)
 		}
 	}
-	t, status = getEntry[T](uri, h.Get(ContentLocation))
+	t, status = getEntry[T](uri)
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
@@ -37,10 +37,6 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
 		return t, status2.AddLocation(getEntryFromPathLoc)
-	}
-	v1 := strings.Index(location, "entry-v1")
-	if v1 == -1 {
-		return t, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	switch ptr := any(&t).(type) {
 	case *[]Entry:
@@ -57,7 +53,7 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	}
 }
 
-func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
+func getEntry[T GetEntryConstraints](u *url.URL) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {

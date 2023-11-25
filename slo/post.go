@@ -11,10 +11,8 @@ import (
 )
 
 const (
-	ContentLocation = "Content-Location"
-	postLoc         = PkgPath + "/postEntryHandler"
-	putEntryLoc     = PkgPath + "/putEntry"
-	deleteEntryLoc  = PkgPath + "/deleteEntry"
+	postLoc     = PkgPath + "/postEntryHandler"
+	putEntryLoc = PkgPath + "/putEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
@@ -35,10 +33,8 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		//return nil, e.Handle(putEntry(r.Header.Get(ContentLocation), body), runtime.RequestId(r), postLoc)
 		return nil, putEntry(body).AddLocation(postLoc)
 	case http.MethodDelete:
-		///return nil, e.Handle(deleteEntry(r.Header.Get(ContentLocation)), runtime.RequestId(r), postLoc)
 		return nil, deleteEntry().AddLocation(postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)

@@ -11,10 +11,11 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath      = "github.com/advanced-go/example-domain/activity"
-	Pattern      = "/" + PkgPath + "/"
-	postEntryLoc = PkgPath + "/PostEntry"
-	getEntryLoc  = PkgPath + "/GetEntry"
+	ContentLocation = "Content-Location"
+	PkgPath         = "github.com/advanced-go/example-domain/activity"
+	Pattern         = "/" + PkgPath + "/"
+	postEntryLoc    = PkgPath + "/PostEntry"
+	getEntryLoc     = PkgPath + "/GetEntry"
 )
 
 // GetEntryConstraints - Get constraints
