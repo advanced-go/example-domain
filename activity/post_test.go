@@ -18,7 +18,7 @@ func Example_postEntryHandler() {
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	req, _ = http.NewRequest("PUT", "https://www.google.com", nil)
-	req.Header.Set(ContentLocation, EntryV1Variant)
+	//req.Header.Set(ContentLocation, EntryV1Variant)
 	req.Header.Set(runtime.XRequestId, "8765-4321")
 	_, status = postEntryHandler(nil, req, "invalid string type")
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
@@ -31,7 +31,7 @@ func Example_postEntryHandler() {
 
 func Example_PostEntry() {
 	access.EnableDebugLogHandler()
-	entries := []EntryV1{
+	entries := []Entry{
 		{
 			ActivityID:   "",
 			ActivityType: "trace",
@@ -54,7 +54,7 @@ func Example_PostEntry() {
 
 	h := make(http.Header)
 	h.Add(runtime.XRequestId, "123-456")
-	_, status := PostEntry[[]EntryV1](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", EntryV1Variant, entries)
+	_, status := PostEntry[[]Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
 	fmt.Printf("test: PostEntry() -> [status:%v]\n", status)
 
 	//Output:

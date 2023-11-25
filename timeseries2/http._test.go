@@ -1,4 +1,4 @@
-package activity
+package timeseries2
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -17,34 +16,20 @@ import (
 func _Example_HttpHandler() {
 	access.EnableDebugLogHandler()
 
-	addEntry([]Entry{{ActivityID: "activity-uuid",
-		ActivityType: "trace",
-		Agent:        "agent-controller",
-		AgentUri:     "https://host/agent-path",
-		Assignment:   "usa:west::test-service:0123456789",
-		Controller:   "host-controller",
-		Behavior:     "RateLimiting",
-		Description:  "Analyzing observation",
-	}},
-	)
-
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
-	resp := rec.Result()
-	buf, status := io2.ReadAll(resp.Body)
-	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
+	fmt.Printf("test: HttpHandler() -> %v", rec.Code)
 
 	//Output:
 	//test: HttpHandler() -> 404
 
 }
 
-func Test_httpHandlerV1(t *testing.T) {
-	basePath := "file://[cwd]/activitytest/resource/"
+func Test_httpHandler(t *testing.T) {
 	deleteEntries()
-	fmt.Printf("test: Start Entries -> %v\n", len(list))
+	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
 		req    string
 		resp   string
@@ -54,13 +39,13 @@ func Test_httpHandlerV1(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt"}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
-		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt"}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
+		{"put-entries", args{req: "put-req-v2.txt", resp: "put-resp-v2.txt"}},
+		{"get-entries", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt"}},
+		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
+		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
+		failures, req, resp := http2test.ReadHttp("file://[cwd]/timeseries2test/resource/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
@@ -101,7 +86,7 @@ func Test_httpHandlerV1(t *testing.T) {
 			}
 		})
 	}
-	fmt.Printf("test: End Entries -> %v\n", len(list))
+	//fmt.Printf("test: End Entries -> %v\n", len(listV2))
 }
 
 func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []http2test.Args {
@@ -115,9 +100,3 @@ func Errorf(t *testing.T, failures []http2test.Args) {
 		t.Errorf("%v got = %v want = %v", arg.Item, arg.Got, arg.Want)
 	}
 }
-
-//t.Run(tt.name, func(t *testing.T) {
-//	if got := entryHandler(tt.args.w, tt.args.r); !reflect.DeepEqual(got, tt.want) {
-//		t.Errorf("entryHandler() = %v, want %v", got, tt.want)
-//	}
-//})

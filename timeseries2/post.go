@@ -1,7 +1,8 @@
-package activity
+package timeseries2
 
 import (
 	"context"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
@@ -11,22 +12,21 @@ import (
 )
 
 const (
-	ContentLocation = "Content-Location"
-	postLoc         = PkgPath + "/postEntryHandler"
-	putEntryLoc     = PkgPath + "/putEntry"
-	deleteEntryLoc  = PkgPath + "/deleteEntry"
+	postLoc = PkgPath + "/postEntryHandler"
+	putLoc  = PkgPath + "/putEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
 	if r == nil {
-		return nil, runtime.NewStatus(http.StatusBadRequest).AddLocation(postLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
+
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
 			return nil, status2.AddLocation(postLoc)
 		}
-		location := r.Header.Get(ContentLocation)
+		location := r.Header.Get(http2.ContentLocation)
 		if strings.HasPrefix(location, "file://") {
 			// Need to deserialize return any
 			return nil, runtime.NewStatusOK()
@@ -44,7 +44,7 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 
 func putEntry(body any) runtime.Status {
 	if body == nil {
-		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putLoc)
 	}
 	var entries []Entry
 
@@ -54,22 +54,22 @@ func putEntry(body any) runtime.Status {
 	case []byte:
 		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return status.AddLocation(putLoc)
 		}
 	case io.ReadCloser:
 		buf, status := io2.ReadAll(ptr)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return status.AddLocation(putLoc)
 		}
 		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return status.AddLocation(putLoc)
 		}
 	default:
-		return runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
+		return runtime.NewStatusError(runtime.StatusInvalidContent, putLoc, runtime.NewInvalidBodyTypeError(body))
 	}
 	if len(entries) == 0 {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	addEntry(entries)
 	return runtime.NewStatusOK()

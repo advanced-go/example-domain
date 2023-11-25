@@ -1,4 +1,4 @@
-package activity
+package timeseries2
 
 import (
 	"github.com/advanced-go/core/access"
@@ -6,15 +6,17 @@ import (
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath      = "github.com/advanced-go/example-domain/activity"
-	Pattern      = "/" + PkgPath + "/"
-	postEntryLoc = PkgPath + "/PostEntry"
-	getEntryLoc  = PkgPath + "/GetEntry"
+	PkgPath         = "github.com/advanced-go/example-domain/timeseries2"
+	Pattern         = "/" + PkgPath + "/"
+	postEntryLoc    = PkgPath + "/PostEntry"
+	getEntryLoc     = PkgPath + "/GetEntry"
+	ContentLocation = "Content-Location"
 )
 
 // GetEntryConstraints - Get constraints
@@ -50,13 +52,12 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	var r *http.Request
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (t any, status runtime.Status) {
 	var e runtime.LogError
+	var r *http.Request
 
-	r, status = http2.NewRequest(h, method, uri, "", nil)
+	r, status = http2.NewRequest(h, method, uri, variant, nil)
 	if !status.OK() {
-		var e runtime.LogError
 		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status
 	}
@@ -69,7 +70,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T
 	return
 }
 
-// HttpHandler - Http endpoint
+// HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	http2.AddRequestId(r)
 	func() (status runtime.Status) {
@@ -79,14 +80,20 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 type Entry struct {
-	//CreatedTS    time.Time
-	ActivityID   string // Some form of UUID
-	ActivityType string // trace|action
-	Agent        string
-	AgentUri     string // {host}:{agent}
+	CreatedTS time.Time
+	Traffic   string
+	Start     time.Time
+	Duration  int
 
-	Assignment  string
-	Controller  string
-	Behavior    string
-	Description string
+	RequestId string
+
+	// Request attributes
+	Url            string // {scheme}://{host}/{path} No query
+	Protocol       string
+	Host           string
+	Path           string
+	Method         string
+	StatusCode     int32
+	ThresholdFlags string
+	Threshold      int
 }

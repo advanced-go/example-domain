@@ -1,4 +1,4 @@
-package activity
+package timeseries2
 
 import (
 	"context"
@@ -9,7 +9,8 @@ import (
 )
 
 const (
-	httpLoc = PkgPath + "/httpHandler"
+	httpLoc        = PkgPath + "/httpHandler"
+	validateVarLoc = PkgPath + "/validateVariant"
 )
 
 func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
@@ -42,10 +43,22 @@ func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWri
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 		}
-		http2.WriteResponse[E](w, nil, status, nil)
+		http2.WriteResponse[E](w, nil, status.SetRequestId(r), nil)
 		return status
 	default:
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewStatus(http.StatusMethodNotAllowed)
 }
+
+//if buf == nil {
+//	nc := runtime.NewStatus(runtime.StatusInvalidContent)
+//	http2.WriteResponse[E](w, nil, nc, nil)
+//	return nc
+//}
+//status = json2.Unmarshal(buf, &entries)
+//if !status.OK() {
+//	e.Handle(status, requestId, httpLoc)
+//} else {
+//  addEntry(entries)
+//}

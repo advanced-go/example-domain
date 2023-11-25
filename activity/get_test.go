@@ -20,7 +20,7 @@ func getProxy(h http.Header, uri *url.URL) (any, runtime.Status) {
 	if err != nil {
 		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, "getProxy", err)
 	}
-	var entries []EntryV1
+	var entries []Entry
 	status := json2.Unmarshal(buf, &entries)
 	return entries, status
 }
@@ -31,7 +31,7 @@ func _Example_getEntryHandler() {
 	h.Add(ContentLocation, "file://[cwd]/activitytest/resource/v1/activity-entry-v1.json")
 	u, _ := url.Parse("http://advanced-go/example-domain/activity/entry")
 
-	entries, status := getEntryHandler[[]EntryV1](ctx, h, u)
+	entries, status := getEntryHandler[[]Entry](ctx, h, u)
 	fmt.Printf("test: getEntryHandler() -> [entries:%v] [status:%v]\n", entries, status)
 
 	//Output:
@@ -45,7 +45,7 @@ func Example_getEntryFromPath() {
 	buf, status := getEntryFromPath[[]byte](location)
 	fmt.Printf("test: getEntryFromPath() -> [buf:%v] [status:%v]\n", len(buf), status)
 
-	entries, status2 := getEntryFromPath[[]EntryV1](location)
+	entries, status2 := getEntryFromPath[[]Entry](location)
 	fmt.Printf("test: getEntryFromPath() -> [entries:%v] [status:%v]\n", len(entries), status2)
 
 	//Output:

@@ -1,5 +1,0 @@
-GET /example-domain/activity/entry?type=trace HTTP/1.1
-Host: example-domain.com
-Content-Location: file://[cwd]/activitytest/resource/v1/activity-type-entry-v1.json
-
-

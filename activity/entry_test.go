@@ -6,7 +6,7 @@ import (
 
 func Example_addEntry() {
 
-	addEntry([]EntryV1{{ActivityID: "activity-uuid",
+	addEntry([]Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -27,7 +27,7 @@ func Example_addEntry() {
 
 func Example_getEntriesByType() {
 
-	addEntry([]EntryV1{{ActivityID: "urn:uuid:1",
+	addEntry([]Entry{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -38,7 +38,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]EntryV1{{ActivityID: "urn:uuid:2",
+	addEntry([]Entry{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -49,7 +49,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]EntryV1{{ActivityID: "urn:uuid:3",
+	addEntry([]Entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-service:0123456789",
@@ -94,7 +94,7 @@ func Example_getEntriesByType() {
 }
 
 func Example_Log() {
-	e := EntryV1{
+	e := Entry{
 		//CreatedTS:    time.Time{},
 		ActivityID:   "",
 		ActivityType: "trace",

@@ -1,4 +1,4 @@
-package activity
+package timeseries2
 
 import (
 	"context"
@@ -29,7 +29,7 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 			return t, status.AddLocation(getEntryHandlerLoc)
 		}
 	}
-	t, status = getEntry[T](uri, h.Get(ContentLocation))
+	t, status = getEntry[T](uri)
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
@@ -37,10 +37,6 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
 		return t, status2.AddLocation(getEntryFromPathLoc)
-	}
-	v1 := strings.Index(location, "entry-v1")
-	if v1 == -1 {
-		return t, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	switch ptr := any(&t).(type) {
 	case *[]Entry:
@@ -55,9 +51,10 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 	default:
 		return t, runtime.NewStatusError(runtime.StatusInvalidContent, getEntryFromPathLoc, errors.New("invalid type"))
 	}
+
 }
 
-func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Status) {
+func getEntry[T GetEntryConstraints](u *url.URL) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
@@ -69,6 +66,21 @@ func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 		*ptr = entries
 		return t, runtime.NewStatusOK()
 	case *[]byte:
+		/*variant = verifyVariant(u, variant)
+		if variant == EntryV1Variant {
+			entries := queryEntriesV1(u)
+			if len(entries) == 0 {
+				return nil, runtime.NewStatus(http.StatusNotFound)
+			}
+			buf, status := json2.Marshal(entries)
+			if !status.OK() {
+				return nil, status.AddLocation(getEntryLoc2)
+			}
+			*ptr = buf
+			return t, runtime.NewStatusOK()
+		} else {
+
+		*/
 		entries := queryEntries(u)
 		if len(entries) == 0 {
 			return nil, runtime.NewStatus(http.StatusNotFound)
@@ -79,6 +91,7 @@ func getEntry[T GetEntryConstraints](u *url.URL, variant string) (T, runtime.Sta
 		}
 		*ptr = buf
 		return t, runtime.NewStatusOK()
+		//}
 	default:
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(getEntryLoc2)
 	}

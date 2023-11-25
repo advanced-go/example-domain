@@ -9,14 +9,14 @@ const (
 	Type = "type"
 )
 
-var list []EntryV1
+var list []Entry
 
-func getEntries() []EntryV1 {
+func getEntries() []Entry {
 	return list
 }
 
-func getEntriesByType(act string) []EntryV1 {
-	var l []EntryV1
+func getEntriesByType(act string) []Entry {
+	var l []Entry
 
 	for _, v := range list {
 		if act == "" {
@@ -30,7 +30,7 @@ func getEntriesByType(act string) []EntryV1 {
 	return l
 }
 
-func addEntry(e []EntryV1) {
+func addEntry(e []Entry) {
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
@@ -38,7 +38,7 @@ func addEntry(e []EntryV1) {
 	}
 }
 
-func addItems(e []EntryV1) {
+func addItems(e []Entry) {
 	for _, item := range e {
 		//	item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
@@ -46,7 +46,7 @@ func addItems(e []EntryV1) {
 	}
 }
 
-func addEntryTimes(e []EntryV1) {
+func addEntryTimes(e []Entry) {
 	for _, item := range e {
 		list = append(list, item)
 		//fmt.Printf("%v\n", item)
@@ -54,11 +54,11 @@ func addEntryTimes(e []EntryV1) {
 }
 
 func deleteEntries() {
-	list = []EntryV1{}
+	list = []Entry{}
 }
 
-func queryEntries(u *url.URL) []EntryV1 {
-	var result []EntryV1
+func queryEntries(u *url.URL) []Entry {
+	var result []Entry
 
 	name := ""
 	if u.Query() != nil {
@@ -72,7 +72,7 @@ func queryEntries(u *url.URL) []EntryV1 {
 	return result
 }
 
-func logActivity(e EntryV1) {
+func logActivity(e Entry) {
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)
 
