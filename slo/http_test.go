@@ -25,7 +25,7 @@ func Test_httpHandlerV1(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp("file://[cwd]/slotest/resource/v1/", tt.args.req, tt.args.resp)
+		failures, req, resp := http2test.ReadHttp("file://[cwd]/slotest/resource/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
@@ -49,9 +49,9 @@ func Test_httpHandlerV1(t *testing.T) {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 				// test content size and unmarshal types
-				var gotT, wantT []EntryV1
+				var gotT, wantT []Entry
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]EntryV1](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = http2test.Content[[]Entry](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)

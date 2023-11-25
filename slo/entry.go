@@ -9,22 +9,22 @@ const (
 	ControllerName = "ctrl"
 )
 
-var list []EntryV1
+var list []Entry
 
-func getEntries() []EntryV1 {
+func getEntries() []Entry {
 	return list
 }
 
-func getEntriesByController(ctrl string) []EntryV1 {
+func getEntriesByController(ctrl string) []Entry {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return []EntryV1{list[i]}
+			return []Entry{list[i]}
 		}
 	}
 	return nil
 }
 
-func patchEntry(e EntryV1) {
+func patchEntry(e Entry) {
 	for i, _ := range list {
 		if list[i].Controller == e.Controller {
 			list[i] = e
@@ -33,7 +33,7 @@ func patchEntry(e EntryV1) {
 	}
 }
 
-func addEntry(e []EntryV1) {
+func addEntry(e []Entry) {
 	for _, item := range e {
 		if len(item.Id) == 0 {
 			s, _ := uuid.NewUUID()
@@ -45,10 +45,10 @@ func addEntry(e []EntryV1) {
 }
 
 func deleteEntries() {
-	list = []EntryV1{}
+	list = []Entry{}
 }
 
-func queryEntries(u *url.URL) []EntryV1 {
+func queryEntries(u *url.URL) []Entry {
 	name := ""
 	if u.Query() != nil {
 		name = u.Query().Get(ControllerName)

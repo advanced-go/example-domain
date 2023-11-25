@@ -22,7 +22,7 @@ const (
 
 // GetEntryConstraints - Get constraints
 type GetEntryConstraints interface {
-	[]EntryV1 | []byte
+	[]Entry | []byte
 }
 
 // GetEntry - generic get function with context and uri for resource selection and filtering
@@ -49,7 +49,7 @@ func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status run
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
-	[]EntryV1 | []byte | runtime.Nillable
+	[]Entry | []byte | runtime.Nillable
 }
 
 // PostEntry - exchange function
@@ -80,7 +80,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 }
 
-type EntryV1 struct {
+type Entry struct {
 	CreatedTS time.Time
 	Id        string
 	// What does this apply to
