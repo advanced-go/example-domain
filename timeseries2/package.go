@@ -6,26 +6,24 @@ import (
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath         = "github.com/advanced-go/example-domain/timeseries2"
-	Pattern         = "/" + PkgPath + "/"
+	PkgPath = "github.com/advanced-go/example-domain/timeseries2"
+	Pattern = "/" + PkgPath + "/"
+
+	entryResource   = "entry"
 	postEntryLoc    = PkgPath + "/PostEntry"
 	getEntryLoc     = PkgPath + "/GetEntry"
 	ContentLocation = "Content-Location"
 )
 
-// GetEntryConstraints - Get constraints
-type GetEntryConstraints interface {
-	[]Entry | []byte
-}
-
-// GetEntry - generic get function with context and uri for resource selection and filtering
-func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status runtime.Status) {
+// GetEntry - get entries
+func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 	var e runtime.LogError
 
 	u, err := url.Parse(uri)
@@ -39,7 +37,7 @@ func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status run
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(h, "GET", uri, access.NewStatusCodeClosure(&status))()
-	t, status = getEntryHandler[T](nil, h, u)
+	entries, status = getEntryHandler[[]Entry](nil, h, u)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryLoc)
 	}
@@ -72,11 +70,21 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
+	_, rsc, ok := http2.UprootUrn(r.URL.Path)
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	http2.AddRequestId(r)
-	func() (status runtime.Status) {
-		defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
-		return httpHandler[runtime.LogError](nil, w, r)
-	}()
+	switch strings.ToLower(rsc) {
+	case entryResource:
+		func() (status runtime.Status) {
+			defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
+			return httpEntryHandler[runtime.LogError](nil, w, r)
+		}()
+	default:
+		w.WriteHeader(http.StatusNotFound)
+	}
 }
 
 type Entry struct {

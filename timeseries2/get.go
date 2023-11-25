@@ -17,7 +17,11 @@ const (
 	getEntryFromPathLoc = PkgPath + "/getEntryFromPath"
 )
 
-func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
+type getEntryConstraints interface {
+	[]Entry | []byte
+}
+
+func getEntryHandler[T getEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
@@ -33,7 +37,7 @@ func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, 
 	return t, status.AddLocation(getEntryHandlerLoc)
 }
 
-func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runtime.Status) {
+func getEntryFromPath[T getEntryConstraints](location string) (t T, status runtime.Status) {
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {
 		return t, status2.AddLocation(getEntryFromPathLoc)
@@ -54,7 +58,7 @@ func getEntryFromPath[T GetEntryConstraints](location string) (t T, status runti
 
 }
 
-func getEntry[T GetEntryConstraints](u *url.URL) (T, runtime.Status) {
+func getEntry[T getEntryConstraints](u *url.URL) (T, runtime.Status) {
 	var t T
 
 	switch ptr := any(&t).(type) {
