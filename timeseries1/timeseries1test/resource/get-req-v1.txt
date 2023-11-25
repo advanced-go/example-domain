@@ -1,0 +1,4 @@
+GET /example-domain/timeseries/entry HTTP/1.1
+Host: example-domain.com
+Content-Location: file://[cwd]/timeseries1test/resource/timeseries-entry-v1.json
+
