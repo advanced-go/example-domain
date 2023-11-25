@@ -37,7 +37,7 @@ func Test_httpHandlerV1(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtime.TestError](ctx, w, req)
+			httpEntryHandler[runtime.TestError](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	httpLoc = PkgPath + "/httpHandler"
+	httpLoc = PkgPath + "/httpEntryHandler"
 )
 
-func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
+func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
