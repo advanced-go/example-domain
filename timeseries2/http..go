@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	httpLoc        = PkgPath + "/httpHandler"
-	validateVarLoc = PkgPath + "/validateVariant"
+	httpLoc = PkgPath + "/httpHandler"
 )
 
 func httpHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
