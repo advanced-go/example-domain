@@ -78,8 +78,12 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
+		u := r.URL.String()
+		if len(r.URL.Host) == 0 {
+			u = "http://" + r.Host + r.URL.Path
+		}
 		func() (status runtime.Status) {
-			defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
+			defer access.LogDeferred(r.Header, r.Method, u, access.NewStatusCodeClosure(&status))()
 			return httpEntryHandler[runtime.LogError](nil, w, r)
 		}()
 	default:
