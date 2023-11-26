@@ -1,7 +1,6 @@
 package activity
 
 import (
-	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
@@ -76,12 +75,15 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Printf("url -> [scheme:%v] [host:%v] [path:%v] [req-host:%v] [req-uri:%v]\n", r.URL.Scheme, r.URL.Host, r.URL.Path, r.Host, r.RequestURI)
-	fmt.Printf("rsc -> %v\n", rsc)
+	//fmt.Printf("url -> [scheme:%v] [host:%v] [path:%v] [req-host:%v] [req-uri:%v]\n", r.URL.Scheme, r.URL.Host, r.URL.Path, r.Host, r.RequestURI)
+	//fmt.Printf("rsc -> %v\n", rsc)
 	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
-		u := "http://" + r.Host + r.URL.Path
+		u := r.URL.String()
+		if len(r.URL.Host) == 0 {
+			u = "http://" + r.Host + r.URL.Path
+		}
 		func() (status runtime.Status) {
 			defer access.LogDeferred(r.Header, r.Method, u, access.NewStatusCodeClosure(&status))()
 			return httpEntryHandler[runtime.LogError](nil, w, r)
