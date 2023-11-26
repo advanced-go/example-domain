@@ -88,7 +88,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 			defer access.LogDeferred(r.Header, r.Method, u, access.NewStatusCodeClosure(&status))()
 			return httpEntryHandler[runtime.LogError](nil, w, r)
 		}()
-		return
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		return
