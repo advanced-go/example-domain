@@ -13,7 +13,7 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/timeseries2"
+	PkgPath = "github.com/advanced-go/example-domain/timeseries1"
 	Pattern = "/" + PkgPath + "/"
 
 	entryResource   = "entry"
