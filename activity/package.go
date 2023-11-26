@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
@@ -75,6 +76,8 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	fmt.Printf("url -> [scheme:%v] [host:%v] [path:%v] [req-host:%v]\n", r.URL.Scheme, r.URL.Host, r.URL.Path, r.Host)
+	fmt.Printf("rsc -> %v\n", rsc)
 	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
