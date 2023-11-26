@@ -18,7 +18,7 @@ func Example_PkgUri() {
 }
 
 func Example_HttpHandler() {
-	access.EnableDebugLogHandler()
+	access.EnableTestLogHandler()
 	uri := "http://localhost:8080/github.com/advanced-go/example-domain/activity:entry"
 	//uri := "/github.com/advanced-go/example-domain/activity:entry"
 

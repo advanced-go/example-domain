@@ -15,7 +15,7 @@ import (
 )
 
 func _Example_HttpHandler() {
-	access.EnableDebugLogHandler()
+	access.EnableTestLogHandler()
 
 	addEntry([]Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",

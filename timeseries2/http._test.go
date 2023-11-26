@@ -14,7 +14,7 @@ import (
 )
 
 func _Example_HttpHandler() {
-	access.EnableDebugLogHandler()
+	access.EnableTestLogHandler()
 
 	rec := http2.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)

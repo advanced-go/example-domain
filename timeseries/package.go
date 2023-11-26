@@ -38,7 +38,7 @@ func GetEntry[T GetEntryConstraints](h http.Header, uri string) (t T, status run
 		h = make(http.Header)
 	}
 	http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(h, "GET", uri, access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, uri), -1, "", access.NewStatusCodeClosure(&status))()
 	t, status = getEntryHandler[T](nil, h, u)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryLoc)
@@ -62,7 +62,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	defer access.LogDeferred(h, method, uri, access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, uri), -1, "", access.NewStatusCodeClosure(&status))()
 	t, status = postEntryHandler(nil, r, body)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), postEntryLoc)
@@ -74,7 +74,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	http2.AddRequestId(r)
 	func() (status runtime.Status) {
-		defer access.LogDeferred(r.Header, r.Method, r.URL.String(), access.NewStatusCodeClosure(&status))()
+		defer access.LogDeferred(access.InternalTraffic, r, -1, "", access.NewStatusCodeClosure(&status))()
 		return httpHandler[runtime.LogError](nil, w, r)
 	}()
 }
