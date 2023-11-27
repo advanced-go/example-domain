@@ -12,9 +12,9 @@ import (
 )
 
 const (
-	getEntryHandlerLoc  = PkgPath + "/getEntryHandler"
-	getEntryLoc2        = PkgPath + "/getEntry"
-	getEntryFromPathLoc = PkgPath + "/getEntryFromPath"
+	getEntryHandlerLoc  = PkgPath + ":getEntryHandler"
+	getEntryLoc2        = PkgPath + ":getEntry"
+	getEntryFromPathLoc = PkgPath + ":getEntryFromPath"
 )
 
 // getEntryConstraints - Get constraints

@@ -15,7 +15,7 @@ const (
 )
 
 const (
-	searchLocation     = PkgPath + "/searchHandler"
+	searchLocation     = PkgPath + ":searchHandler"
 	googleQueryArgName = "q"
 
 	// As a rule do not create/use embedded URI's, use endpoints with a sidecar like Envoy for endpoint -> URI resolution.

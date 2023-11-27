@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	postLoc     = PkgPath + "/postEntryHandler"
-	putEntryLoc = PkgPath + "/putEntry"
+	postLoc     = PkgPath + ":postEntryHandler"
+	putEntryLoc = PkgPath + ":putEntry"
 )
 
 func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {

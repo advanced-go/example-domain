@@ -19,8 +19,8 @@ const (
 	Pattern = "/" + PkgPath + "/"
 
 	entryResource   = "entry"
-	postEntryLoc    = PkgPath + "/PostEntry"
-	getEntryLoc     = PkgPath + "/GetEntry"
+	postEntryLoc    = PkgPath + ":PostEntry"
+	getEntryLoc     = PkgPath + ":GetEntry"
 	ContentLocation = "Content-Location"
 )
 

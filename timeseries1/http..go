@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	httpLoc = PkgPath + "/httpEntryHandler"
+	httpLoc = PkgPath + ":httpEntryHandler"
 )
 
 func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
