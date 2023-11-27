@@ -1,6 +1,8 @@
 package timeseries1
 
 import (
+	"errors"
+	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
@@ -72,7 +74,9 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant strin
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
+		status := runtime.NewStatus(http.StatusBadRequest)
+		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
+		http2.WriteResponse[runtime.LogError](w, nil, status, nil)
 		return
 	}
 	http2.AddRequestId(r)
@@ -83,7 +87,9 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 			return httpEntryHandler[runtime.LogError](nil, w, r)
 		}()
 	default:
-		w.WriteHeader(http.StatusNotFound)
+		status := runtime.NewStatus(http.StatusNotFound)
+		status.SetContent(errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
+		http2.WriteResponse[runtime.LogError](w, nil, status, nil)
 	}
 }
 

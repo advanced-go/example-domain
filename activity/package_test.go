@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/io2"
 	"net/http"
 	"reflect"
 )
@@ -19,15 +20,39 @@ func Example_PkgUri() {
 
 func Example_HttpHandler() {
 	access.EnableTestLogHandler()
-	uri := "http://localhost:8080/github.com/advanced-go/example-domain/activity:entry"
-	//uri := "/github.com/advanced-go/example-domain/activity:entry"
 
+	// Bad Request
+	uri := "http://localhost:8080/github.com/advanced-go/example-domain/activity/entry"
 	r, _ := http.NewRequest("GET", uri, nil)
 	w := http2.NewRecorder()
 	HttpHandler(w, r)
+	buf, status := io2.ReadAll(w.Result().Body)
+	if !status.OK() {
+		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
+	}
+	fmt.Printf("test: HttpHandler() -> [status:%v] [content:%v]\n", w.Result().StatusCode, string(buf))
 
-	fmt.Printf("test: HttpHandler() -> %v", w.Result())
+	// Resource Not Found
+	uri = "http://localhost:8080/github.com/advanced-go/example-domain/activity:invalid"
+	r, _ = http.NewRequest("GET", uri, nil)
+	w = http2.NewRecorder()
+	HttpHandler(w, r)
+	buf, status = io2.ReadAll(w.Result().Body)
+	if !status.OK() {
+		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
+	}
+	fmt.Printf("test: HttpHandler() -> [status:%v] [content:%v]\n", w.Result().StatusCode, string(buf))
+
+	// Content Not Found
+	uri = "http://localhost:8080/github.com/advanced-go/example-domain/activity:entry"
+	r, _ = http.NewRequest("GET", uri, nil)
+	w = http2.NewRecorder()
+	HttpHandler(w, r)
+	fmt.Printf("test: HttpHandler() -> [status:%v]\n", w.Result().StatusCode)
 
 	//Output:
+	//test: HttpHandler() -> [status:400] [content:error invalid path, not a valid URN: /github.com/advanced-go/example-domain/activity/entry]
+	//test: HttpHandler() -> [status:404] [content:error invalid URI, resource was not found: invalid]
+	//test: HttpHandler() -> [status:404]
 
 }
