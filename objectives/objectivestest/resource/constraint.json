@@ -1,7 +1,0 @@
-[
-  {
-    "Controller": "host",
-    "Threshold": "99.9/800ms",
-    "Codes": "500,504"
-  }
-]
