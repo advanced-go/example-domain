@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-type httpEntryHandlerFn func(w http.ResponseWriter, r *http.Request) runtime.Status
-
 const (
 	httpLoc        = PkgPath + "/httpHandler"
 	validateVarLoc = PkgPath + "/validateVariant"
