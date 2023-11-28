@@ -18,8 +18,7 @@
 ## timeseriesvar
 [Timeseriesvar][timeseriesvarpkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
 
-## timeseries2
-[Timeseries2][timeseries2pkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+
 
 [actionpkg]: <https://pkg.go.dev/github.com/advanced-go/example-domain/action>
 [activitypkg]: <https://pkg.go.dev/github.com/advanced-go/example-domain/activity>
