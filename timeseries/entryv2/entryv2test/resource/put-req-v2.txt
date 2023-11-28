@@ -1,0 +1,34 @@
+PUT /example-domain/timeseries/entry HTTP/1.1
+Host: access-log.com
+Content-Type: application/json
+Content-Length: 1
+Content-Location: file://
+
+[
+  {
+    "Traffic":     "ingress",
+    "Duration":    800,
+    "RequestId":   "request-id-1",
+    "Url":         "https://access-log.com/example-domain/timeseries/entry",
+    "Protocol":    "http",
+    "Host":        "access-log.com",
+    "Path":        "/example-domain/timeseries/entry",
+    "Method":      "GET",
+    "StatusCode":  200,
+    "StatusFlags": "",
+    "Threshold":     50
+   },
+  {
+    "Traffic":     "egress",
+    "Duration":    1000,
+    "RequestId":   "request-id-2",
+    "Url":         "https://access-log.com/example-domain/timeseries/entry",
+    "Protocol":    "http",
+    "Host":        "access-log.com",
+    "Path":        "/example-domain/timeseries/entry",
+    "Method":      "PUT",
+    "StatusCode":  202,
+    "StatusFlags": "",
+    "Threshold":     60
+  }
+]
