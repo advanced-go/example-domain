@@ -1,4 +1,4 @@
-package timeseries
+package timeseriesvar
 
 import (
 	"fmt"
@@ -29,9 +29,9 @@ func Example_PkgUri() {
 	fmt.Printf("test: EntryV2Variant = \"%v\"\n", entryV2)
 
 	//Output:
-	//test: PkgPath        = "github.com/advanced-go/example-domain/timeseries"
-	//test: EntryV1Variant = "github.com/advanced-go/example-domain/timeseries/EntryV1"
-	//test: EntryV2Variant = "github.com/advanced-go/example-domain/timeseries/EntryV2"
+	//test: PkgPath        = "github.com/advanced-go/example-domain/timeseriesvar"
+	//test: EntryV1Variant = "github.com/advanced-go/example-domain/timeseriesvar/EntryV1"
+	//test: EntryV2Variant = "github.com/advanced-go/example-domain/timeseriesvar/EntryV2"
 
 }
 

@@ -1,4 +1,4 @@
-package timeseries
+package timeseriesvar
 
 import (
 	"fmt"
@@ -32,11 +32,11 @@ func Example_verifyVariant() {
 	fmt.Printf("test: verifyVariant(%v) -> %v\n", uri, v)
 
 	//Output:
-	//test: verifyVariant(https://www/google/com) -> github.com/advanced-go/example-domain/timeseries/EntryV1
-	//test: verifyVariant(https://www/google/com?q=golang) -> github.com/advanced-go/example-domain/timeseries/EntryV1
-	//test: verifyVariant(https://www/google/com?v=3) -> github.com/advanced-go/example-domain/timeseries/EntryV1
-	//test: verifyVariant(https://www/google/com?v=1) -> github.com/advanced-go/example-domain/timeseries/EntryV1
-	//test: verifyVariant(https://www/google/com?v=2) -> github.com/advanced-go/example-domain/timeseries/EntryV2
+	//test: verifyVariant(https://www/google/com) -> github.com/advanced-go/example-domain/timeseriesvar/EntryV1
+	//test: verifyVariant(https://www/google/com?q=golang) -> github.com/advanced-go/example-domain/timeseriesvar/EntryV1
+	//test: verifyVariant(https://www/google/com?v=3) -> github.com/advanced-go/example-domain/timeseriesvar/EntryV1
+	//test: verifyVariant(https://www/google/com?v=1) -> github.com/advanced-go/example-domain/timeseriesvar/EntryV1
+	//test: verifyVariant(https://www/google/com?v=2) -> github.com/advanced-go/example-domain/timeseriesvar/EntryV2
 
 }
 

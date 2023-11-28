@@ -1,4 +1,4 @@
-package timeseries
+package timeseriesvar
 
 import (
 	"net/url"
