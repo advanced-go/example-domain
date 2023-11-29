@@ -63,7 +63,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 			return status
 		}
 		httpx.WriteResponse[E](w, buf, status, []httpx.Attr{{httpx.ContentType, resp.Header.Get(httpx.ContentType)}})
-		return runtime.NewStatusOK()
+		return runtime.StatusOK()
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	return runtime.NewHttpStatus(http.StatusMethodNotAllowed)

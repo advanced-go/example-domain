@@ -27,7 +27,7 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 		location := r.Header.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
 			// Need to deserialize return any
-			return nil, runtime.NewStatusOK()
+			return nil, runtime.StatusOK()
 		}
 	}
 	switch strings.ToUpper(r.Method) {
@@ -70,10 +70,10 @@ func putEntry(body any) runtime.Status {
 		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
 	addEntry(entries)
-	return runtime.NewStatusOK()
+	return runtime.StatusOK()
 }
 
 func deleteEntry() runtime.Status {
 	deleteEntries()
-	return runtime.NewStatusOK()
+	return runtime.StatusOK()
 }

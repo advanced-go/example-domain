@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-func GetAction[E runtime.ErrorHandler](ctx context.Context, url *url.URL) ([]byte, *runtime.Status) {
-	return nil, runtime.NewStatusOK()
+func GetAction[E runtime.ErrorHandler](ctx context.Context, url *url.URL) ([]byte, runtime.Status) {
+	return nil, runtime.StatusOK()
 }
 
 type Entry struct {

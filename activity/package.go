@@ -38,7 +38,7 @@ func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, uri), -1, "", access.NewStatusCodeClosure(&status))()
-	entries, status = getEntryHandler[[]Entry](nil, h, u)
+	entries, status = getEntryHandler(nil, h, u)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryLoc)
 	}

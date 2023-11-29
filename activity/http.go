@@ -20,7 +20,7 @@ func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.Respon
 	var e E
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntryHandler[[]byte](ctx, r.Header, r.URL)
+		buf, status := getEntryHandler(ctx, r.Header, r.URL)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
