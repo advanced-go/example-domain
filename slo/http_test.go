@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func Test_httpHandlerV1(t *testing.T) {
+func Test_httpHandler(t *testing.T) {
 	type args struct {
 		req    string
 		resp   string

@@ -72,10 +72,10 @@ func put(body any) runtime.Status {
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	addEntry(entries)
-	return runtime.NewStatusOK()
+	return runtime.StatusOK()
 }
 
 func delete() runtime.Status {
 	deleteEntries()
-	return runtime.NewStatusOK()
+	return runtime.StatusOK()
 }

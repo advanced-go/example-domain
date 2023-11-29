@@ -31,7 +31,7 @@ func getHandler(ctx context.Context, h http.Header, uri *url.URL) (t []Entry, st
 	if len(t) == 0 {
 		return nil, runtime.NewStatus(http.StatusNotFound)
 	}
-	return t, runtime.NewStatusOK()
+	return t, runtime.StatusOK()
 }
 
 func getFromPath(location string) (t []Entry, status runtime.Status) {
@@ -43,5 +43,5 @@ func getFromPath(location string) (t []Entry, status runtime.Status) {
 	if !status.OK() {
 		return t, status.AddLocation(getFromPathLoc)
 	}
-	return t, runtime.NewStatusOK()
+	return t, runtime.StatusOK()
 }
