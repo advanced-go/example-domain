@@ -6,9 +6,9 @@ import (
 )
 
 type Entry struct {
-	CreatedTS time.Time
-	Traffic   string
-	Start     time.Time
+	CreatedTS time.Time `json:"created-ts"`
+	Traffic   string    `json:"traffic"`
+	Start     time.Time `json:"start-time"`
 	Duration  int
 
 	RequestId string
