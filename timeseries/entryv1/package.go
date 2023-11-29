@@ -31,7 +31,7 @@ func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 		h = make(http.Header)
 	}
 	http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.IngressTraffic, access.NewRequest(h, http.MethodGet, uri), -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, uri), -1, "", access.NewStatusCodeClosure(&status))()
 	entries, status = getHandler(nil, h, u)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getLoc)
