@@ -19,12 +19,9 @@ const (
 
 // Get - get entries
 func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	var e runtime.LogError
-
 	u, err := url.Parse(uri)
 	if err != nil {
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getLoc, err)
-		e.Handle(status, runtime.RequestId(h), "")
 		return
 	}
 	if h == nil {
@@ -32,11 +29,7 @@ func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
-	entries, status = getHandler(nil, h, u)
-	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h), getLoc)
-	}
-	return
+	return getHandler[runtime.LogError](nil, h, u)
 }
 
 // PostConstraints - Post constraints
@@ -46,21 +39,15 @@ type PostConstraints interface {
 
 // Post - exchange function
 func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	var e runtime.LogError
 	var r *http.Request
 
-	r, status = http2.NewRequest(h, method, uri, "", nil)
+	r, status = http2.NewRequest(h, method, uri, nil)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h), postLoc)
 		return nil, status
 	}
 	http2.AddRequestId(r)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), -1, "", access.NewStatusCodeClosure(&status))()
-	t, status = postHandler(nil, r, body)
-	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h), postLoc)
-	}
-	return
+	return postHandler[runtime.LogError](nil, r, body)
 }
 
 // HttpHandler - http endpoint

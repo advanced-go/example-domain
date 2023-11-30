@@ -15,16 +15,20 @@ const (
 	getFromPathLoc = PkgPath + ":getFromPath"
 )
 
-func getHandler(ctx context.Context, h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
+func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
+	var e E
+
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return t, status2.AddLocation(getHandlerLoc)
+			e.Handle(status2, runtime.RequestId(h), getHandlerLoc)
+			return t, status2
 		}
 		location := h.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
 			t, status = getFromPath(location)
-			return t, status.AddLocation(getHandlerLoc)
+			e.Handle(status2, runtime.RequestId(h), getHandlerLoc)
+			return t, status
 		}
 	}
 	t = queryEntries(uri)
