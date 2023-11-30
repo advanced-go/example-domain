@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	getEntryLoc2        = PkgPath + ":getEntry"
 	getEntryFromPathLoc = PkgPath + ":getEntryFromPath"
 	getEntryHandlerLoc  = PkgPath + ":getEntryHandler"
 )
