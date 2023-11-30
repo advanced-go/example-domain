@@ -11,18 +11,21 @@ import (
 )
 
 const (
-	postLoc     = PkgPath + ":postEntryHandler"
-	putEntryLoc = PkgPath + ":putEntry"
+	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
+	putEntryLoc         = PkgPath + ":putEntry"
 )
 
-func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+	var e E
+
 	if r == nil {
-		return nil, runtime.NewStatus(http.StatusBadRequest).AddLocation(postLoc)
+		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
-			return nil, status2.AddLocation(postLoc)
+			e.Handle(status2, runtime.RequestId(r), postEntryHandlerLoc)
+			return nil, status2 //.AddLocation(postLoc)
 		}
 		location := r.Header.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
@@ -32,9 +35,17 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		return nil, putEntry(body).AddLocation(postLoc)
+		status := putEntry(body) //.AddLocation(postLoc)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+		}
+		return nil, status
 	case http.MethodDelete:
-		return nil, deleteEntry().AddLocation(postLoc)
+		status := deleteEntry() //.AddLocation(postLoc)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+		}
+		return nil, status
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}

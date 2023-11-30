@@ -56,7 +56,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T
 	var e runtime.LogError
 	var r *http.Request
 
-	r, status = http2.NewRequest(h, method, uri, "", nil)
+	r, status = http2.NewRequest(h, method, uri, nil)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status
