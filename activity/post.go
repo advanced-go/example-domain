@@ -35,13 +35,13 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(body) //.AddLocation(postLoc)
+		status := putEntry(body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
 		}
 		return nil, status
 	case http.MethodDelete:
-		status := deleteEntry() //.AddLocation(postLoc)
+		status := deleteEntry()
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
 		}
