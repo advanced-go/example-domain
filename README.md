@@ -1,5 +1,7 @@
 # example-domain
 
+Provides common functionality utilized by an AI agent managing service resiliency.
+
 ## action
 [Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
 
