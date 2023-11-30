@@ -16,14 +16,16 @@ const (
 	putLoc   = PkgPath + ":put"
 )
 
-func postHandler(ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+	var e E
+
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-
 	if runtime.IsDebugEnvironment() {
 		status2 := runtime.StatusFromContext(ctx)
 		if status2 != nil {
+			e.Handle(status2, runtime.RequestId(r), postLoc2)
 			return nil, status2.AddLocation(postLoc2)
 		}
 		location := r.Header.Get(http2.ContentLocation)
@@ -34,9 +36,17 @@ func postHandler(ctx context.Context, r *http.Request, body any) (any, runtime.S
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		return nil, put(body).AddLocation(postLoc2)
+		status := put(body)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postLoc2)
+		}
+		return nil, status
 	case http.MethodDelete:
-		return nil, delete().AddLocation(postLoc2)
+		status := delete()
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postLoc2)
+		}
+		return nil, status
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}

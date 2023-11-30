@@ -62,7 +62,7 @@ func postProxy(r *http.Request, body any) (any, runtime.Status) {
 func _Example_PostWithProxy() {
 	ctx := runtime.NewRequestIdContext(nil, "post-123-456")
 	ctx = runtime.NewProxyContext(ctx, postProxy)
-	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", EntryV1Variant, nil)
+	req, _ := http2.NewRequest(ctx, "PUT", "https://google.com/search", nil)
 	e, status := postEntryHandler(ctx, req, nil)
 	fmt.Printf("test: postEntryHandler[runtimetest.DebugError]() -> [status:%v] %v\n", status, e)
 

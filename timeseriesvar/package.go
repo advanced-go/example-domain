@@ -52,11 +52,11 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri, variant string, body T) (t any, status runtime.Status) {
+func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
 	var e runtime.LogError
 	var r *http.Request
 
-	r, status = http2.NewRequest(h, method, uri, variant, nil)
+	r, status = http2.NewRequest(h, method, uri, nil)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), postEntryLoc)
 		return nil, status

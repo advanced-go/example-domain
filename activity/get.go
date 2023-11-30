@@ -27,9 +27,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 		location := h.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {
 			t, status = getEntryFromPath(location)
-			if !status.OK() {
-				e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-			}
+			e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 			return t, status
 		}
 	}
