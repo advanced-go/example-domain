@@ -1,22 +1,24 @@
 # example-domain
 
+Provides common functionality utilized by an AI agent managing service resiliency.
+
 ## action
-[Action][actionpkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
 
 ## activity
-[Activity][activitypkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[Activity][activitypkg] provides an audit trail for all AI agent actions, interactions, and results of analysis. 
 
 ## google
-[Google][googlepkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[Google][googlepkg] provides Google search functionality. 
 
 ## slo
-[SLO][slopkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[SLO][slopkg] implements SLO's. 
 
 ## timeseries
-[Timeseries][timeseriespkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[Timeseries][timeseriespkg] implements versioned access log events. 
 
 ## timeseriesvar
-[Timeseriesvar][timeseriesvarpkg] implements environment, request context, status, error, and output types. The status type is used extensively as a function return value, and provides error, http, and gRPC status codes. 
+[Timeseriesvar][timeseriesvarpkg] implements versioned access log events via [variants][rfc2626]. 
 
 
 
@@ -26,6 +28,7 @@
 [slopkg]: <https://pkg.go.dev/github.com/advanced-go/example-domain/slo>
 [timeseriespkg]: <https://pkg.go.dev/github.com/advanced-go/example-domain/timeseries>
 [timeseriesvarpkg]: <https://pkg.go.dev/github.com/advanced-go/example-domain/timeseriesvar>
+[rfc2626]: <https://datatracker.ietf.org/doc/html/rfc2616>
 
 
 
