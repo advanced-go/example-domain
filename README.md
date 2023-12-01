@@ -28,7 +28,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 A package.go file implements the above interfaces, and provides any additional type declarations for integration. 
 
 Example-domain packages also address the following functional areas:
-1. Resource versioning - the timeseries package supports versioning via seperate sub packages, and is imelemented in package.go
+1. Resource versioning - the timeseries package supports versioning via seperate sub packages, and is imelemented in package.go.
  ~~~
 // GetEntryV1 - get entries
 func GetEntryV1(h http.Header, uri string) (entries []entryv1.Entry, status runtime.Status) {
@@ -50,23 +50,19 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, b
 	return entryv2.Post[T](h, method, uri, body)
 }
 ~~~  
-3. Access logging - integrating with core.Access package
+3. Access logging - integrating with core.Access package.
 ~~~
 defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 return getHandler[runtime.LogError](nil, h, u)
 ~~~
-4. Testing -
+4. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed.
 ~~~
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
  // implementation details
 }
 ~~~
-5. Service hosting -
-
-Resource versioning is imlemented in the timeseries package. Package level access logging is supported via integration with the core.Access package.
-
-Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. All of the testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not required. This allows the packages to be deployed in multiple hosts, providing flexibility when creating new functionality. New services can utilize existing services, or integrate directly with the packaged functionality. 
+5. Service integration - Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. Packages can be deployed in multiple hosts, providing flexibility when creating new functionality, as new services can utilize existing services, or integrate directly with the packaged functionality. 
 
 ## action
 [Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
