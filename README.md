@@ -7,7 +7,7 @@ Provides common functionality utilized by an AI agent managing service resilienc
 func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
  // implementation details
 }
-// Post - exchange function for POST, PUT, and DELETE...
+// Post - exchange function for POST, PUT, DELETE...
 func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
  // implementation details
 }
