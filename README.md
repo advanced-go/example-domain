@@ -50,7 +50,7 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, b
 	return entryv2.Post[T](h, method, uri, body)
 }
 ~~~  
-3. Access logging - integrating with core.Access package.
+3. Access logging - integration with core.Access package.
 ~~~
 defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 return getHandler[runtime.LogError](nil, h, u)
