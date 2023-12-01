@@ -1,6 +1,7 @@
 # example-domain
 
-Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration:
+Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration, with a package.go providing the implementations and any additional type declarations for integration:
+
   1. Direct exchange functions - Get and Post, with generic constraints for Post.
 ~~~
 // Get - get entries
@@ -25,8 +26,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 ~~~
    
-A package.go file implements the above interfaces, and provides any additional type declarations for integration. 
-
 Example-domain packages also address the following functional areas:
 1. Resource versioning - the timeseries package supports versioning via seperate sub packages, with the exchange functions in package.go.
  ~~~
