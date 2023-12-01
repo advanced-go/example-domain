@@ -1,11 +1,15 @@
 # example-domain
 
 Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration:
-  1. Direct exchange functions - Get and Post
+  1. Direct exchange functions - Get and Post, with generic constraints for Post
 ~~~
 // Get - get entries
 func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
  // implementation details
+}
+// PostConstraints - Post constraints
+type PostConstraints interface {
+	[]Entry | []byte | runtime.Nillable
 }
 // Post - exchange function for POST, PUT, DELETE...
 func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
