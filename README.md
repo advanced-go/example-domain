@@ -28,7 +28,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 A package.go file implements the above interfaces, and provides any additional type declarations for integration. 
 
 Example-domain packages also address the following functional areas:
-1. Resource versioning - the timeseries package supports versioning via seperate sub packages, and is imelemented in package.go.
+1. Resource versioning - the timeseries package supports versioning via seperate sub packages, with the exchange functions in package.go.
  ~~~
 // GetEntryV1 - get entries
 func GetEntryV1(h http.Header, uri string) (entries []entryv1.Entry, status runtime.Status) {
