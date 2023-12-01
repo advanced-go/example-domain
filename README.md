@@ -1,6 +1,33 @@
 # example-domain
 
-Provides common functionality utilized by an AI agent managing service resiliency.
+Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration:
+  1. Direct exchange functions - Get and Post, with generic constraints for Post.
+~~~
+// Get - get entries
+func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
+ // implementation details
+}
+// PostConstraints - Post constraints
+type PostConstraints interface {
+	[]Entry | []byte | runtime.Nillable
+}
+// Post - exchange function for POST, PUT, DELETE...
+func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+ // implementation details
+}
+~~~
+
+  3. HTTP handler - implementing http.Handler
+~~~
+// HttpHandler - http endpoint
+func HttpHandler(w http.ResponseWriter, r *http.Request) {
+ // implementation details
+}
+~~~
+   
+The implementation for the above interfaces, and any additional information needed for integration with the package, are provied in package.go. Resource versioning is imlemented in the timeseries package. Package level access logging is supported via integration with the core.Access package.
+
+Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. All of the testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not required. This allows the packages to be deployed in multiple hosts, providing flexibility when creating new functionality. New services can utilize existing services, or integrate directly with the packaged functionality. 
 
 ## action
 [Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
