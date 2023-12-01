@@ -4,9 +4,9 @@ Provides common functionality utilized by an AI agent managing service resilienc
   1. Direct exchange functions - Get and Post
   2. HTTP handler - implementing http.Handler
    
-The implementation for the above interfaces, and any additional information needed for integration with the package, are provied in package.go.
+The implementation for the above interfaces, and any additional information needed for integration with the package, are provied in package.go. The timeseries package also provides an implementation for resource versioning.
 
-Applications that want to use example-domain functionality can integrate directly, by calling the package's functions, or access the functionality hosted in another service, via HTTP. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. All of the testing, including the Http handler, is automated in the package and does not need to be implemented in a service host. This allows the packages to be deployed in multiple hosts, providing flexibility when creating new functionality. New services can utilize to existing services, or integrate directly with the packaged functionality. 
+Applications that want to use example-domain functionality can integrate directly, by calling the package's functions, or access the functionality hosted in another service, via HTTP. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. All of the testing, including the Http handler, is automated in the package and does not need to be implemented in a service host. This allows the packages to be deployed in multiple hosts, providing flexibility when creating new functionality. New services can utilize existing services, or integrate directly with the packaged functionality. 
 
 ## action
 [Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
