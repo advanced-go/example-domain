@@ -2,7 +2,14 @@
 
 Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration:
   1. Direct exchange functions - Get and Post
-  2. HTTP handler - implementing http.Handler
+~~~
+// Get - get entries
+func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
+ // implementation details
+}
+~~~
+
+  3. HTTP handler - implementing http.Handler
    
 The implementation for the above interfaces, and any additional information needed for integration with the package, are provied in package.go. The timeseries package also provides an implementation for resource versioning.
 
