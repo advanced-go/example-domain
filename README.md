@@ -1,6 +1,6 @@
 # example-domain
 
-Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration, with a package.go file providing the implementations and any additional type declarations for integration:
+Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration, with a package.go file providing the implementations and any additional needed type declarations:
 
   1. Direct exchange functions - Get and Post, with generic constraints for Post.
 ~~~
