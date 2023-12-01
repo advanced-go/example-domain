@@ -7,9 +7,19 @@ Provides common functionality utilized by an AI agent managing service resilienc
 func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
  // implementation details
 }
+// Post - exchange function for POST, PUT, and DELETE...
+func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+ // implementation details
+}
 ~~~
 
   3. HTTP handler - implementing http.Handler
+~~~
+// HttpHandler - http endpoint
+func HttpHandler(w http.ResponseWriter, r *http.Request) {
+ // implementation details
+}
+~~~
    
 The implementation for the above interfaces, and any additional information needed for integration with the package, are provied in package.go. The timeseries package also provides an implementation for resource versioning.
 
