@@ -24,10 +24,7 @@ func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getLoc, err)
 		return
 	}
-	if h == nil {
-		h = make(http.Header)
-	}
-	http2.AddRequestIdHeader(h)
+	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 	return getHandler[runtime.LogError](nil, h, u)
 }
