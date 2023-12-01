@@ -55,7 +55,7 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, b
 defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 return getHandler[runtime.LogError](nil, h, u)
 ~~~
-4. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed. The http_test.go file utilizes functionality in the core/http2/http2test package.
+4. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed. The http_test.go file utilizes functionality in the core/http2/http2test package. All test requests and responses are deserialized from disk.
 
 5. Service integration - Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. Packages can be deployed in multiple hosts, providing flexibility when creating new functionality, as new services can utilize existing services, or integrate directly with the packaged functionality. 
 
