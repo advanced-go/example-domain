@@ -2,7 +2,7 @@
 
 Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration, with a package.go file providing the implementations and any additional type declarations:
 
-  1. Direct exchange functions - Get and Post, with generic constraints for Post.
+  1. Direct exchange functions - Get and Post, with generic constraints for a Post body.
 ~~~
 // Get - get entries
 func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
