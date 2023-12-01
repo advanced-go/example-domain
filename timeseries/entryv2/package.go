@@ -37,7 +37,7 @@ type PostConstraints interface {
 	[]Entry | []byte | runtime.Nillable
 }
 
-// Post - exchange function
+// Post - exchange function for POST, PUT, DELETE...
 func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
 	var r *http.Request
 
