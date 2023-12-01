@@ -26,6 +26,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 ~~~
    
+
 Example-domain packages also address the following functional areas:
 1. Resource versioning - the timeseries package supports versioning via seperate sub packages, with the exchange functions in package.go.
  ~~~
