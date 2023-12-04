@@ -28,6 +28,7 @@ func messageHandler(msg core.Message) {
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
 	switch msg.Event {
 	case core.StartupEvent:
+		core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
 	case core.ShutdownEvent:
 	case core.PingEvent:
 		core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
