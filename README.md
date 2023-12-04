@@ -18,7 +18,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 }
 ~~~
 
-  3. HTTP handler - implementing http.Handler
+  2. HTTP handler - implementing http.Handler
 ~~~
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,25 +58,25 @@ return getHandler[runtime.LogError](nil, h, u)
 4. Messaging initialization and message handling.
 ~~~
 func init() {
-	status := exchange.Register(exchange.NewMailbox(PkgPath, false))
-	if status.OK() {
-		agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
-	}
-	if !status.OK() {
-		fmt.Printf("init() failure: [%v]\n", PkgPath)
-	}
-	agent.Run()
+    status := exchange.Register(exchange.NewMailbox(PkgPath, false))
+    if status.OK() {
+	agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
+    }
+    if !status.OK() {
+	fmt.Printf("init() failure: [%v]\n", PkgPath)
+    }
+    agent.Run()
 }
 
 func messageHandler(msg core.Message) {
-	start := time.Now()
-	switch msg.Event {
-	case core.StartupEvent:
-		core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
-	case core.ShutdownEvent:
-	case core.PingEvent:
-		core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
-	}
+    start := time.Now()
+    switch msg.Event {
+    case core.StartupEvent:
+	core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
+    case core.ShutdownEvent:
+    case core.PingEvent:
+	core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
+    }
 }
 ~~~
 5. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed. The http_test.go file utilizes functionality in the core/http2/http2test package, with all test requests and responses deserialized from disk.
