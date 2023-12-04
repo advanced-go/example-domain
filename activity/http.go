@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-const (
-	httpLoc = PkgPath + ":httpEntryHandler"
-)
-
 func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.ResponseWriter, r *http.Request) runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -43,7 +43,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		status := runtime.NewStatus(http.StatusBadRequest)
 		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
-		http2.WriteResponse[runtime.LogError](w, nil, status, nil)
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
 	http2.AddRequestId(r)
@@ -55,6 +55,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		status := runtime.NewStatus(http.StatusNotFound)
 		status.SetContent(errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
-		http2.WriteResponse[runtime.LogError](w, nil, status, nil)
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
 }

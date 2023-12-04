@@ -15,10 +15,6 @@ const (
 	getEntryHandlerLoc  = PkgPath + ":getEntryHandler"
 )
 
-type getEntryConstraints interface {
-	[]Entry | []byte
-}
-
 func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
 	var e E
 

@@ -31,7 +31,7 @@ func _Example_getEntryHandler() {
 	h.Add(ContentLocation, "file://[cwd]/activitytest/resource/activity-entry-v1.json")
 	u, _ := url.Parse("http://advanced-go/example-domain/activity/entry")
 
-	entries, status := getEntryHandler[runtime.TestError](ctx, h, u)
+	entries, status := getEntryHandler[runtime.Output](ctx, h, u)
 	fmt.Printf("test: getEntryHandler() -> [entries:%v] [status:%v]\n", entries, status)
 
 	//Output:

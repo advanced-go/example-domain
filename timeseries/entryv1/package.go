@@ -26,7 +26,7 @@ func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 	}
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
-	return getHandler[runtime.LogError](nil, h, u)
+	return getHandler[runtime.Log](nil, h, u)
 }
 
 // PostConstraints - Post constraints
@@ -44,7 +44,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 	}
 	http2.AddRequestId(r)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), -1, "", access.NewStatusCodeClosure(&status))()
-	return postHandler[runtime.LogError](nil, r, body)
+	return postHandler[runtime.Log](nil, r, body)
 }
 
 // HttpHandler - http endpoint
@@ -53,13 +53,13 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		status := runtime.NewStatus(http.StatusBadRequest)
 		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
-		http2.WriteResponse[runtime.LogError](w, nil, status, nil)
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
 	http2.AddRequestId(r)
 	func() (status runtime.Status) {
 		defer access.LogDeferred(access.InternalTraffic, r, -1, "", access.NewStatusCodeClosure(&status))()
-		return httpHandler[runtime.LogError](nil, w, r)
+		return httpHandler[runtime.Log](nil, w, r)
 	}()
 
 }

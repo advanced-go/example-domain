@@ -13,7 +13,7 @@ func Example_Ping() {
 	w := http2.NewRecorder()
 	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/activity:ping", nil)
 	nid, rsc, ok := http2.UprootUrn(r.URL.Path)
-	mux.ProcessPing[runtime.TestError](w, nid)
+	mux.ProcessPing[runtime.Output](w, nid)
 	buf, status := io2.ReadAll(w.Result().Body)
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
