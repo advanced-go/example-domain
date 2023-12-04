@@ -7,4 +7,4 @@ require (
 	github.com/google/uuid v1.4.0
 )
 
-require github.com/advanced-go/messaging v0.0.0-20231204140858-ab592a9dcb11 // indirect
+require github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080

@@ -15,7 +15,7 @@ var (
 func init() {
 	status := exchange.Register(exchange.NewMailbox(PkgPath, false))
 	if status.OK() {
-		agent, status = exchange.NewAgent(PkgPath, messageHandler, nil)
+		agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
 	}
 	if !status.OK() {
 		fmt.Printf("init() failure: [%v]\n", PkgPath)
