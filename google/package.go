@@ -29,12 +29,12 @@ const (
 
 // Get - exchange handler
 func Get(r *http.Request) (any, runtime.Status) {
-	return getHandler[runtime.LogError](r)
+	return getHandler[runtime.Log](r)
 }
 
 // HttpHandler - HTTP handler endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	httpHandler[runtime.LogError](w, r)
+	httpHandler[runtime.Log](w, r)
 }
 
 /*

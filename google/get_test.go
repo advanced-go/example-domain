@@ -27,7 +27,7 @@ func Example_getHandler() {
 	if err != nil {
 		fmt.Printf("test: NewRequest() -> %v\n", err)
 	}
-	resp, status := getHandler[runtime.TestError](req)
+	resp, status := getHandler[runtime.Output](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}

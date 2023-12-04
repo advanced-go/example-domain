@@ -13,7 +13,7 @@ func Example_httpHandler() {
 	r := http2.NewRecorder()
 
 	req, _ := http.NewRequest("", "http://localhost:8080"+"/"+PkgPath+"?q=test", nil)
-	status := httpHandler[runtime.TestError](r, req)
+	status := httpHandler[runtime.Output](r, req)
 	r.Result().Header = r.Header()
 	buf, status1 := io2.ReadAll(r.Result().Body)
 	fmt.Printf("test: ReadAll() -> [status:%v] [body:%v]\n", status1, len(buf))
@@ -37,7 +37,7 @@ func Example_Resolver() {
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
 
 	req, _ := http.NewRequest("", PkgPath, nil)
-	result, status := getHandler[runtime.TestError](req)
+	result, status := getHandler[runtime.Output](req)
 	str := ""
 	if buf1, ok := result.([]byte); ok {
 		str = string(buf1)
