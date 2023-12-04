@@ -55,7 +55,7 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, b
 defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 return getHandler[runtime.LogError](nil, h, u)
 ~~~
-4. Messaging initialization and message handling.
+4. Messaging exchange initialization and message handling.
 ~~~
 func init() {
     status := exchange.Register(exchange.NewMailbox(PkgPath, false))
