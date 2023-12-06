@@ -18,7 +18,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 }
 ~~~
 
-  3. HTTP handler - implementing http.Handler
+  2. HTTP handler - implementing http.Handler
 ~~~
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
@@ -55,9 +55,33 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, b
 defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
 return getHandler[runtime.LogError](nil, h, u)
 ~~~
-4. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed. The http_test.go file utilizes functionality in the core/http2/http2test package, with all test requests and responses deserialized from disk.
+4. Messaging exchange initialization and message handling.
+~~~
+func init() {
+    status := exchange.Register(exchange.NewMailbox(PkgPath, false))
+    if status.OK() {
+	agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
+    }
+    if !status.OK() {
+	fmt.Printf("init() failure: [%v]\n", PkgPath)
+    }
+    agent.Run()
+}
 
-5. Service integration - Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. Packages can be deployed in multiple hosts, providing flexibility when creating new functionality, as new services can utilize existing services, or integrate directly with the packaged functionality. 
+func messageHandler(msg core.Message) {
+    start := time.Now()
+    switch msg.Event {
+    case core.StartupEvent:
+	core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
+    case core.ShutdownEvent:
+    case core.PingEvent:
+	core.SendReply(msg, runtime.NewStatusOK().SetDuration(time.Since(start)))
+    }
+}
+~~~
+5. Testing - all testing, including the Http handler, is automated, in process, and in the package. Additional testing in a service host is not needed. The http_test.go file utilizes functionality in the core/http2/http2test package, with all test requests and responses deserialized from disk.
+
+6. Service integration - Applications that want to use example-domain functionality can integrate directly, by calling the package's Get or Post, or access the functionality hosted in another service. Hosting example-domain packages only requires registering a ServMux handler and pattern, which are both defined in the package.go file. Packages can be deployed in multiple hosts, providing flexibility when creating new functionality, as new services can utilize existing services, or integrate directly with the packaged functionality. 
 
 ## action
 [Action][actionpkg] implements actions that an AI agent can take to affect change in response to an observation. 
