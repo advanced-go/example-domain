@@ -25,7 +25,7 @@ func Get(h http.Header, uri string) (entries []Entry, status runtime.Status) {
 		return
 	}
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
 	return getHandler[runtime.Log](nil, h, u)
 }
 
@@ -43,7 +43,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
 	return postHandler[runtime.Log](nil, r, body)
 }
 
@@ -58,7 +58,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http2.AddRequestId(r)
 	func() (status runtime.Status) {
-		defer access.LogDeferred(access.InternalTraffic, r, -1, "", access.NewStatusCodeClosure(&status))()
+		defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
 		return httpHandler[runtime.Log](nil, w, r)
 	}()
 
