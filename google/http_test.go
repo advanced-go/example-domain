@@ -28,7 +28,7 @@ func Example_httpHandler() {
 func Example_Resolver() {
 	// Resolve the content to a file
 	fileUri := "file://[cwd]/resource/query-result.txt"
-	http2.AddResolver(func(s string) string {
+	addResolver(func(s string) string {
 		return fileUri
 	},
 	)
