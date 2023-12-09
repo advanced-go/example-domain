@@ -51,8 +51,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	_, _, ok := http2.UprootUrn(r.URL.Path)
 	if !ok {
-		status := runtime.NewStatus(http.StatusBadRequest)
-		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
+		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}

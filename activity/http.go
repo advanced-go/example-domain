@@ -17,7 +17,6 @@ func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.Respon
 	case http.MethodGet:
 		buf, status := getEntryHandler[E](ctx, r.Header, r.URL)
 		if !status.OK() {
-			//e.Handle(status, runtime.RequestId(r), httpLoc)
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
 		}
@@ -25,18 +24,10 @@ func httpEntryHandler[E runtime.ErrorHandler](ctx context.Context, w http.Respon
 		return status
 	case http.MethodPut:
 		_, status := postEntryHandler[E](ctx, r, r.Body)
-		//if !status.OK() {
-		//e.Handle(status, runtime.RequestId(r), httpLoc)
-		//	http2.WriteResponse[E](w, nil, status, nil)
-		//	return status
-		//}
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
 		_, status := postEntryHandler[E](ctx, r, nil)
-		//if !status.OK() {
-		//	e.Handle(status, runtime.RequestId(r), httpLoc)
-		//}
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

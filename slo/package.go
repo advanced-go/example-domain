@@ -57,9 +57,8 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
-	if !ok {
-		status := runtime.NewStatus(http.StatusBadRequest)
-		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
+	if !ok || len(rsc) == 0 {
+		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
@@ -71,8 +70,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 			return httpEntryHandler[runtime.Log](nil, w, r)
 		}()
 	default:
-		status := runtime.NewStatus(http.StatusNotFound)
-		status.SetContent(errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
+		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
 }

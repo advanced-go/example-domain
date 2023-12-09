@@ -18,7 +18,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 	case http.MethodGet:
 		var e E
 
-		req, err := http.NewRequest(http.MethodGet, http2.Resolve(searchUri(r.URL, googleEndpoint)), nil)
+		req, err := http.NewRequest(http.MethodGet, resolve(searchUri(r.URL, googleEndpoint)), nil)
 		if err != nil {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}

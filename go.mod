@@ -3,7 +3,7 @@ module github.com/advanced-go/example-domain
 go 1.21.4
 
 require (
-	github.com/advanced-go/core v0.0.0-20231206125842-31ee66466d30
+	github.com/advanced-go/core v0.0.0-20231209124028-d5bfaf2a1a6e
 	github.com/google/uuid v1.4.0
 )
 
