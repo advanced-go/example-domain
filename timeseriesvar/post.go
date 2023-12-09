@@ -27,7 +27,7 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 	}
 
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := runtime.StatusOK()
 		if status2 != nil {
 			return nil, status2.AddLocation(postLoc)
 		}

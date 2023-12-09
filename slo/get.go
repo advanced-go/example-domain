@@ -19,7 +19,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 	var e E
 
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := StatusFromContext(ctx)
 		if status2 != nil {
 			e.Handle(status2, runtime.RequestId(h), getEntryHandlerLoc)
 			return t, status2

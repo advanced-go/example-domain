@@ -5,6 +5,7 @@ import (
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/timeseries/context2"
 	"net/http"
 	"net/url"
 	"strings"
@@ -19,7 +20,7 @@ func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, uri 
 	var e E
 
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := context2.StatusFromContext(ctx)
 		if status2 != nil {
 			e.Handle(status2, runtime.RequestId(h), getHandlerLoc)
 			return t, status2

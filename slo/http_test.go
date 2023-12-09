@@ -32,7 +32,7 @@ func Test_httpHandler(t *testing.T) {
 		}
 		var ctx context.Context
 		if tt.args.status != nil {
-			ctx = runtime.NewStatusContext(nil, tt.args.status)
+			ctx = NewStatusContext(nil, tt.args.status)
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()

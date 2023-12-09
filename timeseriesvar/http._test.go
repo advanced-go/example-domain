@@ -52,12 +52,12 @@ func Test_httpHandlerV1(t *testing.T) {
 		}
 		var ctx context.Context
 		if tt.args.status != nil {
-			ctx = runtime.NewStatusContext(nil, tt.args.status)
+			ctx = nil //runtime.NewStatusContext(nil, tt.args.status)
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtime.BypassError](ctx, w, req)
+			httpHandler[runtime.Bypass](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
@@ -114,12 +114,12 @@ func Test_httpHandlerV2(t *testing.T) {
 		}
 		var ctx context.Context
 		if tt.args.status != nil {
-			ctx = runtime.NewStatusContext(nil, tt.args.status)
+			ctx = nil //runtime.NewStatusContext(nil, tt.args.status)
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtime.TestError](ctx, w, req)
+			httpHandler[runtime.Output](ctx, w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

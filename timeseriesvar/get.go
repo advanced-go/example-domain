@@ -19,7 +19,7 @@ const (
 
 func getEntryHandler[T GetEntryConstraints](ctx context.Context, h http.Header, uri *url.URL) (t T, status runtime.Status) {
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := runtime.StatusOK()
 		if status2 != nil {
 			return t, status2.AddLocation(getEntryHandlerLoc)
 		}

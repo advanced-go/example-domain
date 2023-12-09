@@ -22,10 +22,10 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := StatusFromContext(ctx)
 		if status2 != nil {
 			e.Handle(status2, runtime.RequestId(r), postEntryHandlerLoc)
-			return nil, status2 //.AddLocation(postLoc)
+			return nil, status2
 		}
 		location := r.Header.Get(ContentLocation)
 		if strings.HasPrefix(location, "file://") {

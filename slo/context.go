@@ -1,4 +1,4 @@
-package activity
+package slo
 
 import (
 	"context"

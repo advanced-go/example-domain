@@ -7,6 +7,7 @@ import (
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/timeseries/context2"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -52,7 +53,7 @@ func Test_httpHandler(t *testing.T) {
 		}
 		var ctx context.Context
 		if tt.args.status != nil {
-			ctx = runtime.NewStatusContext(nil, tt.args.status)
+			ctx = context2.NewStatusContext(nil, tt.args.status)
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()

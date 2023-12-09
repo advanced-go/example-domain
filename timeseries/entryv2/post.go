@@ -6,6 +6,7 @@ import (
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/timeseries/context2"
 	"io"
 	"net/http"
 	"strings"
@@ -23,7 +24,7 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, b
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
 	if runtime.IsDebugEnvironment() {
-		status2 := runtime.StatusFromContext(ctx)
+		status2 := context2.StatusFromContext(ctx)
 		if status2 != nil {
 			e.Handle(status2, runtime.RequestId(r), postLoc2)
 			return nil, status2
