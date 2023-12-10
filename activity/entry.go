@@ -96,17 +96,6 @@ func logActivity(ctx context.Context, e Entry) runtime.Status {
 	return runtime.StatusOK()
 }
 
-/*
-	if runtime.IsDebugEnvironment() {
-		location := h.Get(ContentLocation)
-		if strings.HasPrefix(location, "file://") {
-			t, status = getEntryFromPath(location)
-			e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-			return t, status
-		}
-	}
-*/
-
 func readEntry(location string) (t []Entry, status runtime.Status) {
 	buf, status2 := io2.ReadFileFromPath(location)
 	if !status2.OK() {

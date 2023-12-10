@@ -1,4 +1,4 @@
-GET /example-domain/activity/entry?type=trace HTTP/1.1
+GET /github.com/advanced-go/example-domain/activity:entry?type=trace HTTP/1.1
 Host: example-domain.com
 Content-Location: file://[cwd]/activitytest/resource/activity-type-entry-v1.json
 

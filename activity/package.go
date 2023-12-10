@@ -18,13 +18,17 @@ const (
 	PkgPath         = "github.com/advanced-go/example-domain/activity"
 	Pattern         = "/" + PkgPath + "/"
 
-	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":PostEntry"
-	getEntryLoc   = PkgPath + ":GetEntry"
+	entryResource  = "entry"
+	postEntryLoc   = PkgPath + ":PostEntry"
+	getEntryLoc    = PkgPath + ":GetEntry"
+	httpHandlerLoc = PkgPath + ":HttpHandler"
 )
 
 // GetEntry - get entries with headers and uri
 func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
+	if h != nil && len(h.Get(ContentLocation)) > 0 {
+		return nil, runtime.NewStatusError(http.StatusBadRequest, getEntryLoc, errors.New("error content location not supported"))
+	}
 	return getEntry[runtime.Log](h, uri)
 }
 
@@ -46,6 +50,9 @@ type PostEntryConstraints interface {
 
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+	if h != nil && len(h.Get(ContentLocation)) > 0 {
+		return nil, runtime.NewStatusError(http.StatusBadRequest, postEntryLoc, errors.New("error: content location not supported"))
+	}
 	return postEntry[runtime.Log, T](h, method, uri, body)
 }
 
@@ -63,6 +70,11 @@ func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, me
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
+	if r != nil && len(r.Header.Get(ContentLocation)) > 0 {
+		status := runtime.NewStatusError(http.StatusBadRequest, httpHandlerLoc, errors.New("error content location not supported"))
+		http2.WriteResponse[runtime.Log](w, nil, status, nil)
+		return
+	}
 	httpHandler[runtime.Log](w, r)
 }
 

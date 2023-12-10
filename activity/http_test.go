@@ -1,14 +1,12 @@
 package activity
 
 import (
-	"context"
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
-	"net/http/httptest"
 	"reflect"
 	"testing"
 )
@@ -64,14 +62,14 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		var ctx context.Context
-		if tt.args.status != nil {
-			ctx = NewStatusContext(nil, tt.args.status)
-		}
+		//var ctx context.Context
+		//if tt.args.status != nil {
+		//	ctx = NewStatusContext(nil, tt.args.status)
+		//}
 		t.Run(tt.name, func(t *testing.T) {
-			w := httptest.NewRecorder()
+			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpEntryHandler[runtime.Output](ctx, w, req)
+			httpHandler[runtime.Output](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
