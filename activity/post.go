@@ -21,7 +21,7 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, r
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	ctx := NewContentLocationContext(nil, r.Header)
+	ctx := runtime.NewContentLocationContext(nil, r.Header)
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
 		status := putEntry(ctx, body)

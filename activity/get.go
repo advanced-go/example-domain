@@ -12,7 +12,7 @@ const (
 
 func getEntryHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
 	var e E
-	ctx := NewContentLocationContext(nil, h)
+	ctx := runtime.NewContentLocationContext(nil, h)
 
 	t, status = queryEntries(ctx, uri)
 	if !status.OK() && !status.NotFound() {
