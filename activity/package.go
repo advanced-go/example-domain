@@ -25,6 +25,10 @@ const (
 
 // GetEntry - get entries with headers and uri
 func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
+	return getEntry[runtime.Log](h, uri)
+}
+
+func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, status runtime.Status) {
 	u, err := url.Parse(uri)
 	if err != nil {
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
@@ -32,7 +36,7 @@ func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status
 	}
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[runtime.Log](nil, h, u)
+	return getEntryHandler[E](h, u)
 }
 
 // PostEntryConstraints - Post constraints
@@ -42,6 +46,10 @@ type PostEntryConstraints interface {
 
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
+	return postEntry[runtime.Log, T](h, method, uri, body)
+}
+
+func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
 	var r *http.Request
 
 	r, status = http2.NewRequest(h, method, uri, nil)
@@ -50,15 +58,19 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T
 	}
 	http2.AddRequestId(r)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.Log](nil, r, body)
+	return postEntryHandler[E](r, body)
 }
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
+	httpHandler[runtime.Log](w, r)
+}
+
+func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) {
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
-		http2.WriteResponse[runtime.Log](w, nil, status, nil)
+		http2.WriteResponse[E](w, nil, status, nil)
 		return
 	}
 	http2.AddRequestId(r)
@@ -66,11 +78,11 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	case entryResource:
 		func() (status runtime.Status) {
 			defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
-			return httpEntryHandler[runtime.Log](nil, w, r)
+			return httpEntryHandler[E](w, r)
 		}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
-		http2.WriteResponse[runtime.Log](w, nil, status, nil)
+		http2.WriteResponse[E](w, nil, status, nil)
 	}
 }
 

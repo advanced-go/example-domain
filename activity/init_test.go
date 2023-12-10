@@ -3,6 +3,7 @@ package activity
 import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/messaging/mux"
@@ -10,7 +11,7 @@ import (
 )
 
 func Example_Ping() {
-	w := http2.NewRecorder()
+	w := http2test.NewRecorder()
 	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/activity:ping", nil)
 	nid, rsc, ok := http2.UprootUrn(r.URL.Path)
 	mux.ProcessPing[runtime.Output](w, nid)

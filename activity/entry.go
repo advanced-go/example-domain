@@ -1,23 +1,37 @@
 package activity
 
 import (
+	"context"
 	"fmt"
+	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/json2"
+	"github.com/advanced-go/core/runtime"
+	"net/http"
 	"net/url"
 )
 
 const (
-	Type = "type"
+	Type         = "type"
+	readEntryLoc = PkgPath + ":readEntry"
 )
 
 var list []Entry
 
-func getEntries() []Entry {
-	return list
+func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
+	if location, ok := ContentLocationFromContext(ctx); ok {
+		return readEntry(location)
+	}
+	if len(list) == 0 {
+		return list, runtime.NewStatus(http.StatusNotFound)
+	}
+	return list, runtime.StatusOK()
 }
 
-func getEntriesByType(act string) []Entry {
+func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
-
+	if location, ok := ContentLocationFromContext(ctx); ok {
+		return readEntry(location)
+	}
 	for _, v := range list {
 		if act == "" {
 			l = append(l, v)
@@ -27,53 +41,80 @@ func getEntriesByType(act string) []Entry {
 			l = append(l, v)
 		}
 	}
-	return l
+	if len(l) == 0 {
+		return l, runtime.NewStatus(http.StatusNotFound)
+	}
+	return l, runtime.StatusOK()
 }
 
-func addEntry(e []Entry) {
+func addEntry(ctx context.Context, e []Entry) runtime.Status {
+	var status runtime.Status
+
+	if _, ok := ContentLocationFromContext(ctx); ok {
+		// Return OK, as we cannot go out of process
+		return runtime.StatusOK()
+	}
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
-		logActivity(item)
+		status = logActivity(ctx, item)
 	}
+	return status
 }
 
-func addItems(e []Entry) {
-	for _, item := range e {
-		//	item.CreatedTS = time.Now().UTC()
-		list = append(list, item)
-		fmt.Printf("%v\n", item)
+func deleteEntries(ctx context.Context) runtime.Status {
+	if _, ok := ContentLocationFromContext(ctx); ok {
+		return runtime.StatusOK()
 	}
-}
-
-func addEntryTimes(e []Entry) {
-	for _, item := range e {
-		list = append(list, item)
-		//fmt.Printf("%v\n", item)
-	}
-}
-
-func deleteEntries() {
 	list = []Entry{}
+	return runtime.StatusOK()
 }
 
-func queryEntries(u *url.URL) []Entry {
+func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
 	var result []Entry
+	var status runtime.Status
 
 	name := ""
 	if u.Query() != nil {
 		name = u.Query().Get(Type)
 	}
 	if len(name) != 0 {
-		result = getEntriesByType(name)
+		result, status = getEntriesByType(ctx, name)
 	} else {
-		result = getEntries()
+		result, status = getEntries(ctx)
 	}
-	return result
+	return result, status
 }
 
-func logActivity(e Entry) {
+func logActivity(ctx context.Context, e Entry) runtime.Status {
+	if _, ok := ContentLocationFromContext(ctx); ok {
+		// Return OK, as we cannot go out of process
+		return runtime.StatusOK()
+	}
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)
+	return runtime.StatusOK()
+}
 
+/*
+	if runtime.IsDebugEnvironment() {
+		location := h.Get(ContentLocation)
+		if strings.HasPrefix(location, "file://") {
+			t, status = getEntryFromPath(location)
+			e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+			return t, status
+		}
+	}
+*/
+
+func readEntry(location string) (t []Entry, status runtime.Status) {
+	buf, status2 := io2.ReadFileFromPath(location)
+	if !status2.OK() {
+		return t, status2.AddLocation(readEntryLoc)
+	}
+	status = json2.Unmarshal(buf, &t)
+	if !status.OK() {
+		return t, status.AddLocation(readEntryLoc)
+	}
+	return t, runtime.StatusOK()
 }

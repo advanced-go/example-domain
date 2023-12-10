@@ -6,7 +6,7 @@ import (
 
 func Example_addEntry() {
 
-	addEntry([]Entry{{ActivityID: "activity-uuid",
+	addEntry(nil, []Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -27,7 +27,7 @@ func Example_addEntry() {
 
 func Example_getEntriesByType() {
 
-	addEntry([]Entry{{ActivityID: "urn:uuid:1",
+	addEntry(nil, []Entry{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -38,7 +38,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]Entry{{ActivityID: "urn:uuid:2",
+	addEntry(nil, []Entry{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -49,7 +49,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry([]Entry{{ActivityID: "urn:uuid:3",
+	addEntry(nil, []Entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-service:0123456789",
@@ -58,13 +58,13 @@ func Example_getEntriesByType() {
 		Description:  "Reduced rate burst",
 	}},
 	)
-	e := getEntriesByType("invalid")
+	e, _ := getEntriesByType(nil, "invalid")
 	fmt.Printf("test: getEntriesByType() %v\n", e)
 
-	e = getEntriesByType("trace")
+	e, _ = getEntriesByType(nil, "trace")
 	fmt.Printf("test: getEntriesByType(trace) %v\n", e)
 
-	e = getEntriesByType("action")
+	e, _ = getEntriesByType(nil, "action")
 	fmt.Printf("test: getEntriesByType(action) %v\n", e)
 
 	/*
@@ -106,10 +106,24 @@ func Example_Log() {
 		Description:  "test description",
 	}
 	fmt.Printf("test: logActivity() -> %v\n", e)
-	logActivity(e)
+	logActivity(nil, e)
 
 	//Output:
 	//test: logActivity() -> {0001-01-01 00:00:00 +0000 UTC  trace agent-test   controller-test  test description}
 	//{ "activity": "trace" "agent": "agent-test"  "controller": "controller-test"  "message": "test description"  }
+
+}
+
+func Example_readEntry() {
+	location := "file://[cwd]/activitytest/resource/activity-entry-v1.json"
+
+	//buf, status := getEntryFromPath(location)
+	//fmt.Printf("test: getEntryFromPath() -> [buf:%v] [status:%v]\n", len(buf), status)
+
+	entries, status2 := readEntry(location)
+	fmt.Printf("test: getEntryFromPath() -> [entries:%v] [status:%v]\n", len(entries), status2)
+
+	//Output:
+	//test: getEntryFromPath() -> [entries:2] [status:OK]
 
 }

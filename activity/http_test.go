@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
@@ -17,7 +16,7 @@ import (
 func _Example_HttpHandler() {
 	access.EnableTestLogHandler()
 
-	addEntry([]Entry{{ActivityID: "activity-uuid",
+	addEntry(nil, []Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -28,7 +27,7 @@ func _Example_HttpHandler() {
 	}},
 	)
 
-	rec := http2.NewRecorder()
+	rec := http2test.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
@@ -41,9 +40,9 @@ func _Example_HttpHandler() {
 
 }
 
-func Test_httpHandlerV1(t *testing.T) {
+func Test_httpHandler(t *testing.T) {
 	basePath := "file://[cwd]/activitytest/resource/"
-	deleteEntries()
+	deleteEntries(nil)
 	fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
 		req    string
