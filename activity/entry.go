@@ -18,8 +18,8 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
-	if location, ok := runtime.FileUrlFromContext(ctx); ok {
-		return readEntry(location)
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadState[[]Entry](url)
 	}
 	if len(list) == 0 {
 		return list, runtime.NewStatus(http.StatusNotFound)
@@ -29,8 +29,8 @@ func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 
 func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
-	if location, ok := runtime.FileUrlFromContext(ctx); ok {
-		return readEntry(location)
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadState[[]Entry](url)
 	}
 	for _, v := range list {
 		if act == "" {
@@ -50,9 +50,8 @@ func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtim
 func addEntry(ctx context.Context, e []Entry) runtime.Status {
 	var status runtime.Status
 
-	if _, ok := runtime.FileUrlFromContext(ctx); ok {
-		// Return OK, as we cannot go out of process
-		return runtime.StatusOK()
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadStatus(url)
 	}
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
@@ -63,8 +62,8 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if _, ok := runtime.FileUrlFromContext(ctx); ok {
-		return runtime.StatusOK()
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadStatus(url)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
@@ -87,9 +86,8 @@ func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
 }
 
 func logActivity(ctx context.Context, e Entry) runtime.Status {
-	if _, ok := runtime.FileUrlFromContext(ctx); ok {
-		// Return OK, as we cannot go out of process
-		return runtime.StatusOK()
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadStatus(url)
 	}
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)

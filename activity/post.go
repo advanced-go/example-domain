@@ -67,7 +67,7 @@ func putEntry(ctx context.Context, body any) runtime.Status {
 		return runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
 	}
 	if len(entries) == 0 {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return runtime.NewStatus(http.StatusNotFound)
 	}
 	return addEntry(ctx, entries)
 }

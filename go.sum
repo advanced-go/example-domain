@@ -20,6 +20,14 @@ github.com/advanced-go/core v0.0.0-20231211125350-e4c3c52346ca h1:XEor4/VDMcaGsf
 github.com/advanced-go/core v0.0.0-20231211125350-e4c3c52346ca/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20231211165538-b927d1a46dba h1:REVD3Tr7mWt5IxfhxCWuBvuZ79l14O3V21mlrXvaOKI=
 github.com/advanced-go/core v0.0.0-20231211165538-b927d1a46dba/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231211194200-6c81b668e4f6 h1:lZkyiPQNAzTGh8rynvCFjthnXX/AH0ZPO4kZn3G2xjg=
+github.com/advanced-go/core v0.0.0-20231211194200-6c81b668e4f6/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231211201220-89007496e336 h1:TZCnOMbC0tI7ptR2XTD7r10ZV+Xi11jGCWbtKhvDgPU=
+github.com/advanced-go/core v0.0.0-20231211201220-89007496e336/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231211210626-460fb7ebbb5a h1:3z7TGhAMmvzQ0qjecd5LFmhPAv3Credu80qYSMjE7VQ=
+github.com/advanced-go/core v0.0.0-20231211210626-460fb7ebbb5a/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231211214253-003e89d7707f h1:tBM22DCa1awApdMmrckzFPqIGo35kmOGrt0//FnkowM=
+github.com/advanced-go/core v0.0.0-20231211214253-003e89d7707f/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080 h1:NzQaFbsdkWPx07h5CpAc+4/++ow0P8/UWW6NJoQesiM=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080/go.mod h1:Mk6W1iSvoYREWKDc7RQQvr/zaA3F+9XIRkMqGfnZLSA=
 github.com/advanced-go/messaging v0.0.0-20231204164909-371f798945bd h1:3u6zFJZTAwY6Mqu45qagTYn7RWd85crLQNZQhiRyHnQ=
