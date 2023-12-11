@@ -18,7 +18,7 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
-	if location, ok := runtime.ContentLocationFromContext(ctx); ok {
+	if location, ok := runtime.FileUrlFromContext(ctx); ok {
 		return readEntry(location)
 	}
 	if len(list) == 0 {
@@ -29,7 +29,7 @@ func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 
 func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
-	if location, ok := runtime.ContentLocationFromContext(ctx); ok {
+	if location, ok := runtime.FileUrlFromContext(ctx); ok {
 		return readEntry(location)
 	}
 	for _, v := range list {
@@ -50,7 +50,7 @@ func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtim
 func addEntry(ctx context.Context, e []Entry) runtime.Status {
 	var status runtime.Status
 
-	if _, ok := runtime.ContentLocationFromContext(ctx); ok {
+	if _, ok := runtime.FileUrlFromContext(ctx); ok {
 		// Return OK, as we cannot go out of process
 		return runtime.StatusOK()
 	}
@@ -63,7 +63,7 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if _, ok := runtime.ContentLocationFromContext(ctx); ok {
+	if _, ok := runtime.FileUrlFromContext(ctx); ok {
 		return runtime.StatusOK()
 	}
 	list = []Entry{}
@@ -87,7 +87,7 @@ func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
 }
 
 func logActivity(ctx context.Context, e Entry) runtime.Status {
-	if _, ok := runtime.ContentLocationFromContext(ctx); ok {
+	if _, ok := runtime.FileUrlFromContext(ctx); ok {
 		// Return OK, as we cannot go out of process
 		return runtime.StatusOK()
 	}
