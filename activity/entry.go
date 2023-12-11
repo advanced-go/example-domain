@@ -105,5 +105,8 @@ func readEntry(location string) (t []Entry, status runtime.Status) {
 	if !status.OK() {
 		return t, status.AddLocation(readEntryLoc)
 	}
+	if len(t) == 0 {
+		return t, runtime.NewStatus(http.StatusNotFound)
+	}
 	return t, runtime.StatusOK()
 }

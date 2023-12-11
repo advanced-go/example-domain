@@ -7,9 +7,13 @@ import (
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"reflect"
 	"testing"
+)
+
+const (
+	emptyEntry = "file://[cwd]/entryv1test/resource/empty.json"
+	validEntry = "file://[cwd]/entryv1test/resource/timeseries-entry-v1.json"
 )
 
 func _Example_HttpHandler() {
@@ -23,40 +27,24 @@ func _Example_HttpHandler() {
 
 	//Output:
 	//test: HttpHandler() -> 404
-
-}
-
-func resolveUrl(req *http.Request) (*http.Request, error) {
-	var err error
-	var newUrl string
-
-	switch req.Method {
-	case http.MethodGet:
-		newUrl = "file://[cwd]/entryv1test/resource/timeseries-entry-v1.json"
-	case http.MethodDelete:
-	case http.MethodPut:
-		newUrl = "file://[cwd]/entryv1test/resource/empty.json"
-	}
-	req.URL, err = url.Parse(newUrl)
-	return req, err
 }
 
 func Test_httpHandler(t *testing.T) {
 	deleteEntries(nil)
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
-		req    string
-		resp   string
-		status runtime.Status
+		req   string
+		resp  string
+		state string
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt"}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt"}},
-		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt"}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt"}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", state: emptyEntry}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", state: validEntry}},
+		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt",state:}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", state: emptyEntry}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/entryv1test/resource/", tt.args.req, tt.args.resp)
@@ -65,9 +53,9 @@ func Test_httpHandler(t *testing.T) {
 			continue
 		}
 		var err error
-		req, err = resolveUrl(req)
+		req, err = http2test.UpdateUrl(tt.args.state, req)
 		if err != nil {
-			t.Errorf("resolveUrl() failure = %v", err)
+			t.Errorf("UpdateUrl() failure = %v", err)
 			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
