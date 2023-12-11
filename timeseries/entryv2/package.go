@@ -65,7 +65,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch strings.ToLower(rsc) {
-	case "entry":
+	case "v2/entry":
 		httpHandler[runtime.Log](w, r)
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
