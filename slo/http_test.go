@@ -21,7 +21,6 @@ func resolveUrl(req *http.Request) (*http.Request, error) {
 	case http.MethodPut:
 		newUrl = "file://[cwd]/slotest/resource/empty.json"
 	}
-
 	req.URL, err = url.Parse(newUrl)
 	return req, err
 }

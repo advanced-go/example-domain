@@ -1,8 +1,6 @@
-PUT /example-domain/timeseries/entry HTTP/1.1
+PUT /github.com/advanced-go/example-domain/timeseries/entryv1:entry HTTP/1.1
 Host: access-log.com
 Content-Type: application/json
-Content-Length: 1
-Content-Location: file://
 
 [
   {
