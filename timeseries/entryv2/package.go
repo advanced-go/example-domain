@@ -58,11 +58,6 @@ func post[E runtime.ErrorHandler, T PostConstraints](h http.Header, method, uri 
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	//if r != nil && len(r.Header.Get(ContentLocation)) > 0 {
-	//	status := runtime.NewStatusError(http.StatusBadRequest, httpHandlerLoc, errors.New("error content location not supported"))
-	//	http2.WriteResponse[runtime.Log](w, nil, status, nil)
-	//	return
-	//}
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
