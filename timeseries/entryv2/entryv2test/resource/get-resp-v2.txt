@@ -2,7 +2,6 @@ HTTP/1.1 200 OK
 Date: Mon, 27 Jul 2009 12:28:53 GMT
 Server: Apache/2.2.14 (Win32)
 Content-Type: application/json
-Content-Location: github.com/go-ai-agent/example-domain/timeseries/EntryV2
 Connection: Closed
 
 [

@@ -1,4 +1,2 @@
-DELETE /example-domain/timeseries/entry HTTP/1.1
-Host: example-domain.com
-Content-Location: file://
+DELETE /github.com/advanced-go/example-domain/timeseries/entryv2:entry HTTP/1.1
 

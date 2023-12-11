@@ -1,14 +1,13 @@
 package entryv2
 
 import (
-	"context"
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/example-domain/timeseries/context2"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"testing"
 )
@@ -27,6 +26,20 @@ func _Example_HttpHandler() {
 
 }
 
+func resolveUrl(req *http.Request) (*http.Request, error) {
+	var err error
+	var newUrl string
+
+	switch req.Method {
+	case http.MethodGet:
+		newUrl = "file://[cwd]/entryv2test/resource/timeseries-entry-v2.json"
+	case http.MethodDelete:
+	case http.MethodPut:
+		newUrl = "file://[cwd]/entryv2test/resource/empty.json"
+	}
+	req.URL, err = url.Parse(newUrl)
+	return req, err
+}
 func Test_httpHandler(t *testing.T) {
 	deleteEntries(nil)
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
@@ -50,14 +63,16 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		var ctx context.Context
-		if tt.args.status != nil {
-			ctx = context2.NewStatusContext(nil, tt.args.status)
+		var err error
+		req, err = resolveUrl(req)
+		if err != nil {
+			t.Errorf("resolveUrl() failure = %v", err)
+			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtime.Output](ctx, w, req)
+			httpHandler[runtime.Output](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
