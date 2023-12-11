@@ -15,11 +15,12 @@ func getHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []Entry,
 	ctx := runtime.NewFileUrlContext(nil, uri.String())
 
 	t, status = queryEntries(ctx, uri)
-	if !status.OK() && !status.NotFound() {
+	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getHandlerLoc)
+		return nil, status
 	}
 	if len(t) == 0 {
-		return nil, runtime.NewStatus(http.StatusNotFound)
+		status = runtime.NewStatus(http.StatusNotFound)
 	}
 	return
 }

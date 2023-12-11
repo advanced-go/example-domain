@@ -3,7 +3,6 @@ package entryv2
 import (
 	"context"
 	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/url"
 	"time"
@@ -35,16 +34,15 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
-	if location, ok := runtime.FileUrlFromContext(ctx); ok {
-		return readEntry(location)
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadState[[]Entry](url)
 	}
 	return list, runtime.StatusOK()
 }
 
 func addEntry(ctx context.Context, e []Entry) runtime.Status {
-	if _, ok := runtime.FileUrlFromContext(ctx); ok {
-		// Return OK, as we cannot go out of process
-		return runtime.StatusOK()
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadStatus(url)
 	}
 	for _, item := range e {
 		list = append(list, item)
@@ -53,9 +51,8 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if _, ok := runtime.FileUrlFromContext(ctx); ok {
-		// Return OK, as we cannot go out of process
-		return runtime.StatusOK()
+	if url, ok := runtime.FileUrlFromContext(ctx); ok {
+		return io2.ReadStatus(url)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
@@ -63,16 +60,4 @@ func deleteEntries(ctx context.Context) runtime.Status {
 
 func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
 	return getEntries(ctx)
-}
-
-func readEntry(location string) (t []Entry, status runtime.Status) {
-	buf, status2 := io2.ReadFileFromPath(location)
-	if !status2.OK() {
-		return t, status2.AddLocation(readEntryLoc)
-	}
-	status = json2.Unmarshal(buf, &t)
-	if !status.OK() {
-		return t, status.AddLocation(readEntryLoc)
-	}
-	return t, runtime.StatusOK()
 }
