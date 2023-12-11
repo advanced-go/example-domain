@@ -1,14 +1,30 @@
 package slo
 
 import (
-	"context"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"testing"
 )
+
+func resolveUrl(req *http.Request) (*http.Request, error) {
+	var err error
+	var newUrl string
+
+	switch req.Method {
+	case http.MethodGet:
+		newUrl = "file://[cwd]/slotest/resource/slo-entry-v1.json"
+	case http.MethodDelete:
+	case http.MethodPut:
+		newUrl = "file://[cwd]/slotest/resource/empty.json"
+	}
+
+	req.URL, err = url.Parse(newUrl)
+	return req, err
+}
 
 func Test_httpHandler(t *testing.T) {
 	type args struct {
@@ -30,14 +46,20 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		var ctx context.Context
-		if tt.args.status != nil {
-			ctx = NewStatusContext(nil, tt.args.status)
+		//var ctx context.Context
+		//if tt.args.status != nil {
+		//	ctx = NewStatusContext(nil, tt.args.status)
+		//}
+		var err error
+		req, err = resolveUrl(req)
+		if err != nil {
+			t.Errorf("resolveUrl() failure = %v", err)
+			continue
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpEntryHandler[runtime.Output](ctx, w, req)
+			httpHandler[runtime.Output](w, req)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()

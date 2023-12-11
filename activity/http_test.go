@@ -54,9 +54,6 @@ func resolveUrl(req *http.Request) (*http.Request, error) {
 	case http.MethodPut:
 		newUrl = "file://[cwd]/activitytest/resource/empty.json"
 	}
-	//if len(newUrl) == 0 {
-	//	return req, nil
-	//}
 	req.URL, err = url.Parse(newUrl)
 	return req, err
 }

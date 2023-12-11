@@ -1,39 +1,42 @@
 package slo
 
 import (
+	"context"
+	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/json2"
+	"github.com/advanced-go/core/runtime"
 	"github.com/google/uuid"
 	"net/url"
 )
 
 const (
 	ControllerName = "ctrl"
+	readEntryLoc   = PkgPath + ":readEntry"
 )
 
 var list []Entry
 
-func getEntries() []Entry {
-	return list
+func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
+	if location, ok := runtime.FileUrlFromContext(ctx); ok {
+		return readEntry(location)
+	}
+	return list, runtime.StatusOK()
 }
 
-func getEntriesByController(ctrl string) []Entry {
+func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.Status) {
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return []Entry{list[i]}
+			return []Entry{list[i]}, runtime.StatusOK()
 		}
 	}
-	return nil
+	return nil, runtime.StatusOK()
 }
 
-func patchEntry(e Entry) {
-	for i, _ := range list {
-		if list[i].Controller == e.Controller {
-			list[i] = e
-			return
-		}
+func addEntry(ctx context.Context, e []Entry) runtime.Status {
+	if _, ok := runtime.FileUrlFromContext(ctx); ok {
+		// Return OK, as we cannot go out of process
+		return runtime.StatusOK()
 	}
-}
-
-func addEntry(e []Entry) {
 	for _, item := range e {
 		if len(item.Id) == 0 {
 			s, _ := uuid.NewUUID()
@@ -42,21 +45,42 @@ func addEntry(e []Entry) {
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
+	return runtime.StatusOK()
 }
 
-func deleteEntries() {
+func deleteEntries(ctx context.Context) runtime.Status {
+	if _, ok := runtime.FileUrlFromContext(ctx); ok {
+		// Return OK, as we cannot go out of process
+		return runtime.StatusOK()
+	}
 	list = []Entry{}
+	return runtime.StatusOK()
 }
 
-func queryEntries(u *url.URL) []Entry {
+func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
+	var result []Entry
+	var status runtime.Status
+
 	name := ""
 	if u.Query() != nil {
 		name = u.Query().Get(ControllerName)
 	}
 	if len(name) != 0 {
-		return getEntriesByController(name)
+		result, status = getEntriesByController(ctx, name)
 	} else {
-		return getEntries()
+		result, status = getEntries(ctx)
 	}
-	return nil
+	return result, status
+}
+
+func readEntry(location string) (t []Entry, status runtime.Status) {
+	buf, status2 := io2.ReadFileFromPath(location)
+	if !status2.OK() {
+		return t, status2.AddLocation(readEntryLoc)
+	}
+	status = json2.Unmarshal(buf, &t)
+	if !status.OK() {
+		return t, status.AddLocation(readEntryLoc)
+	}
+	return t, runtime.StatusOK()
 }

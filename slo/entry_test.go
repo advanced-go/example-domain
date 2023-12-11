@@ -3,15 +3,15 @@ package slo
 import "fmt"
 
 func Example_addEntry() {
-	addEntry([]Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
 	printEntries(list)
 	//fmt.Printf("test: addEntry() -> %v %v %v\n", list[0].Controller, list[0].Threshold, list[0].StatusCodes)
 
-	addEntry([]Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntry(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 	printEntries(list)
 	//fmt.Printf("test: addEntry() -> %v\n", list)
 
-	addEntry([]Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	printEntries(list)
 	//fmt.Printf("test: addEntry() -> %v\n", list)
 
@@ -39,30 +39,30 @@ func printEntries(entries []Entry) {
 }
 
 func ExampleGetEntryByController() {
-	addEntry([]Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
-	addEntry([]Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+	addEntry(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 
 	ctrl := ""
-	s := getEntriesByController(ctrl)
+	s, _ := getEntriesByController(nil, ctrl)
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
 	ctrl = "percentile"
-	s = getEntriesByController(ctrl)
+	s, _ = getEntriesByController(nil, ctrl)
 	if len(s) > 0 {
 		s[0].Id = ""
 	}
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
 	ctrl = "status-codes"
-	s = getEntriesByController(ctrl)
+	s, _ = getEntriesByController(nil, ctrl)
 	if len(s) > 0 {
 		s[0].Id = ""
 	}
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
-	addEntry([]Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	ctrl = "percentile"
-	s = getEntriesByController(ctrl)
+	s, _ = getEntriesByController(nil, ctrl)
 	if len(s) > 0 {
 		s[0].Id = ""
 	}

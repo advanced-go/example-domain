@@ -15,33 +15,22 @@ const (
 	putEntryLoc = PkgPath + ":putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtime.Status) {
 	var e E
 
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
-	if runtime.IsDebugEnvironment() {
-		status2 := StatusFromContext(ctx)
-		if status2 != nil {
-			e.Handle(status2, runtime.RequestId(r), postLoc)
-			return nil, status2
-		}
-		location := r.Header.Get(ContentLocation)
-		if strings.HasPrefix(location, "file://") {
-			// Need to deserialize return any
-			return nil, runtime.NewStatusOK()
-		}
-	}
+	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(body)
+		status := putEntry(ctx, body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc)
 		}
 		return nil, status
 	case http.MethodDelete:
-		status := deleteEntry()
+		status := deleteEntries(ctx)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc)
 		}
@@ -51,7 +40,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Reque
 	}
 }
 
-func putEntry(body any) runtime.Status {
+func putEntry(ctx context.Context, body any) runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
@@ -80,11 +69,6 @@ func putEntry(body any) runtime.Status {
 	if len(entries) == 0 {
 		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
-	addEntry(entries)
-	return runtime.StatusOK()
-}
-
-func deleteEntry() runtime.Status {
-	deleteEntries()
+	addEntry(ctx, entries)
 	return runtime.StatusOK()
 }
