@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
@@ -92,19 +91,4 @@ func logActivity(ctx context.Context, e Entry) runtime.Status {
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)
 	return runtime.StatusOK()
-}
-
-func readEntry(location string) (t []Entry, status runtime.Status) {
-	buf, status2 := io2.ReadFileFromPath(location)
-	if !status2.OK() {
-		return t, status2.AddLocation(readEntryLoc)
-	}
-	status = json2.Unmarshal(buf, &t)
-	if !status.OK() {
-		return t, status.AddLocation(readEntryLoc)
-	}
-	if len(t) == 0 {
-		return t, runtime.NewStatus(http.StatusNotFound)
-	}
-	return t, runtime.StatusOK()
 }
