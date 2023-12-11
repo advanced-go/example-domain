@@ -2,11 +2,9 @@ package entryv2
 
 import (
 	"context"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/example-domain/timeseries/context2"
 	"io"
 	"net/http"
 	"strings"
@@ -17,33 +15,22 @@ const (
 	putLoc   = PkgPath + ":put"
 )
 
-func postHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, body any) (any, runtime.Status) {
+func postHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtime.Status) {
 	var e E
 
 	if r == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	if runtime.IsDebugEnvironment() {
-		status2 := context2.StatusFromContext(ctx)
-		if status2 != nil {
-			e.Handle(status2, runtime.RequestId(r), postLoc2)
-			return nil, status2
-		}
-		location := r.Header.Get(http2.ContentLocation)
-		if strings.HasPrefix(location, "file://") {
-			// Need to deserialize return any
-			return nil, runtime.NewStatusOK()
-		}
-	}
+	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(body)
+		status := putEntry(ctx, body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc2)
 		}
 		return nil, status
 	case http.MethodDelete:
-		status := deleteEntry()
+		status := deleteEntries(ctx)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postLoc2)
 		}
@@ -53,7 +40,7 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, r *http.Request, b
 	}
 }
 
-func putEntry(body any) runtime.Status {
+func putEntry(ctx context.Context, body any) runtime.Status {
 	if body == nil {
 		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putLoc)
 	}
@@ -82,11 +69,6 @@ func putEntry(body any) runtime.Status {
 	if len(entries) == 0 {
 		return runtime.NewStatus(runtime.StatusInvalidContent)
 	}
-	addEntry(entries)
-	return runtime.StatusOK()
-}
-
-func deleteEntry() runtime.Status {
-	deleteEntries()
+	addEntry(ctx, entries)
 	return runtime.StatusOK()
 }
