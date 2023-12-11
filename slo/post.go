@@ -69,6 +69,5 @@ func putEntry(ctx context.Context, body any) runtime.Status {
 	if len(entries) == 0 {
 		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
-	addEntry(ctx, entries)
-	return runtime.StatusOK()
+	return addEntry(ctx, entries)
 }

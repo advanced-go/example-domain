@@ -7,8 +7,7 @@ import (
 )
 
 const (
-	getEntryFromPathLoc = PkgPath + ":getEntryFromPath"
-	getEntryHandlerLoc  = PkgPath + ":getEntryHandler"
+	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
 )
 
 func getEntryHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []Entry, status runtime.Status) {
@@ -16,8 +15,12 @@ func getEntryHandler[E runtime.ErrorHandler](h http.Header, uri *url.URL) (t []E
 	ctx := runtime.NewFileUrlContext(nil, uri.String())
 
 	t, status = queryEntries(ctx, uri)
-	if !status.OK() && !status.NotFound() {
+	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+		return nil, status
+	}
+	if len(t) == 0 {
+		status = runtime.NewStatus(http.StatusNotFound)
 	}
 	return
 }
