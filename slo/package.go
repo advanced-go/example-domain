@@ -15,13 +15,12 @@ import (
 type pkg struct{}
 
 const (
-	ContentLocation = "Content-Location"
-	PkgPath         = "github.com/advanced-go/example-domain/slo"
-	Pattern         = "/" + PkgPath + "/"
+	PkgPath = "github.com/advanced-go/example-domain/slo"
+	Pattern = "/" + PkgPath + "/"
 
 	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":PostEntry"
-	getEntryLoc   = PkgPath + ":GetEntry"
+	postEntryLoc  = PkgPath + ":postEntry"
+	getEntryLoc   = PkgPath + ":getEntry"
 )
 
 // GetEntry - get entries
@@ -37,7 +36,7 @@ func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entr
 	}
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[runtime.Log](h, u)
+	return getEntryHandler[E](h, u)
 }
 
 // PostEntryConstraints - Post constraints
@@ -59,7 +58,7 @@ func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, me
 	}
 	http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.Log](r, body)
+	return postEntryHandler[E](r, body)
 }
 
 // HttpHandler - http endpoint

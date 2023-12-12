@@ -19,9 +19,8 @@ const (
 	Pattern         = "/" + PkgPath + "/"
 
 	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":PostEntry"
-	getEntryLoc   = PkgPath + ":GetEntry"
-	routeName     = "activity"
+	postEntryLoc  = PkgPath + ":postEntry"
+	getEntryLoc   = PkgPath + ":getEntry"
 )
 
 // GetEntry - get entries with headers and uri
@@ -30,13 +29,13 @@ func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status
 }
 
 func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	u, err := url.Parse(resolve(uri))
+	u, err := url.Parse(uri)
 	if err != nil {
 		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
 		return
 	}
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "GetEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return getEntryHandler[E](h, u)
 }
 
@@ -53,12 +52,12 @@ func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T
 func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
 	var r *http.Request
 
-	r, status = http2.NewRequest(h, method, resolve(uri), nil)
+	r, status = http2.NewRequest(h, method, uri, nil)
 	if !status.OK() {
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "PostEntry", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return postEntryHandler[E](r, body)
 }
 
@@ -78,7 +77,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	switch strings.ToLower(rsc) {
 	case entryResource:
 		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, "httpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
 			return httpEntryHandler[runtime.Log](w, r)
 		}()
 	default:

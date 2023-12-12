@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	PkgPath         = "github.com/advanced-go/example-domain/timeseries/entryv2"
-	getLoc          = PkgPath + ":Get"
-	postLoc         = PkgPath + ":Post"
-	ContentLocation = "Content-Location"
+	PkgPath       = "github.com/advanced-go/example-domain/timeseries/entryv2"
+	getLoc        = PkgPath + ":get"
+	postLoc       = PkgPath + ":post"
+	entryResource = "v2/entry"
 )
 
 // Get - get entries
@@ -30,7 +30,7 @@ func get[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, st
 		return
 	}
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), "get", -1, "", access.NewStatusCodeClosure(&status))()
 	return getHandler[E](h, u)
 }
 
@@ -52,7 +52,7 @@ func post[E runtime.ErrorHandler, T PostConstraints](h http.Header, method, uri 
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "post", -1, "", access.NewStatusCodeClosure(&status))()
 	return postHandler[E](r, body)
 }
 
@@ -68,19 +68,15 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
+	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
-	case "v2/entry":
-		httpHandler[runtime.Log](w, r)
+	case entryResource:
+		func() (status runtime.Status) {
+			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			return httpHandler[runtime.Log](w, r)
+		}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
-}
-
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
-	http2.AddRequestId(r)
-	return func() (status runtime.Status) {
-		defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
-		return httpHandler2[E](w, r)
-	}()
 }

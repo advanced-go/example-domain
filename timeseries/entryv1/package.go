@@ -12,10 +12,10 @@ import (
 )
 
 const (
-	PkgPath         = "github.com/advanced-go/example-domain/timeseries/entryv1"
-	getLoc          = PkgPath + ":Get"
-	postLoc         = PkgPath + ":Post"
-	ContentLocation = "Content-Location"
+	PkgPath       = "github.com/advanced-go/example-domain/timeseries/entryv1"
+	getLoc        = PkgPath + ":get"
+	postLoc       = PkgPath + ":post"
+	entryResource = "v1/entry"
 )
 
 // Get - get entries
@@ -53,7 +53,7 @@ func post[E runtime.ErrorHandler, T PostConstraints](h http.Header, method, uri 
 	}
 	http2.AddRequestId(r)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "post", -1, "", access.NewStatusCodeClosure(&status))()
-	return postHandler[runtime.Log](r, body)
+	return postHandler[E](r, body)
 }
 
 // HttpHandler - http endpoint
@@ -70,7 +70,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
-	case "entry":
+	case entryResource:
 		func() (status runtime.Status) {
 			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
 			return httpHandler[runtime.Log](w, r)
