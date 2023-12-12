@@ -30,7 +30,7 @@ func get[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, st
 		return
 	}
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), "get", -1, "", access.NewStatusCodeClosure(&status))()
 	return getHandler[E](h, u)
 }
 
@@ -52,31 +52,36 @@ func post[E runtime.ErrorHandler, T PostConstraints](h http.Header, method, uri 
 		return nil, status
 	}
 	http2.AddRequestId(r)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "post", -1, "", access.NewStatusCodeClosure(&status))()
 	return postHandler[runtime.Log](r, body)
 }
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	//if r != nil && len(r.Header.Get(ContentLocation)) > 0 {
-	//	status := runtime.NewStatusError(http.StatusBadRequest, httpHandlerLoc, errors.New("error content location not supported"))
-	//	http2.WriteResponse[runtime.Log](w, nil, status, nil)
-	//	return
-	//}
+	if r == nil {
+		http2.WriteResponse[runtime.Log](w, nil, runtime.NewStatus(runtime.StatusInvalidArgument), nil)
+		return
+	}
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
+	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case "entry":
-		httpHandler[runtime.Log](w, r)
+		func() (status runtime.Status) {
+			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			return httpHandler[runtime.Log](w, r)
+		}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
 }
+
+/*
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
 	http2.AddRequestId(r)
@@ -85,3 +90,6 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		return httpHandler2[E](w, r)
 	}()
 }
+
+
+*/

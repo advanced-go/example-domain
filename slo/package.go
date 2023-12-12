@@ -36,7 +36,7 @@ func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entr
 		return
 	}
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return getEntryHandler[runtime.Log](h, u)
 }
 
@@ -58,36 +58,33 @@ func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, me
 		return nil, status
 	}
 	http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "", -1, "", access.NewStatusCodeClosure(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
 	return postEntryHandler[runtime.Log](r, body)
 }
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
+	if r == nil {
+		http2.WriteResponse[runtime.Log](w, nil, runtime.NewStatus(runtime.StatusInvalidArgument), nil)
+		return
+	}
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
+	http2.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
-		httpHandler[runtime.Log](w, r)
+		func() (status runtime.Status) {
+			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			return httpEntryHandler[runtime.Log](w, r)
+		}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
-}
-
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
-	if r == nil {
-		return runtime.NewStatus(runtime.StatusInvalidArgument)
-	}
-	http2.AddRequestId(r)
-	return func() (status runtime.Status) {
-		defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
-		return httpEntryHandler[E](w, r)
-	}()
 }
 
 type Entry struct {
