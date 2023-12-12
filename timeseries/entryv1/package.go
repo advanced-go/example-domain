@@ -80,9 +80,8 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
 	http2.AddRequestId(r)
-	func() (status runtime.Status) {
+	return func() (status runtime.Status) {
 		defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
 		return httpHandler2[E](w, r)
 	}()
-	return runtime.StatusOK()
 }

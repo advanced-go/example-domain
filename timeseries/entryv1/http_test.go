@@ -34,18 +34,18 @@ func Test_httpHandler(t *testing.T) {
 	deleteEntries(nil)
 	//fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
-		req   string
-		resp  string
-		state string
+		req    string
+		resp   string
+		result string
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", state: io2.StatusOK}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", state: validEntry}},
-		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt",state:}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", state: io2.StatusOK}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: validEntry}},
+		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt",result:}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: io2.StatusOK}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/entryv1test/resource/", tt.args.req, tt.args.resp)
@@ -54,7 +54,7 @@ func Test_httpHandler(t *testing.T) {
 			continue
 		}
 		var err error
-		req, err = http2test.UpdateUrl(tt.args.state, req)
+		req, err = http2test.UpdateUrl(tt.args.result, req)
 		if err != nil {
 			t.Errorf("UpdateUrl() failure = %v", err)
 			continue

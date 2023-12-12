@@ -49,19 +49,19 @@ func Test_httpHandler(t *testing.T) {
 	deleteEntries(nil)
 	fmt.Printf("test: Start Entries -> %v\n", len(list))
 	type args struct {
-		req   string
-		resp  string
-		state string
+		req    string
+		resp   string
+		result string
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", state: stateEmpty}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", state: io2.StatusOK}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", state: stateEntry}},
-		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", state: stateEntryType}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", state: io2.StatusOK}},
+		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
+		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", result: stateEntryType}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: io2.StatusOK}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
@@ -70,7 +70,7 @@ func Test_httpHandler(t *testing.T) {
 			continue
 		}
 		var err error
-		req, err = http2test.UpdateUrl(tt.args.state, req)
+		req, err = http2test.UpdateUrl(tt.args.result, req)
 		if err != nil {
 			t.Errorf("UpdateUrl() failure = %v", err)
 			continue

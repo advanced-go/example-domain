@@ -89,11 +89,10 @@ func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request)
 		return runtime.NewStatus(runtime.StatusInvalidArgument)
 	}
 	http2.AddRequestId(r)
-	func() (status runtime.Status) {
+	return func() (status runtime.Status) {
 		defer access.LogDeferred(access.InternalTraffic, r, "", -1, "", access.NewStatusCodeClosure(&status))()
 		return httpEntryHandler[E](w, r)
 	}()
-	return runtime.StatusOK()
 }
 
 type Entry struct {
