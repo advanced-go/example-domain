@@ -18,10 +18,9 @@ const (
 	PkgPath         = "github.com/advanced-go/example-domain/activity"
 	Pattern         = "/" + PkgPath + "/"
 
-	entryResource  = "entry"
-	postEntryLoc   = PkgPath + ":PostEntry"
-	getEntryLoc    = PkgPath + ":GetEntry"
-	httpHandlerLoc = PkgPath + ":HttpHandler"
+	entryResource = "entry"
+	postEntryLoc  = PkgPath + ":PostEntry"
+	getEntryLoc   = PkgPath + ":GetEntry"
 )
 
 // GetEntry - get entries with headers and uri
@@ -64,11 +63,6 @@ func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, me
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	//if r != nil && len(r.Header.Get(ContentLocation)) > 0 {
-	//	status := runtime.NewStatusError(http.StatusBadRequest, httpHandlerLoc, errors.New("error content location not supported"))
-	//	http2.WriteResponse[runtime.Log](w, nil, status, nil)
-	//	return
-	//}
 	_, rsc, ok := http2.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
