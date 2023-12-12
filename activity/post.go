@@ -42,7 +42,7 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, r
 
 func putEntry(ctx context.Context, body any) runtime.Status {
 	if body == nil {
-		runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
 	var entries []Entry
 
