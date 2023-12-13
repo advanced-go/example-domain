@@ -1,6 +1,7 @@
 package slo
 
 import (
+	"context"
 	"errors"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
@@ -16,34 +17,34 @@ const (
 	createEntriesLoc    = PkgPath + ":createEntries"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](r *http.Request, _ url.Values, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (any, runtime.Status) {
 	var e E
 
-	if r == nil {
-		return nil, runtime.NewStatus(http.StatusBadRequest)
-	}
-	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
-	switch strings.ToUpper(r.Method) {
+	//if r == nil {
+	//	return nil, runtime.NewStatus(http.StatusBadRequest)
+	//}
+	//ctx := runtime.NewFileUrlContext(nil, r.URL.String())
+	switch strings.ToUpper(method) {
 	case http.MethodPut:
 		entries, status := createEntries(body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 			return nil, status
 		}
 		if len(entries) == 0 {
 			status = runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 			return nil, status
 		}
 		status = addEntry(ctx, entries)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 		}
 		return nil, status
 	case http.MethodDelete:
 		status := deleteEntries(ctx)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
 		}
 		return nil, status
 	default:

@@ -30,7 +30,7 @@ const (
 func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[runtime.Log](h, values, "")
+	return getEntryHandler[runtime.Log](nil, h, values)
 }
 
 // PostEntryConstraints - Post constraints
@@ -40,10 +40,9 @@ type PostEntryConstraints interface {
 
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
-	r, _ := http2.NewRequest(h, method, "urn:nid:nss", nil)
-	http2.AddRequestIdHeader(h)
+	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.Log](r, values, body)
+	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
 
 // HttpHandler - http endpoint
