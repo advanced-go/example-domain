@@ -14,13 +14,13 @@ func Example_postEntryHandler() {
 	//}
 
 	req.Header.Set(runtime.XRequestId, "1234-5678")
-	_, status := postEntryHandler[runtime.Output](req.Header, req.Method, nil, nil, "")
+	_, status := postEntryHandler[runtime.Output](nil, req.Header, req.Method, nil, nil)
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	req, _ = http.NewRequest("PUT", "https://www.google.com", nil)
 	//req.Header.Set(ContentLocation, EntryV1Variant)
 	req.Header.Set(runtime.XRequestId, "8765-4321")
-	_, status = postEntryHandler[runtime.Output](req.Header, req.Method, nil, "invalid string type", "")
+	_, status = postEntryHandler[runtime.Output](nil, req.Header, req.Method, nil, "invalid string type")
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	//Output:

@@ -29,7 +29,7 @@ const (
 func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[runtime.Log](h, values, "")
+	return getEntryHandler[runtime.Log](nil, h, values)
 }
 
 // PostEntryConstraints - Post constraints
@@ -41,7 +41,7 @@ type PostEntryConstraints interface {
 func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[runtime.Log](h, method, values, body, "")
+	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
 
 // HttpHandler - Http endpoint
@@ -61,7 +61,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	case entryResource:
 		func() (status runtime.Status) {
 			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
-			return httpEntryHandler[runtime.Log](w, r, "")
+			return httpEntryHandler[runtime.Log](w, r)
 		}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)

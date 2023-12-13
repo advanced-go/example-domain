@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"context"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
@@ -10,10 +11,10 @@ const (
 	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](h http.Header, values url.Values, variant string) (t []Entry, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
 	var e E
 
-	t, status = queryEntries(runtime.NewFileUrlContext(nil, variant), values)
+	t, status = queryEntries(ctx, values)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
 		return t, status

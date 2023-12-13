@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request, variant string) runtime.Status {
+func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntryHandler[E](r.Header, r.URL.Query(), variant)
+		buf, status := getEntryHandler[E](r.Context(), r.Header, r.URL.Query())
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -22,11 +22,11 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		_, status := postEntryHandler[E](r.Header, r.Method, r.URL.Query(), r.Body, "")
+		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, r.URL.Query(), r.Body)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := postEntryHandler[E](r.Header, r.Method, r.URL.Query(), nil, "")
+		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, r.URL.Query(), nil)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

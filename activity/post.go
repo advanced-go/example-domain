@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"context"
 	"errors"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
@@ -16,10 +17,9 @@ const (
 	createEntriesLoc    = PkgPath + ":createEntries"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](h http.Header, method string, _ url.Values, body any, variant string) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (any, runtime.Status) {
 	var e E
 
-	ctx := runtime.NewFileUrlContext(nil, variant)
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
 		entries, status := createEntries(body)
