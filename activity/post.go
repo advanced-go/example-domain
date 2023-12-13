@@ -1,12 +1,13 @@
 package activity
 
 import (
-	"context"
+	"errors"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -15,7 +16,7 @@ const (
 	putEntryLoc         = PkgPath + ":putEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](r *http.Request, _ url.Values, body any) (any, runtime.Status) {
 	var e E
 
 	if r == nil {
@@ -24,7 +25,15 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, r
 	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
-		status := putEntry(ctx, body)
+		entries, status := createEntries(body)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			return nil, status
+		}
+		if len(entries) == 0 {
+			return nil, runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+		}
+		status = addEntry(ctx, entries)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
 		}
@@ -40,9 +49,9 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, r
 	}
 }
 
-func putEntry(ctx context.Context, body any) runtime.Status {
+func createEntries(body any) ([]Entry, runtime.Status) {
 	if body == nil {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
 	}
 	var entries []Entry
 
@@ -52,22 +61,19 @@ func putEntry(ctx context.Context, body any) runtime.Status {
 	case []byte:
 		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(putEntryLoc)
 		}
 	case io.ReadCloser:
 		buf, status := io2.ReadAll(ptr)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(putEntryLoc)
 		}
 		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
-			return status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(putEntryLoc)
 		}
 	default:
-		return runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
 	}
-	if len(entries) == 0 {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
-	}
-	return addEntry(ctx, entries)
+	return entries, runtime.StatusOK()
 }

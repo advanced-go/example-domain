@@ -14,7 +14,7 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		buf, status := getEntryHandler[E](r.Header, r.URL)
+		buf, status := getEntryHandler[E](r.Header, nil, r.URL)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 			return status
@@ -22,11 +22,11 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
 		return status
 	case http.MethodPut:
-		_, status := postEntryHandler[E](r, r.Body)
+		_, status := postEntryHandler[E](r, nil, r.Body)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	case http.MethodDelete:
-		_, status := postEntryHandler[E](r, nil)
+		_, status := postEntryHandler[E](r, nil, nil)
 		http2.WriteResponse[E](w, nil, status, nil)
 		return status
 	default:

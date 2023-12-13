@@ -14,13 +14,13 @@ func Example_postEntryHandler() {
 	//}
 
 	req.Header.Set(runtime.XRequestId, "1234-5678")
-	_, status := postEntryHandler[runtime.Output](req, nil)
+	_, status := postEntryHandler[runtime.Output](req, nil, nil)
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	req, _ = http.NewRequest("PUT", "https://www.google.com", nil)
 	//req.Header.Set(ContentLocation, EntryV1Variant)
 	req.Header.Set(runtime.XRequestId, "8765-4321")
-	_, status = postEntryHandler[runtime.Output](req, "invalid string type")
+	_, status = postEntryHandler[runtime.Output](req, nil, "invalid string type")
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	//Output:
@@ -54,7 +54,9 @@ func Example_PostEntry() {
 
 	h := make(http.Header)
 	h.Add(runtime.XRequestId, "123-456")
-	_, status := PostEntry[[]Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
+	_, status := PostEntry[[]Entry](h, "PUT", nil, entries)
+	//_, status := PostEntry[[]Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
+
 	fmt.Printf("test: PostEntry() -> [status:%v]\n", status)
 
 	//Output:
