@@ -13,7 +13,7 @@ import (
 
 const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
-	putEntryLoc         = PkgPath + ":putEntry"
+	createEntriesLoc    = PkgPath + ":createEntries"
 )
 
 func postEntryHandler[E runtime.ErrorHandler](r *http.Request, _ url.Values, body any) (any, runtime.Status) {
@@ -31,7 +31,9 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, _ url.Values, bod
 			return nil, status
 		}
 		if len(entries) == 0 {
-			return nil, runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+			status = runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
+			e.Handle(status, runtime.RequestId(r), postEntryHandlerLoc)
+			return nil, status
 		}
 		status = addEntry(ctx, entries)
 		if !status.OK() {
@@ -51,7 +53,7 @@ func postEntryHandler[E runtime.ErrorHandler](r *http.Request, _ url.Values, bod
 
 func createEntries(body any) ([]Entry, runtime.Status) {
 	if body == nil {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putEntryLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 	var entries []Entry
 
@@ -61,19 +63,19 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 	case []byte:
 		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
-			return nil, status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
 		buf, status := io2.ReadAll(ptr)
 		if !status.OK() {
-			return nil, status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
-			return nil, status.AddLocation(putEntryLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 	default:
-		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, putEntryLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntriesLoc, runtime.NewInvalidBodyTypeError(body))
 	}
 	return entries, runtime.StatusOK()
 }

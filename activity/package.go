@@ -27,11 +27,6 @@ const (
 
 // GetEntry - get entries with headers and uri
 func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
-	//u, err := url.Parse(uri)
-	//if err != nil {
-	//	status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
-	//	return
-	//}
 	h = http2.AddRequestIdHeader(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
 	return getEntryHandler[runtime.Log](h, values, nil)

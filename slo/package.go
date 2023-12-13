@@ -19,24 +19,18 @@ const (
 	Pattern = "/" + PkgPath + "/"
 
 	entryResource = "entry"
-	postEntryLoc  = PkgPath + ":postEntry"
-	getEntryLoc   = PkgPath + ":getEntry"
+	postRouteName = "post-entry"
+	postEntryLoc  = PkgPath + ":PostEntry"
+
+	getRouteName = "get-entry"
+	getEntryLoc  = PkgPath + ":GetEntry"
 )
 
 // GetEntry - get entries
-func GetEntry(h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	return getEntry[runtime.Log](h, uri)
-}
-
-func getEntry[E runtime.ErrorHandler](h http.Header, uri string) (entries []Entry, status runtime.Status) {
-	u, err := url.Parse(uri)
-	if err != nil {
-		status = runtime.NewStatusError(runtime.StatusInvalidContent, getEntryLoc, err)
-		return
-	}
+func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), "getEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return getEntryHandler[E](h, u)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
+	return getEntryHandler[runtime.Log](h, values, nil)
 }
 
 // PostEntryConstraints - Post constraints
@@ -45,20 +39,11 @@ type PostEntryConstraints interface {
 }
 
 // PostEntry - exchange function
-func PostEntry[T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	return postEntry[runtime.Log](h, method, uri, body)
-}
-
-func postEntry[E runtime.ErrorHandler, T PostEntryConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	var r *http.Request
-
-	r, status = http2.NewRequest(h, method, uri, nil)
-	if !status.OK() {
-		return nil, status
-	}
+func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+	r, _ := http2.NewRequest(h, method, "urn:nid:nss", nil)
 	http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), "postEntry", -1, "", access.NewStatusCodeClosure(&status))()
-	return postEntryHandler[E](r, body)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, -1, "", access.NewStatusCodeClosure(&status))()
+	return postEntryHandler[runtime.Log](r, values, body)
 }
 
 // HttpHandler - http endpoint
