@@ -10,14 +10,13 @@ import (
 )
 
 const (
-	Type         = "type"
-	readEntryLoc = PkgPath + ":readEntry"
+	Type = "type"
 )
 
 var list []Entry
 
 func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
-	if url, ok := variantFromContext(ctx); ok {
+	if url := LookupFromContext(ctx, ""); len(url) > 0 {
 		return io2.ReadState[[]Entry](url)
 	}
 	if len(list) == 0 {
@@ -28,7 +27,7 @@ func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 
 func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
-	if url, ok := variantFromContext(ctx); ok {
+	if url := LookupFromContext(ctx, ""); len(url) > 0 {
 		return io2.ReadState[[]Entry](url)
 	}
 	for _, v := range list {
@@ -49,7 +48,7 @@ func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtim
 func addEntry(ctx context.Context, e []Entry) runtime.Status {
 	var status runtime.Status
 
-	if url, ok := variantFromContext(ctx); ok {
+	if url := LookupFromContext(ctx, ""); len(url) > 0 {
 		return io2.ReadStatus(url)
 	}
 	for _, item := range e {
@@ -61,7 +60,7 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := variantFromContext(ctx); ok {
+	if url := LookupFromContext(ctx, ""); len(url) > 0 {
 		return io2.ReadStatus(url)
 	}
 	list = []Entry{}
@@ -85,7 +84,7 @@ func queryEntries(ctx context.Context, values url.Values) ([]Entry, runtime.Stat
 }
 
 func logActivity(ctx context.Context, e Entry) runtime.Status {
-	if url, ok := variantFromContext(ctx); ok {
+	if url := LookupFromContext(ctx, ""); len(url) > 0 {
 		return io2.ReadStatus(url)
 	}
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)

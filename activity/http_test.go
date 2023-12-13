@@ -69,7 +69,7 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		req = req.Clone(newVariantContext(nil, tt.args.result))
+		req = req.Clone(NewLookupContext(nil, tt.args.result))
 		t.Run(tt.name, func(t *testing.T) {
 			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
