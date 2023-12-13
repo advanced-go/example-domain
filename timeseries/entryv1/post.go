@@ -2,37 +2,45 @@ package entryv1
 
 import (
 	"context"
+	"errors"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 const (
-	postLoc2 = PkgPath + ":postHandler"
-	putLoc   = PkgPath + ":put"
+	postHandlerLoc   = PkgPath + ":postHandler"
+	createEntriesLoc = PkgPath + ":createEntries"
 )
 
-func postHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtime.Status) {
+func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (any, runtime.Status) {
 	var e E
 
-	if r == nil {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent)
-	}
-	ctx := runtime.NewFileUrlContext(nil, r.URL.String())
-	switch strings.ToUpper(r.Method) {
+	switch strings.ToUpper(method) {
 	case http.MethodPut:
-		status := put(ctx, body)
+		entries, status := createEntries(body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postLoc2)
+			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
+			return nil, status
+		}
+		if len(entries) == 0 {
+			status = runtime.NewStatusError(runtime.StatusInvalidContent, postHandlerLoc, errors.New("error: no entries found"))
+			e.Handle(status, runtime.RequestId(h), "")
+			return nil, status
+		}
+		status = addEntry(ctx, entries)
+		if !status.OK() {
+			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
 		}
 		return nil, status
 	case http.MethodDelete:
 		status := deleteEntries(ctx)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(r), postLoc2)
+			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
 		}
 		return nil, status
 	default:
@@ -40,9 +48,9 @@ func postHandler[E runtime.ErrorHandler](r *http.Request, body any) (any, runtim
 	}
 }
 
-func put(ctx context.Context, body any) runtime.Status {
+func createEntries(body any) ([]Entry, runtime.Status) {
 	if body == nil {
-		return runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(putLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 	var entries []Entry
 
@@ -52,22 +60,19 @@ func put(ctx context.Context, body any) runtime.Status {
 	case []byte:
 		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
-			return status.AddLocation(putLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
 		buf, status := io2.ReadAll(ptr)
 		if !status.OK() {
-			return status.AddLocation(putLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
-			return status.AddLocation(putLoc)
+			return nil, status.AddLocation(createEntriesLoc)
 		}
 	default:
-		return runtime.NewStatusError(runtime.StatusInvalidContent, putLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntriesLoc, runtime.NewInvalidBodyTypeError(body))
 	}
-	if len(entries) == 0 {
-		return runtime.NewStatus(runtime.StatusInvalidContent)
-	}
-	return addEntry(ctx, entries)
+	return entries, runtime.StatusOK()
 }
