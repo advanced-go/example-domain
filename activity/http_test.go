@@ -69,16 +69,19 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		var err error
-		req, err = http2test.UpdateUrl(tt.args.result, req)
-		if err != nil {
-			t.Errorf("UpdateUrl() failure = %v", err)
-			continue
-		}
+		/*
+			var err error
+			req, err = http2test.UpdateUrl(tt.args.result, req)
+			if err != nil {
+				t.Errorf("UpdateUrl() failure = %v", err)
+				continue
+			}
+
+		*/
 		t.Run(tt.name, func(t *testing.T) {
 			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpEntryHandler[runtime.Output](w, req)
+			httpEntryHandler[runtime.Output](w, req, tt.args.result)
 
 			// kludge for BUG in response recorder
 			w.Result().Header = w.Header()
