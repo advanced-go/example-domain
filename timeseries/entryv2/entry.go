@@ -58,6 +58,6 @@ func deleteEntries(ctx context.Context) runtime.Status {
 	return runtime.StatusOK()
 }
 
-func queryEntries(ctx context.Context, u *url.URL) ([]Entry, runtime.Status) {
+func queryEntries(ctx context.Context, _ url.Values) ([]Entry, runtime.Status) {
 	return getEntries(ctx)
 }
