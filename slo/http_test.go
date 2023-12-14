@@ -19,7 +19,7 @@ func Test_httpHandler(t *testing.T) {
 	type args struct {
 		req    string
 		resp   string
-		result string
+		result any
 	}
 	tests := []struct {
 		name string
@@ -35,7 +35,7 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
+		setOverrideLookup(tt.args.result)
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
