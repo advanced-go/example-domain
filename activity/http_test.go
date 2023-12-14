@@ -51,17 +51,17 @@ func Test_httpHandler(t *testing.T) {
 	type args struct {
 		req    string
 		resp   string
-		result string
+		result any
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: stateEmpty}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: stateEntry}},
-		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", result: stateEntryType}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: io2.StatusOK}},
+		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: map[string]string{"getEntries": stateEmpty}}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{"addEntry": io2.StatusOK}}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: map[string]string{"getEntries": stateEntry}}},
+		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", result: map[string]string{"getEntriesByType": stateEntryType}}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string]string{"deleteEntries": io2.StatusOK}}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
@@ -69,7 +69,8 @@ func Test_httpHandler(t *testing.T) {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
 		}
-		req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
+		//req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
+		setOverrideLookup(tt.args.result)
 		t.Run(tt.name, func(t *testing.T) {
 			w := http2test.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
