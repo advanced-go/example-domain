@@ -17,14 +17,12 @@ func setOverrideLookup(t any) {
 }
 
 func lookup(key string) (string, bool) {
-	if len(key) == 0 {
+	if overrideLookup == nil || len(key) == 0 {
 		return "", false
 	}
-	if overrideLookup != nil {
-		val := overrideLookup(key)
-		if len(val) > 0 {
-			return val, true
-		}
+	val := overrideLookup(key)
+	if len(val) > 0 {
+		return val, true
 	}
 	return "", false
 }
