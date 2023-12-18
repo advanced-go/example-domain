@@ -36,8 +36,7 @@ func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.
 
 func addEntries(ctx context.Context, e []Entry) runtime.Status {
 	if urls, ok := lookup("addEntries"); ok {
-		_, status := io2.ReadResults[runtime.Nillable](urls)
-		return status
+		return io2.ReadStatus(urls)
 	}
 	for _, item := range e {
 		if len(item.Id) == 0 {
@@ -52,8 +51,7 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 
 func deleteEntries(ctx context.Context) runtime.Status {
 	if urls, ok := lookup("deleteEntries"); ok {
-		_, status := io2.ReadResults[runtime.Nillable](urls)
-		return status
+		return io2.ReadStatus(urls)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
