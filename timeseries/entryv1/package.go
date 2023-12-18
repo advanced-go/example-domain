@@ -14,10 +14,10 @@ import (
 const (
 	PkgPath = "github.com/advanced-go/example-domain/timeseries/entryv1"
 
-	entryResource = "v1/entry"
-
-	getRouteName = "get"
-	getLoc       = PkgPath + ":Get"
+	entryResource        = "v1/entry"
+	httpHandlerRouteName = "http-handler"
+	getRouteName         = "get"
+	getLoc               = PkgPath + ":Get"
 
 	postRouteName = "post"
 	postLoc       = PkgPath + ":Post"
@@ -25,8 +25,8 @@ const (
 
 // Get - get entries
 func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
-	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), getRouteName, -1, "", access.NewStatusCodeClosure(&status))()
+	h = runtime.AddRequestId(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), getRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
 	return getHandler[runtime.Log](nil, h, values)
 }
 
@@ -37,8 +37,8 @@ type PostConstraints interface {
 
 // Post - exchange function
 func Post[T PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
-	h = http2.AddRequestIdHeader(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), "post", -1, "", access.NewStatusCodeClosure(&status))()
+	h = runtime.AddRequestId(h)
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), postRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
 	return postHandler[runtime.Log](nil, h, method, values, body)
 }
 
@@ -54,11 +54,11 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
-	http2.AddRequestId(r)
+	runtime.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
 		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, "HttpHandler", -1, "", access.NewStatusCodeClosure(&status))()
+			defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", access.NewStatusCodeClosure(&status))()
 			return httpHandler[runtime.Log](w, r)
 		}()
 	default:

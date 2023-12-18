@@ -3,30 +3,30 @@ package timeseries
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"net/http"
 )
 
 func Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
 	// Bad Request
-	rec := http2.NewRecorder()
+	rec := http2test.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	HttpHandler(rec, req)
 	buf, _ := io2.ReadAll(rec.Result().Body)
 	fmt.Printf("test: HttpHandler() -> [status:%v] [body:%v]\n", rec.Code, string(buf))
 
 	// Not Found - invalid resource
-	rec = http2.NewRecorder()
+	rec = http2test.NewRecorder()
 	req, _ = http.NewRequest("", "https://localhost:8080/github.com/advanced-go/example-domain/timeseries:entry", nil)
 	HttpHandler(rec, req)
 	buf, _ = io2.ReadAll(rec.Result().Body)
 	fmt.Printf("test: HttpHandler() -> [status:%v] [body:%v]\n", rec.Code, string(buf))
 
 	// Not Found - no content
-	rec = http2.NewRecorder()
+	rec = http2test.NewRecorder()
 	req, _ = http.NewRequest("", "https://localhost:8080/github.com/advanced-go/example-domain/timeseries:v2/entry", nil)
 	HttpHandler(rec, req)
 	buf, _ = io2.ReadAll(rec.Result().Body)

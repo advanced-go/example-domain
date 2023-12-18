@@ -32,7 +32,7 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 			e.Handle(status, runtime.RequestId(h), "")
 			return nil, status
 		}
-		status = addEntry(ctx, entries)
+		status = addEntries(ctx, entries)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
 		}

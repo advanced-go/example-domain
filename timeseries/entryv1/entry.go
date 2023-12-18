@@ -37,15 +37,15 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
-	if url, ok := lookup("getEntries"); ok {
-		return io2.ReadState[[]Entry](url)
+	if urls, ok := lookup("getEntries"); ok {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	return list, runtime.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []Entry) runtime.Status {
-	if url, ok := lookup("addEntry"); ok {
-		return io2.ReadStatus(url)
+func addEntries(ctx context.Context, e []Entry) runtime.Status {
+	if urls, ok := lookup("addEntries"); ok {
+		return io2.ReadStatus(urls)
 	}
 	for _, item := range e {
 		list = append(list, item)
@@ -54,8 +54,8 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := lookup("deleteEntries"); ok {
-		return io2.ReadStatus(url)
+	if urls, ok := lookup("deleteEntries"); ok {
+		return io2.ReadStatus(urls)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()

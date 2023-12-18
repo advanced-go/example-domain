@@ -8,6 +8,7 @@ import (
 	"github.com/advanced-go/example-domain/timeseries/entryv1"
 	"github.com/advanced-go/example-domain/timeseries/entryv2"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -18,23 +19,23 @@ const (
 )
 
 // GetEntryV1 - get entries
-func GetEntryV1(h http.Header, uri string) (entries []entryv1.Entry, status runtime.Status) {
-	return entryv1.Get(h, uri)
+func GetEntryV1(h http.Header, values url.Values) (entries []entryv1.Entry, status runtime.Status) {
+	return entryv1.Get(h, values)
 }
 
 // GetEntryV2 - get entries
-func GetEntryV2(h http.Header, uri string) (entries []entryv2.Entry, status runtime.Status) {
-	return entryv2.Get(h, uri)
+func GetEntryV2(h http.Header, values url.Values) (entries []entryv2.Entry, status runtime.Status) {
+	return entryv2.Get(h, values)
 }
 
 // PostEntryV1 - exchange function
-func PostEntryV1[T entryv1.PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	return entryv1.Post[T](h, method, uri, body)
+func PostEntryV1[T entryv1.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+	return entryv1.Post[T](h, method, values, body)
 }
 
 // PostEntryV2 - exchange function
-func PostEntryV2[T entryv2.PostConstraints](h http.Header, method, uri string, body T) (t any, status runtime.Status) {
-	return entryv2.Post[T](h, method, uri, body)
+func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+	return entryv2.Post[T](h, method, values, body)
 }
 
 // HttpHandler - http endpoint
@@ -46,7 +47,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 		return
 	}
-	http2.AddRequestId(r)
+	runtime.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case v1EntryResource:
 		entryv1.HttpHandler(w, r)

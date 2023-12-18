@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -18,7 +17,7 @@ const (
 )
 
 func _Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
 	rec := http2test.NewRecorder()
 	//req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
@@ -43,10 +42,10 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v2.txt", resp: "put-resp-v2.txt", result: io2.StatusOK}},
-		{"get-entries", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt", result: validEntry}},
+		{"put-entries", args{req: "put-req-v2.txt", resp: "put-resp-v2.txt", result: map[string][]string{"addEntries": {}}}},
+		{"get-entries", args{req: "get-req-v2.txt", resp: "get-resp-v2.txt", result: map[string][]string{"getEntries": {validEntry}}}},
 		//	{"get-entries-by-controller", args{req: "get-ctrl-req.txt", resp: "get-ctrl-resp.txt",resultemptyEntry}},
-		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt", result: io2.StatusOK}},
+		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt", result: map[string][]string{"deleteEntries": {}}}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/entryv2test/resource/", tt.args.req, tt.args.resp)

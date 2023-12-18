@@ -26,7 +26,7 @@ func createEntry(ctrl string) []Entry {
 
 func Example_addEntry() {
 
-	addEntry(nil, createEntry("host"))
+	addEntries(nil, createEntry("host"))
 	fmt.Printf("test: addEntry() -> %v\n", list)
 
 	//Output:

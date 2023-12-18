@@ -1,11 +1,9 @@
 package entryv2
 
-import (
-	"github.com/advanced-go/core/runtime"
-)
+import "github.com/advanced-go/core/runtime"
 
 var (
-	overrideLookup func(string) string
+	overrideLookup func(string) []string
 )
 
 func setOverrideLookup(t any) {
@@ -13,16 +11,16 @@ func setOverrideLookup(t any) {
 		overrideLookup = nil
 		return
 	}
-	overrideLookup = runtime.OverrideLookup(t)
+	overrideLookup = runtime.LookupFromType[func(string) []string](t)
 }
 
-func lookup(key string) (string, bool) {
+func lookup(key string) ([]string, bool) {
 	if overrideLookup == nil || len(key) == 0 {
-		return "", false
+		return nil, false
 	}
 	val := overrideLookup(key)
 	if len(val) > 0 {
 		return val, true
 	}
-	return "", false
+	return nil, false
 }
