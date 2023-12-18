@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -14,11 +13,11 @@ import (
 )
 
 func _Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
-	rec := http2.NewRecorder()
+	rec := http2test.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
-	req.Header.Add(http2.ContentLocation, EntryV1Variant)
+	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
 	fmt.Printf("test: HttpHandler() -> %v", rec.Code)
 
