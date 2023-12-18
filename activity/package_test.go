@@ -19,7 +19,7 @@ func Example_PkgUri() {
 }
 
 func Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
 	// Bad Request
 	uri := "http://localhost:8080/github.com/advanced-go/example-domain/activity/entry"

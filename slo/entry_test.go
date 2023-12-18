@@ -2,23 +2,23 @@ package slo
 
 import "fmt"
 
-func Example_addEntry() {
-	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+func Example_addEntries() {
+	addEntries(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
 	printEntries(list)
-	//fmt.Printf("test: addEntry() -> %v %v %v\n", list[0].Controller, list[0].Threshold, list[0].StatusCodes)
+	//fmt.Printf("test: addEntries() -> %v %v %v\n", list[0].Controller, list[0].Threshold, list[0].StatusCodes)
 
-	addEntry(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntries(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 	printEntries(list)
-	//fmt.Printf("test: addEntry() -> %v\n", list)
+	//fmt.Printf("test: addEntries() -> %v\n", list)
 
-	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntries(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	printEntries(list)
-	//fmt.Printf("test: addEntry() -> %v\n", list)
+	//fmt.Printf("test: addEntries() -> %v\n", list)
 
 	//Output:
-	//test: addEntry() -> {percentile, 99/1s, []}
-	//test: addEntry() -> {percentile, 99/1s, []} {status-codes, 10%, 500,504}
-	//test: addEntry() -> {percentile, 99/1s, []} {status-codes, 10%, 500,504} {percentile, 95/500ms, []}
+	//test: addEntries() -> {percentile, 99/1s, []}
+	//test: addEntries() -> {percentile, 99/1s, []} {status-codes, 10%, 500,504}
+	//test: addEntries() -> {percentile, 99/1s, []} {status-codes, 10%, 500,504} {percentile, 95/500ms, []}
 
 }
 
@@ -26,7 +26,7 @@ func printEntries(entries []Entry) {
 	s := ""
 	for i, e := range entries {
 		if i == 0 {
-			fmt.Printf("test: addEntry() -> ")
+			fmt.Printf("test: addEntries() -> ")
 		}
 		code := e.StatusCodes
 		if e.StatusCodes == "" {
@@ -39,8 +39,8 @@ func printEntries(entries []Entry) {
 }
 
 func ExampleGetEntryByController() {
-	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
-	addEntry(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntries(nil, []Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+	addEntries(nil, []Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 
 	ctrl := ""
 	s, _ := getEntriesByController(nil, ctrl)
@@ -60,7 +60,7 @@ func ExampleGetEntryByController() {
 	}
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
-	addEntry(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntries(nil, []Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	ctrl = "percentile"
 	s, _ = getEntriesByController(nil, ctrl)
 	if len(s) > 0 {

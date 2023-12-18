@@ -30,7 +30,7 @@ func Example_postEntryHandler() {
 }
 
 func Example_PostEntry() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 	entries := []Entry{
 		{
 			ActivityID:   "",

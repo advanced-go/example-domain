@@ -4,9 +4,9 @@ import (
 	"fmt"
 )
 
-func Example_addEntry() {
+func Example_addEntries() {
 
-	addEntry(nil, []Entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -17,17 +17,17 @@ func Example_addEntry() {
 	}},
 	)
 
-	fmt.Printf("test: addEntry() -> %v\n", list)
+	fmt.Printf("test: addEntries() -> %v\n", list)
 
 	//Output:
 	//{ "activity": "trace" "agent": "agent-controller"  "controller": "host-controller"  "message": "Analyzing observation"  }
-	//test: addEntry() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Analyzing observation}]
+	//test: addEntries() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Analyzing observation}]
 
 }
 
 func Example_getEntriesByType() {
 
-	addEntry(nil, []Entry{{ActivityID: "urn:uuid:1",
+	addEntries(nil, []Entry{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -38,7 +38,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry(nil, []Entry{{ActivityID: "urn:uuid:2",
+	addEntries(nil, []Entry{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -49,7 +49,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntry(nil, []Entry{{ActivityID: "urn:uuid:3",
+	addEntries(nil, []Entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-service:0123456789",

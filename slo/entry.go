@@ -16,15 +16,15 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
-	if url, ok := lookup("getEntries"); ok {
-		return io2.ReadState[[]Entry](url)
+	if urls, ok := lookup("getEntries"); ok {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	return list, runtime.StatusOK()
 }
 
 func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.Status) {
-	if url, ok := lookup("getEntriesByController"); ok {
-		return io2.ReadState[[]Entry](url)
+	if urls, ok := lookup("getEntriesByController"); ok {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
@@ -34,9 +34,10 @@ func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.
 	return nil, runtime.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []Entry) runtime.Status {
-	if url, ok := lookup("addEntry"); ok {
-		return io2.ReadStatus(url)
+func addEntries(ctx context.Context, e []Entry) runtime.Status {
+	if urls, ok := lookup("addEntries"); ok {
+		_, status := io2.ReadResults[runtime.Nillable](urls)
+		return status
 	}
 	for _, item := range e {
 		if len(item.Id) == 0 {
@@ -50,8 +51,9 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := lookup("deleteEntries"); ok {
-		return io2.ReadStatus(url)
+	if urls, ok := lookup("deleteEntries"); ok {
+		_, status := io2.ReadResults[runtime.Nillable](urls)
+		return status
 	}
 	list = []Entry{}
 	return runtime.StatusOK()

@@ -25,9 +25,9 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: io2.StatusOK}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: validEntry}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: io2.StatusOK}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string][]string{"addEntries": {"", io2.StatusOKUri}}}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: map[string][]string{"getEntries": {validEntry}}}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string][]string{"deleteEntries": {"", ""}}}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp("file://[cwd]/slotest/resource/", tt.args.req, tt.args.resp)

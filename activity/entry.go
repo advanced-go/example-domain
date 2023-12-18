@@ -16,8 +16,8 @@ const (
 var list []Entry
 
 func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
-	if url, ok := lookup("getEntries"); ok {
-		return io2.ReadState[[]Entry](url)
+	if urls, ok := lookup("getEntries"); ok {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	if len(list) == 0 {
 		return list, runtime.NewStatus(http.StatusNotFound)
@@ -27,8 +27,8 @@ func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 
 func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
-	if url, ok := lookup("getEntriesByType"); ok {
-		return io2.ReadState[[]Entry](url)
+	if urls, ok := lookup("getEntriesByType"); ok {
+		return io2.ReadResults[[]Entry](urls)
 	}
 	for _, v := range list {
 		if act == "" {
@@ -45,11 +45,12 @@ func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtim
 	return l, runtime.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []Entry) runtime.Status {
+func addEntries(ctx context.Context, e []Entry) runtime.Status {
 	var status runtime.Status
 
-	if url, ok := lookup("addEntry"); ok {
-		return io2.ReadStatus(url)
+	if urls, ok := lookup("addEntries"); ok {
+		_, status = io2.ReadResults[runtime.Nillable](urls)
+		return status
 	}
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
@@ -60,8 +61,9 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := lookup("deleteEntries"); ok {
-		return io2.ReadStatus(url)
+	if urls, ok := lookup("deleteEntries"); ok {
+		_, status := io2.ReadResults[runtime.Nillable](urls)
+		return status
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
@@ -84,8 +86,9 @@ func queryEntries(ctx context.Context, values url.Values) ([]Entry, runtime.Stat
 }
 
 func logActivity(ctx context.Context, e Entry) runtime.Status {
-	if url, ok := lookup("logActivity"); ok {
-		return io2.ReadStatus(url)
+	if urls, ok := lookup("logActivity"); ok {
+		_, status := io2.ReadResults[runtime.Nillable](urls)
+		return status
 	}
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)

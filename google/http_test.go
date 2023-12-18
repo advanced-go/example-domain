@@ -3,6 +3,7 @@ package google
 import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 )
 
 func Example_httpHandler() {
-	r := http2.NewRecorder()
+	r := http2test.NewRecorder()
 
 	req, _ := http.NewRequest("", "http://localhost:8080"+"/"+PkgPath+"?q=test", nil)
 	status := httpHandler[runtime.Output](r, req)

@@ -18,9 +18,9 @@ const (
 )
 
 func _Example_HttpHandler() {
-	access.EnableTestLogHandler()
+	access.EnableTestLogger()
 
-	addEntry(nil, []Entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -57,11 +57,11 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: map[string]string{"getEntries": stateEmpty}}},
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{"addEntry": io2.StatusOK}}},
-		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: map[string]string{"getEntries": stateEntry}}},
-		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", result: map[string]string{"getEntriesByType": stateEntryType}}},
-		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string]string{"deleteEntries": io2.StatusOK}}},
+		{"get-entries-empty", args{req: "get-req-v1.txt", resp: "get-resp-v1-empty.txt", result: map[string][]string{"getEntries": {stateEmpty}}}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string][]string{"addEntry": {"", ""}}}},
+		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: map[string][]string{"getEntries": {stateEntry}}}},
+		{"get-entries-by-type", args{req: "get-type-req-v1.txt", resp: "get-type-resp-v1.txt", result: map[string][]string{"getEntriesByType": {stateEntryType}}}},
+		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string][]string{"deleteEntries": {"", ""}}}},
 	}
 	for _, tt := range tests {
 		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
