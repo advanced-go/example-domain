@@ -7,6 +7,7 @@ import (
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 	"testing"
 )
@@ -31,7 +32,7 @@ func _Example_HttpHandler() {
 	}},
 	)
 
-	rec := http2test.NewRecorder()
+	rec := httptest.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
@@ -72,7 +73,7 @@ func Test_httpHandler(t *testing.T) {
 		//req = req.Clone(runtime.NewLookupContext(nil, tt.args.result))
 		setOverrideLookup(tt.args.result)
 		t.Run(tt.name, func(t *testing.T) {
-			w := http2test.NewRecorder()
+			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
 			httpEntryHandler[runtime.Output](w, req)
 

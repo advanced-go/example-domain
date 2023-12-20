@@ -2,6 +2,7 @@ package google
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/exchange"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
@@ -13,7 +14,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
 	requestId := "invalid-change"
-	http2.AddRequestId(r)
+	runtime.AddRequestId(r)
 	switch r.Method {
 	case http.MethodGet:
 		var e E
@@ -23,7 +24,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
 		// http2.Do() will always return a non nil *http.Response
-		resp, status := http2.Do(req)
+		resp, status := exchange.Do(req)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}

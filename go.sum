@@ -56,6 +56,8 @@ github.com/advanced-go/core v0.0.0-20231220174335-3ba391410e1d h1:zKvpTGtQYUFaMi
 github.com/advanced-go/core v0.0.0-20231220174335-3ba391410e1d/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20231220193051-d392e10d0b3b h1:uz5uy/a3nJuazf40QPmXK6UqTrbFQlS9Wt6Zx55Qwy8=
 github.com/advanced-go/core v0.0.0-20231220193051-d392e10d0b3b/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231220201933-2ebf57645008 h1:rBkFDvT2nSKEQa3hBLFIH32dJf7l48iRxFTDDp6kxeo=
+github.com/advanced-go/core v0.0.0-20231220201933-2ebf57645008/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080 h1:NzQaFbsdkWPx07h5CpAc+4/++ow0P8/UWW6NJoQesiM=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080/go.mod h1:Mk6W1iSvoYREWKDc7RQQvr/zaA3F+9XIRkMqGfnZLSA=
 github.com/advanced-go/messaging v0.0.0-20231204164909-371f798945bd h1:3u6zFJZTAwY6Mqu45qagTYn7RWd85crLQNZQhiRyHnQ=

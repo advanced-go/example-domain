@@ -20,7 +20,7 @@ const (
 func _Example_HttpHandler() {
 	access.EnableTestLogger()
 
-	rec := http2test.NewRecorder()
+	rec := httptest.NewRecorder()
 	//req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	//HttpHandler(rec, req)
