@@ -6,6 +6,7 @@ import (
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/core/uri"
 	"net/http"
 	"net/url"
 	"strings"
@@ -51,7 +52,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, runtime.NewStatus(runtime.StatusInvalidArgument), nil)
 		return
 	}
-	_, rsc, ok := http2.UprootUrn(r.URL.Path)
+	_, rsc, ok := uri.UprootUrn(r.URL.Path)
 	if !ok || len(rsc) == 0 {
 		status := runtime.NewStatusWithContent(http.StatusBadRequest, errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)

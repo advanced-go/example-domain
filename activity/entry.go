@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/io2/io2test"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
@@ -61,7 +62,7 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 
 func deleteEntries(ctx context.Context) runtime.Status {
 	if urls, ok := lookup("deleteEntries"); ok {
-		return io2.ReadStatus(urls)
+		return io2test.ReadStatus(urls)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()

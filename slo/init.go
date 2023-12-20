@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	status := exchange.Register(exchange.NewMailbox(PkgPath, false))
+	status := exchange.Register(exchange.NewMailbox(PkgPath, false, false))
 	if status.OK() {
 		agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
 	}

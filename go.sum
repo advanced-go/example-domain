@@ -52,6 +52,10 @@ github.com/advanced-go/core v0.0.0-20231218113453-081a6cb17285 h1:JfWh/lKS6Iq0pG
 github.com/advanced-go/core v0.0.0-20231218113453-081a6cb17285/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20231218203003-db6e9a83794e h1:jkSoazqqIj0/JoYsSAEc1F8Ju7ADExUTLXQNi5SHtBA=
 github.com/advanced-go/core v0.0.0-20231218203003-db6e9a83794e/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231220174335-3ba391410e1d h1:zKvpTGtQYUFaMi2bHNzjv7Xc5Za9HcZuS2PHCB79ztE=
+github.com/advanced-go/core v0.0.0-20231220174335-3ba391410e1d/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231220193051-d392e10d0b3b h1:uz5uy/a3nJuazf40QPmXK6UqTrbFQlS9Wt6Zx55Qwy8=
+github.com/advanced-go/core v0.0.0-20231220193051-d392e10d0b3b/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080 h1:NzQaFbsdkWPx07h5CpAc+4/++ow0P8/UWW6NJoQesiM=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080/go.mod h1:Mk6W1iSvoYREWKDc7RQQvr/zaA3F+9XIRkMqGfnZLSA=
 github.com/advanced-go/messaging v0.0.0-20231204164909-371f798945bd h1:3u6zFJZTAwY6Mqu45qagTYn7RWd85crLQNZQhiRyHnQ=
@@ -60,5 +64,7 @@ github.com/advanced-go/messaging v0.0.0-20231204182720-6e5a486bdb53 h1:p0ceWtKVH
 github.com/advanced-go/messaging v0.0.0-20231204182720-6e5a486bdb53/go.mod h1:NRPtNhLKjE6RkVJ6iz22tnxQ0qPXAj8qCVwOu1F4prk=
 github.com/advanced-go/messaging v0.0.0-20231204194133-b3daae986e54 h1:R2DBMMqZdWQNRT2/LoDvTujJJJ84EbkZ4Teu/OUFp6I=
 github.com/advanced-go/messaging v0.0.0-20231204194133-b3daae986e54/go.mod h1:NRPtNhLKjE6RkVJ6iz22tnxQ0qPXAj8qCVwOu1F4prk=
+github.com/advanced-go/messaging v0.0.0-20231220192105-86c5cce95dc0 h1:AYEOLQoMsCpT/HTcJhpcetvpglDmJ+MCe1HCcXr0kC0=
+github.com/advanced-go/messaging v0.0.0-20231220192105-86c5cce95dc0/go.mod h1:DonmYg8URk088g4ta+5bWRXT0x+h8RrVob+bnuvslFo=
 github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
 github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

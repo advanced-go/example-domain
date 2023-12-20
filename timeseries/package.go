@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/core/uri"
 	"github.com/advanced-go/example-domain/timeseries/entryv1"
 	"github.com/advanced-go/example-domain/timeseries/entryv2"
 	"net/http"
@@ -40,7 +41,7 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	_, rsc, ok := http2.UprootUrn(r.URL.Path)
+	_, rsc, ok := uri.UprootUrn(r.URL.Path)
 	if !ok {
 		status := runtime.NewStatus(http.StatusBadRequest)
 		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
