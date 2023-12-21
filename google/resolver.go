@@ -1,42 +1,35 @@
 package google
 
 import (
-	"strings"
+	"github.com/advanced-go/core/uri"
+	"net/url"
 )
 
-type resolverFunc func(string) string
+const (
+	searchTag  = "search"
+	searchPath = "/search"
+)
 
 var (
-	defaultOrigin = "http://localhost:8080"
-	list          []resolverFunc
+	r uri.Resolver
 )
 
-func addResolver(fn resolverFunc) {
-	if fn == nil {
-		return
-	}
-	// do not need mutex, as this is only called from test
-	list = append(list, fn)
+func init() {
+	r = uri.NewResolver("https://www.google.com", defaultFunc)
 }
 
-// resolve - resolve a string to an url.
-func resolve(s string) string {
-	if list != nil {
-		for _, r := range list {
-			url := r(s)
-			if len(url) != 0 {
-				return url
-			}
-		}
+func defaultFunc(id string) string {
+	switch id {
+	case searchTag:
+		return searchPath
 	}
-	return defaultResolver(s)
+	return id
 }
 
-func defaultResolver(u string) string {
-	// if an endpoint, then default to defaultOrigin
-	if strings.HasPrefix(u, "/") {
-		return defaultOrigin + u
-	}
-	// else pass through
-	return u
+func resolve(id string, values url.Values) string {
+	return r.Resolve(id, values)
+}
+
+func setOverride(t any, host string) {
+	r.SetOverride(t, host)
 }

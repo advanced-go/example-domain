@@ -2,90 +2,68 @@ package google
 
 import (
 	"fmt"
+	"net/url"
 )
 
-func Example_resolve() {
-	var s = ""
-	url := resolve(s)
+func Example_Resolve_Default() {
+	id := searchTag
+	uri := resolve(id, nil)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
-	fmt.Printf("test: resolve(%v) -> [%v]\n", s, url)
-
-	s = "http://"
-	url = resolve(s)
-	fmt.Printf("test: resolve(%v) -> [%v]\n", s, url)
-
-	s = "/test/resource?env=dev&cust=1"
-	url = resolve(s)
-	fmt.Printf("test: resolve(%v) -> [%v]\n", s, url)
-
-	s = "https://www.google.com/search?q=testing"
-	url = resolve(s)
-	fmt.Printf("test: resolve(%v) -> [%v]\n", s, url)
+	id = searchTag
+	v := make(url.Values)
+	v.Add("q", "golang")
+	uri = resolve(id, v)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	//Output:
-	//test: resolve() -> []
-	//test: resolve(http://) -> [http://]
-	//test: resolve(/test/resource?env=dev&cust=1) -> [http://localhost:8080/test/resource?env=dev&cust=1]
-	//test: resolve(https://www.google.com/search?q=testing) -> [https://www.google.com/search?q=testing]
+	//test: Resolve("search") -> https://www.google.com/search
+	//test: Resolve("search") -> https://www.google.com/search?q=golang
 
 }
 
-func Example_addResolver() {
-	pattern := "/endpoint/resource"
+func Example_Override_Host() {
+	id := searchTag
+	v := make(url.Values)
+	v.Add("q", "golang")
+	setOverride(nil, "http://localhost:8080")
 
-	uri := resolve(pattern)
-	fmt.Printf("test: resolve(%v) -> %v\n", pattern, uri)
+	uri := resolve(id, nil)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
-	addResolver(func(s string) string {
-		if s == pattern {
-			return "https://github.com/acccount/go-ai-agent/core"
-		}
-		return ""
-	})
-
-	uri = resolve("invalid")
-	fmt.Printf("test: resolve(%v) -> %v\n", pattern, uri)
-
-	uri = resolve(pattern)
-	fmt.Printf("test: resolve(%v) -> %v\n", pattern, uri)
-
-	pattern2 := "/endpoint/resource2"
-	addResolver(func(s string) string {
-		if s == pattern2 {
-			return "https://gitlab.com/entry/idiomatic-go"
-		}
-		return ""
-	})
-
-	uri = resolve(pattern2)
-	fmt.Printf("test: resolve(%v) -> %v\n", pattern2, uri)
+	id = searchTag
+	uri = resolve(id, v)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	//Output:
-	//test: resolve(/endpoint/resource) -> http://localhost:8080/endpoint/resource
-	//test: resolve(/endpoint/resource) -> invalid
-	//test: resolve(/endpoint/resource) -> https://github.com/acccount/go-ai-agent/core
-	//test: resolve(/endpoint/resource2) -> https://gitlab.com/entry/idiomatic-go
+	//test: Resolve("search") -> http://localhost:8080/search
+	//test: Resolve("search") -> http://localhost:8080/search?q=golang
 
 }
 
-/*
-func Example_addResolver_Fail() {
-	runtime.SetProdEnvironment()
-	pattern := "/endpoint/resource"
-
-	addResolver(func(s string) string {
-		if s == pattern {
-			return "https://github.com/acccount/go-ai-agent/core"
-		}
-		return ""
-	})
-
-	fmt.Printf("test: addResolver(%v) -> [err:%v]\n", pattern, nil)
-
-	//Output:
-	//test: addResolver(/endpoint/resource) -> [err:<nil>]
-
+func testOverrideURL(id string) (string, string) {
+	switch id {
+	case searchTag:
+		return "file://[cwd]/resource/query-result.txt", ""
+	}
+	return "", ""
 }
 
+func Example_Override_URL() {
+	id := searchTag
+	v := make(url.Values)
+	v.Add("q", "golang")
+	setOverride(testOverrideURL, "")
 
-*/
+	uri := resolve(id, nil)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
+
+	id = searchTag
+	uri = resolve(id, v)
+	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
+
+	//Output:
+	//test: Resolve("search") -> file://[cwd]/resource/query-result.txt
+	//test: Resolve("search") -> file://[cwd]/resource/query-result.txt
+
+}

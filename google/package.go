@@ -12,18 +12,15 @@ type pkg struct{}
 const (
 	PkgPath = "github.com/advanced-go/example-domain/google"
 	Pattern = "/" + PkgPath + "/"
-)
 
-const (
 	searchLocation     = PkgPath + ":searchHandler"
 	googleQueryArgName = "q"
 
-	// As a rule do not create/use embedded URI's, use endpoints with a sidecar like Envoy for endpoint -> URI resolution.
-	// URI resolution is late and dynamic
+	// Resolution accepts identifiers that can be tags, paths, or complete URLs.
 	// With Envoy
 	//googleEndpoint = "/google/search"
 
-	// Without Envoy, this URL will pass through httpx.Resolve()
+	// Without Envoy, this URL will pass through the resolver
 	googleEndpoint = "https://www.google.com/search"
 )
 

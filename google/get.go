@@ -18,12 +18,12 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 	switch r.Method {
 	case http.MethodGet:
 		var e E
-
-		req, err := http.NewRequest(http.MethodGet, resolve(searchUri(r.URL, googleEndpoint)), nil)
+		newUrl := resolve(searchTag, r.URL.Query()) //resolve(searchUri(r.URL, googleEndpoint)
+		req, err := http.NewRequest(http.MethodGet, newUrl, nil)
 		if err != nil {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")
 		}
-		// http2.Do() will always return a non nil *http.Response
+		// exchange.Do() will always return a non nil *http.Response
 		resp, status := exchange.Do(req)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)

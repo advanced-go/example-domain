@@ -29,10 +29,10 @@ func Example_httpHandler() {
 func Example_Resolver() {
 	// Resolve the content to a file
 	fileUri := "file://[cwd]/resource/query-result.txt"
-	addResolver(func(s string) string {
-		return fileUri
-	},
-	)
+	//googletest.addResolver(func(s string) string {
+	//	return fileUri
+	//},
+	//)
 	u, _ := url.Parse(fileUri)
 	buf, err := io2.ReadFile(u)
 	fmt.Printf("test: ReadFile() -> [err:%v] [buf:%v]\n", err, string(buf))
