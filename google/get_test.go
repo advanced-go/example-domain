@@ -35,7 +35,7 @@ func Example_getHandler() {
 	fmt.Printf("test: getHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.ContentHeader().Get(http2.ContentType), status.ContentHeader().Get(http2.ContentLength))
 
 	//Output:
-	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
+	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:115289]
 
 }
 
@@ -58,10 +58,10 @@ func Example_getHandler_OverrideFail() {
 		if buf != nil {
 		}
 	}
-	fmt.Printf("test: getHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.ContentHeader().Get(http2.ContentType), status.ContentHeader().Get(http2.ContentLength))
+	fmt.Printf("test: getHandler(%v) -> [status:%v]\n", req.URL.String(), status)
 
 	//Output:
-	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=test) -> [status:OK] [content-type:text/html; charset=ISO-8859-1] [content-length:100835]
+	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:I/O Failure [open C:\Users\markb\GitHub\example-domain\google\resource\query-result.txt: The system cannot find the path specified.]]
 
 }
 
