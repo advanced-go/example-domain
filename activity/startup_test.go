@@ -1,18 +1,18 @@
-package slo
+package activity
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
 	"github.com/advanced-go/messaging/mux"
 	"net/http"
-	"net/http/httptest"
 )
 
 func Example_Ping() {
-	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/slo:ping", nil)
+	w := http2test.NewRecorder()
+	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/activity:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	mux.ProcessPing[runtime.Output](w, nid)
 	buf, status := io2.ReadAll(w.Result().Body)
@@ -22,6 +22,6 @@ func Example_Ping() {
 	fmt.Printf("test: Ping() -> [nid:%v] [nss:%v] [ok:%v] [status:%v] [content:%v]\n", nid, rsc, ok, w.Result().StatusCode, string(buf))
 
 	//Output:
-	//test: Ping() -> [nid:github.com/advanced-go/example-domain/slo] [nss:ping] [ok:true] [status:200] [content:Ping resource: github.com/advanced-go/example-domain/slo]
+	//test: Ping() -> [nid:github.com/advanced-go/example-domain/activity] [nss:ping] [ok:true] [status:200] [content:Ping status: OK, resource: github.com/advanced-go/example-domain/activity]
 
 }

@@ -74,6 +74,8 @@ github.com/advanced-go/core v0.0.0-20231222123707-4d00dcb14e7e h1:aF19UEtfX9GT0I
 github.com/advanced-go/core v0.0.0-20231222123707-4d00dcb14e7e/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/core v0.0.0-20231222174627-71b7572b9941 h1:qJa3DnzOkawSfe/WM46cH8phr4Dg8OPaNtS1sGb6H4w=
 github.com/advanced-go/core v0.0.0-20231222174627-71b7572b9941/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
+github.com/advanced-go/core v0.0.0-20231222200601-673d05ff557f h1:Frv5dJ8JRxTMA/h9OywZI1oXLhRuKE1NHadE5GUghcc=
+github.com/advanced-go/core v0.0.0-20231222200601-673d05ff557f/go.mod h1:p58Ll2RUpEOeraoKxazyJpiPkWZelINYxxkcwCtwjUE=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080 h1:NzQaFbsdkWPx07h5CpAc+4/++ow0P8/UWW6NJoQesiM=
 github.com/advanced-go/messaging v0.0.0-20231204153323-8c1c2e256080/go.mod h1:Mk6W1iSvoYREWKDc7RQQvr/zaA3F+9XIRkMqGfnZLSA=
 github.com/advanced-go/messaging v0.0.0-20231204164909-371f798945bd h1:3u6zFJZTAwY6Mqu45qagTYn7RWd85crLQNZQhiRyHnQ=
@@ -84,5 +86,9 @@ github.com/advanced-go/messaging v0.0.0-20231204194133-b3daae986e54 h1:R2DBMMqZd
 github.com/advanced-go/messaging v0.0.0-20231204194133-b3daae986e54/go.mod h1:NRPtNhLKjE6RkVJ6iz22tnxQ0qPXAj8qCVwOu1F4prk=
 github.com/advanced-go/messaging v0.0.0-20231220192105-86c5cce95dc0 h1:AYEOLQoMsCpT/HTcJhpcetvpglDmJ+MCe1HCcXr0kC0=
 github.com/advanced-go/messaging v0.0.0-20231220192105-86c5cce95dc0/go.mod h1:DonmYg8URk088g4ta+5bWRXT0x+h8RrVob+bnuvslFo=
+github.com/advanced-go/messaging v0.0.0-20231225133917-831e9774238e h1:wn2A8QDpCl7T4mbFC0h6td2CgBRn/j4C27Enqs4oFY0=
+github.com/advanced-go/messaging v0.0.0-20231225133917-831e9774238e/go.mod h1:UApViZpTpYSJn+tF5J3FzBg5GFb3/eske4Nn+aZvTAI=
+github.com/advanced-go/postgresql v0.0.0-20231225144613-c264d565b4cf h1:BMV65MmbXNRDAhKOafDCF4XFh7x1gvp8gzjlbGsRaqs=
+github.com/advanced-go/postgresql v0.0.0-20231225144613-c264d565b4cf/go.mod h1:Ps+HkVRDNiRRp+zP15sg5hOX5e9coXxOp8e7IjMkqUc=
 github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
 github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

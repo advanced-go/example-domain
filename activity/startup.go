@@ -1,4 +1,4 @@
-package slo
+package activity
 
 import (
 	"fmt"
@@ -13,14 +13,12 @@ var (
 )
 
 func init() {
-	status := exchange.Register(exchange.NewMailbox(PkgPath, false, false))
-	if status.OK() {
-		agent, status = exchange.NewAgent(PkgPath, messageHandler, nil, nil)
-	}
+	var status runtime.Status
+	agent, status = exchange.NewDefaultAgent(PkgPath)
 	if !status.OK() {
-		fmt.Printf("init() failure: [%v]\n", PkgPath)
+		fmt.Printf("init(\"%v\") failure: [%v]\n", PkgPath, status)
 	}
-	agent.Run()
+	agent.Run(nil, messageHandler)
 }
 
 func messageHandler(msg core.Message) {
