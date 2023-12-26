@@ -7,6 +7,4 @@ require (
 	github.com/google/uuid v1.4.0
 )
 
-require github.com/advanced-go/messaging v0.0.0-20231225133917-831e9774238e
-
-require github.com/advanced-go/postgresql v0.0.0-20231225144613-c264d565b4cf // indirect
+require github.com/advanced-go/messaging v0.0.0-20231226105116-c6bcb5142548
