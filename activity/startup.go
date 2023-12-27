@@ -14,11 +14,11 @@ var (
 
 func init() {
 	var status runtime.Status
-	agent, status = exchange.NewDefaultAgent(PkgPath)
+	agent, status = exchange.NewDefaultAgent(PkgPath, messageHandler, false)
 	if !status.OK() {
 		fmt.Printf("init(\"%v\") failure: [%v]\n", PkgPath, status)
 	}
-	agent.Run(nil, messageHandler)
+	agent.Run()
 }
 
 func messageHandler(msg core.Message) {
