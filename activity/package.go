@@ -27,7 +27,7 @@ const (
 	getEntryLoc  = PkgPath + ":GetEntry"
 )
 
-// GetEntry - get entries with headers and uri
+// GetEntry - get entries with headers and values
 func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", &status)()
