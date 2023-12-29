@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/json2"
 	"io"
 	"net/http"
 	"net/url"
@@ -57,7 +58,7 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 	case []Entry:
 		entries = ptr
 	case []byte:
-		status := http2.Unmarshal(ptr, &entries)
+		status := json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
@@ -66,7 +67,7 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
-		status = http2.Unmarshal(buf, &entries)
+		status = json2.Unmarshal(buf, &entries)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
