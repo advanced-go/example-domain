@@ -2,7 +2,6 @@ package timeseriesvar
 
 import (
 	"context"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
@@ -31,11 +30,11 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 		if status2 != nil {
 			return nil, status2.AddLocation(postLoc)
 		}
-		location := r.Header.Get(http2.ContentLocation)
-		if strings.HasPrefix(location, "file://") {
-			// Need to deserialize return any
-			return nil, runtime.NewStatusOK()
-		}
+		//location := r.Header.Get(http2.ContentLocation)
+		//if strings.HasPrefix(location, "file://") {
+		// Need to deserialize return any
+		//return nil, runtime.NewStatusOK()
+		//}
 	}
 	statusVar := validateVariant(r)
 	if !statusVar.OK() {
@@ -45,10 +44,10 @@ func postEntryHandler(ctx context.Context, r *http.Request, body any) (any, runt
 	switch strings.ToUpper(r.Method) {
 	case http.MethodPut:
 		//return nil, e.Handle(putEntry(r.Header.Get(http2.ContentLocation), body), runtime.RequestId(r), postLoc)
-		return nil, putEntry(r.Header.Get(http2.ContentLocation), body).AddLocation(postLoc)
+		return nil, runtime.StatusOK() //putEntry(r.Header.Get(http2.ContentLocation), body).AddLocation(postLoc)
 	case http.MethodDelete:
 		//return nil, e.Handle(deleteEntry(r.Header.Get(http2.ContentLocation)), runtime.RequestId(r), postLoc)
-		return nil, deleteEntry(r.Header.Get(http2.ContentLocation)).AddLocation(postLoc)
+		return nil, runtime.StatusOK() //deleteEntry(r.Header.Get(http2.ContentLocation)).AddLocation(postLoc)
 	default:
 		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
 	}
