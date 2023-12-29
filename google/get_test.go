@@ -61,8 +61,9 @@ func Example_getHandler_OverrideFail() {
 	fmt.Printf("test: getHandler(%v) -> [status:%v]\n", req.URL.String(), status)
 
 	//Output:
+	//{ "code":91, "status":"I/O Failure", "request-id":"invalid-change", "trace" : [ "github.com/advanced-go/example-domain/google:searchHandler","github.com/advanced-go/core/exchange:do","github.com/advanced-go/core/exchange:readResponse" ], "errors" : [ "open C:\Users\markb\GitHub\example-domain\google\resource\query-result.txt: The system cannot find the path specified." ] }
 	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:I/O Failure [open C:\Users\markb\GitHub\example-domain\google\resource\query-result.txt: The system cannot find the path specified.]]
-
+	
 }
 
 func getHandlerOverrideSuccess(id string) (string, string) {
@@ -87,6 +88,6 @@ func Example_getHandler_OverrideSuccess() {
 	fmt.Printf("test: getHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, status.ContentHeader().Get(http2.ContentType), status.ContentHeader().Get(http2.ContentLength))
 
 	//Output:
-	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:OK] [content-type:text/plain] [content-length:47]
+	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:OK] [content-type:text/plain] [content-length:49]
 
 }
