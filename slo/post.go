@@ -3,7 +3,7 @@ package slo
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"io"
@@ -20,10 +20,6 @@ const (
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (any, runtime.Status) {
 	var e E
 
-	//if r == nil {
-	//	return nil, runtime.NewStatus(http.StatusBadRequest)
-	//}
-	//ctx := runtime.NewFileUrlContext(nil, r.URL.String())
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
 		entries, status := createEntries(body)
@@ -67,7 +63,7 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		buf, status := io2.ReadAll(ptr)
+		buf, status := http2.ReadAll(ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

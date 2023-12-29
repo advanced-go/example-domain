@@ -3,7 +3,7 @@ package activity
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/http2"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -26,7 +26,7 @@ func Example_HttpHandler() {
 	r, _ := http.NewRequest("GET", uri, nil)
 	w := httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status := io2.ReadAll(w.Result().Body)
+	buf, status := http2.ReadAll(w.Result().Body)
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
 	}
@@ -37,7 +37,7 @@ func Example_HttpHandler() {
 	r, _ = http.NewRequest("GET", uri, nil)
 	w = httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status = io2.ReadAll(w.Result().Body)
+	buf, status = http2.ReadAll(w.Result())
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
 	}

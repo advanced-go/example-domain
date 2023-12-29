@@ -2,7 +2,7 @@ package slo
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
 	"github.com/advanced-go/messaging/mux"
@@ -15,7 +15,7 @@ func Example_Ping() {
 	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/slo:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	mux.ProcessPing[runtime.Output](w, nid)
-	buf, status := io2.ReadAll(w.Result().Body)
+	buf, status := http2.ReadAll(w.Result())
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
 	}

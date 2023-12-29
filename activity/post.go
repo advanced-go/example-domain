@@ -3,7 +3,7 @@ package activity
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/json2"
 	"github.com/advanced-go/core/runtime"
 	"io"
@@ -63,7 +63,7 @@ func createEntries(body any) ([]Entry, runtime.Status) {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		buf, status := io2.ReadAll(ptr)
+		buf, status := http2.ReadAll(ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

@@ -3,9 +3,9 @@ package slo
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2/http2test"
-	"github.com/advanced-go/core/io2"
+	"github.com/advanced-go/core/http2"
 	"net/http"
+	"net/http/httptest"
 	"reflect"
 )
 
@@ -24,9 +24,9 @@ func Example_HttpHandler() {
 	// Bad Request
 	uri := "http://localhost:8080/github.com/advanced-go/example-domain/slo/entry"
 	r, _ := http.NewRequest("GET", uri, nil)
-	w := http2test.NewRecorder()
+	w := httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status := io2.ReadAll(w.Result().Body)
+	buf, status := http2.ReadAll(w.Result())
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
 	}
@@ -35,9 +35,9 @@ func Example_HttpHandler() {
 	// Resource Not Found
 	uri = "http://localhost:8080/github.com/advanced-go/example-domain/slo:invalid"
 	r, _ = http.NewRequest("GET", uri, nil)
-	w = http2test.NewRecorder()
+	w = httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status = io2.ReadAll(w.Result().Body)
+	buf, status = http2.ReadAll(w.Result())
 	if !status.OK() {
 		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
 	}
@@ -46,7 +46,7 @@ func Example_HttpHandler() {
 	// Content Not Found
 	uri = "http://localhost:8080/github.com/advanced-go/example-domain/slo:entry"
 	r, _ = http.NewRequest("GET", uri, nil)
-	w = http2test.NewRecorder()
+	w = httptest.NewRecorder()
 	HttpHandler(w, r)
 	fmt.Printf("test: HttpHandler() -> [status:%v]\n", w.Result().StatusCode)
 

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/exchange"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 )
@@ -29,7 +28,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
 		var buf []byte
-		buf, status = io2.ReadAll(resp.Body)
+		buf, status = http2.ReadAll(resp)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}

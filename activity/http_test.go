@@ -3,8 +3,8 @@ package activity
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
+	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -37,7 +37,7 @@ func _Example_HttpHandler() {
 	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
 	resp := rec.Result()
-	buf, status := io2.ReadAll(resp.Body)
+	buf, status := http2.ReadAll(resp)
 	fmt.Printf("test: HttpHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
 
 	//Output:

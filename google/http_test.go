@@ -3,7 +3,6 @@ package google
 import (
 	"fmt"
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +14,7 @@ func Example_httpHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+"/"+PkgPath+"/search?q=test", nil)
 	status := httpHandler[runtime.Output](r, req)
 	r.Result().Header = r.Header()
-	buf, status1 := io2.ReadAll(r.Result().Body)
+	buf, status1 := http2.ReadAll(r.Result())
 	fmt.Printf("test: ReadAll() -> [status:%v] [body:%v]\n", status1, len(buf))
 
 	fmt.Printf("test: httpHandler(%v) -> [status:%v] [content-type:%v] [content-length:%v]\n", req.URL.String(), status, r.Result().Header.Get(http2.ContentType), r.Result().Header.Get(http2.ContentLength))
