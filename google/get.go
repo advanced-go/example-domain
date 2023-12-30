@@ -28,7 +28,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
 		var buf []byte
-		buf, status = http2.ReadAll(resp)
+		buf, status = runtime.NewBytes(resp)
 		if !status.OK() {
 			return nil, e.Handle(status, requestId, searchLocation)
 		}
