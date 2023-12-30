@@ -2,7 +2,6 @@ package slo
 
 import (
 	"context"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/google/uuid"
 	"net/url"
@@ -17,14 +16,14 @@ var list []Entry
 
 func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
 	if url, ok := lookup.Value("getEntries"); ok {
-		return io2.ReadValues[[]Entry](url)
+		return runtime.New[[]Entry](url)
 	}
 	return list, runtime.StatusOK()
 }
 
 func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.Status) {
 	if url, ok := lookup.Value("getEntriesByController"); ok {
-		return io2.ReadValues[[]Entry](url)
+		return runtime.New[[]Entry](url)
 	}
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
@@ -36,7 +35,7 @@ func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.
 
 func addEntries(ctx context.Context, e []Entry) runtime.Status {
 	if url, ok := lookup.Value("addEntries"); ok {
-		return io2.ReadStatus(url)
+		return runtime.NewStatusFrom(url)
 	}
 	for _, item := range e {
 		if len(item.Id) == 0 {
@@ -51,7 +50,7 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 
 func deleteEntries(ctx context.Context) runtime.Status {
 	if url, ok := lookup.Value("deleteEntries"); ok {
-		return io2.ReadStatus(url)
+		return runtime.NewStatusFrom(url)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
