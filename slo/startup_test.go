@@ -2,9 +2,9 @@ package slo
 
 import (
 	"fmt"
+	"github.com/advanced-go/core/messaging"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
-	"github.com/advanced-go/messaging/mux"
 	"net/http"
 	"net/http/httptest"
 )
@@ -13,7 +13,7 @@ func Example_Ping() {
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/slo:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
-	mux.ProcessPing[runtime.Output](w, nid)
+	messaging.ProcessPing[runtime.Output](w, nid)
 	buf, status := runtime.NewBytes(w.Result())
 	if !status.OK() {
 		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
