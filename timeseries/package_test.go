@@ -3,7 +3,7 @@ package timeseries
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
 )
@@ -15,21 +15,21 @@ func Example_HttpHandler() {
 	rec := httptest.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
 	HttpHandler(rec, req)
-	buf, _ := http2.ReadAll(rec.Result())
+	buf, _ := runtime.NewBytes(rec.Result())
 	fmt.Printf("test: HttpHandler() -> [status:%v] [body:%v]\n", rec.Code, string(buf))
 
 	// Not Found - invalid resource
 	rec = httptest.NewRecorder()
 	req, _ = http.NewRequest("", "https://localhost:8080/github.com/advanced-go/example-domain/timeseries:entry", nil)
 	HttpHandler(rec, req)
-	buf, _ = http2.ReadAll(rec.Result())
+	buf, _ = runtime.NewBytes(rec.Result())
 	fmt.Printf("test: HttpHandler() -> [status:%v] [body:%v]\n", rec.Code, string(buf))
 
 	// Not Found - no content
 	rec = httptest.NewRecorder()
 	req, _ = http.NewRequest("", "https://localhost:8080/github.com/advanced-go/example-domain/timeseries:v2/entry", nil)
 	HttpHandler(rec, req)
-	buf, _ = http2.ReadAll(rec.Result())
+	buf, _ = runtime.NewBytes(rec.Result())
 	fmt.Printf("test: HttpHandler() -> [status:%v] [body:%v]\n", rec.Code, string(buf))
 
 	//Output:

@@ -3,9 +3,7 @@ package entryv1
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/example-domain/json2"
 	"io"
 	"net/http"
 	"net/url"
@@ -48,26 +46,21 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 	}
 }
 
-func createEntries(body any) ([]Entry, runtime.Status) {
+func createEntries(body any) (entries []Entry, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
-	var entries []Entry
 
 	switch ptr := body.(type) {
 	case []Entry:
 		entries = ptr
 	case []byte:
-		status := json2.Unmarshal(ptr, &entries)
+		entries, status = runtime.New[[]Entry](ptr) // json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		buf, status := http2.ReadAll(ptr)
-		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
-		}
-		status = json2.Unmarshal(buf, &entries)
+		entries, status = runtime.New[[]Entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
