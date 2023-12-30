@@ -3,7 +3,6 @@ package activity
 import (
 	"context"
 	"fmt"
-	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
@@ -17,7 +16,7 @@ var list []Entry
 
 func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 	if url, ok := lookup.Value("getEntries"); ok {
-		return io2.ReadValues[[]Entry](url)
+		return runtime.New[[]Entry](url)
 	}
 	if len(list) == 0 {
 		return list, runtime.NewStatus(http.StatusNotFound)
@@ -28,7 +27,7 @@ func getEntries(ctx context.Context) (t []Entry, status runtime.Status) {
 func getEntriesByType(ctx context.Context, act string) (t []Entry, status runtime.Status) {
 	var l []Entry
 	if url, ok := lookup.Value("getEntriesByType"); ok {
-		return io2.ReadValues[[]Entry](url)
+		return runtime.New[[]Entry](url)
 	}
 	for _, v := range list {
 		if act == "" {
@@ -49,7 +48,7 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 	var status runtime.Status
 
 	if url, ok := lookup.Value("addEntries"); ok {
-		return io2.ReadStatus(url)
+		return runtime.NewStatusFrom(url)
 	}
 	for _, item := range e {
 		//item.CreatedTS = time.Now().UTC()
@@ -61,7 +60,7 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 
 func deleteEntries(ctx context.Context) runtime.Status {
 	if url, ok := lookup.Value("deleteEntries"); ok {
-		return io2.ReadStatus(url)
+		return runtime.NewStatusFrom(url)
 	}
 	list = []Entry{}
 	return runtime.StatusOK()
@@ -85,7 +84,7 @@ func queryEntries(ctx context.Context, values url.Values) ([]Entry, runtime.Stat
 
 func logActivity(ctx context.Context, e Entry) runtime.Status {
 	if url, ok := lookup.Value("logActivity"); ok {
-		return io2.ReadStatus(url)
+		return runtime.NewStatusFrom(url)
 	}
 	s := fmt.Sprintf("{ \"activity\": \"%v\" \"agent\": \"%v\"  \"controller\": \"%v\"  \"message\": \"%v\"  }\n", e.ActivityType, e.Agent, e.Controller, e.Description)
 	fmt.Printf("%v", s)

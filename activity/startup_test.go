@@ -2,7 +2,6 @@ package activity
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
@@ -15,9 +14,9 @@ func Example_Ping() {
 	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/activity:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	mux.ProcessPing[runtime.Output](w, nid)
-	buf, status := http2.ReadAll(w.Result().Body)
+	buf, status := runtime.NewBytes(w.Result())
 	if !status.OK() {
-		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
+		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
 	}
 	fmt.Printf("test: Ping() -> [nid:%v] [nss:%v] [ok:%v] [status:%v] [content:%v]\n", nid, rsc, ok, w.Result().StatusCode, string(buf))
 

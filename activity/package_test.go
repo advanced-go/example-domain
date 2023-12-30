@@ -3,7 +3,7 @@ package activity
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -26,9 +26,9 @@ func Example_HttpHandler() {
 	r, _ := http.NewRequest("GET", uri, nil)
 	w := httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status := http2.ReadAll(w.Result().Body)
+	buf, status := runtime.NewBytes(w.Result().Body)
 	if !status.OK() {
-		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
+		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
 	}
 	fmt.Printf("test: HttpHandler() -> [status:%v] [content:%v]\n", w.Result().StatusCode, string(buf))
 
@@ -37,9 +37,9 @@ func Example_HttpHandler() {
 	r, _ = http.NewRequest("GET", uri, nil)
 	w = httptest.NewRecorder()
 	HttpHandler(w, r)
-	buf, status = http2.ReadAll(w.Result())
+	buf, status = runtime.NewBytes(w.Result())
 	if !status.OK() {
-		fmt.Printf("test: ReadAll() -> [status:%v]\n", status)
+		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
 	}
 	fmt.Printf("test: HttpHandler() -> [status:%v] [content:%v]\n", w.Result().StatusCode, string(buf))
 
