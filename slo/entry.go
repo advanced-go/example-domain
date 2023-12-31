@@ -3,6 +3,7 @@ package slo
 import (
 	"context"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/slo/types"
 	"github.com/google/uuid"
 	"net/url"
 )
@@ -12,30 +13,30 @@ const (
 	readEntryLoc   = PkgPath + ":readEntry"
 )
 
-var list []Entry
+var list []types.Entry
 
-func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
-	if url, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]Entry](url)
+func getEntries(ctx context.Context) ([]types.Entry, runtime.Status) {
+	if url1, ok := lookup.Value("getEntries"); ok {
+		return runtime.New[[]types.Entry](url1)
 	}
 	return list, runtime.StatusOK()
 }
 
-func getEntriesByController(ctx context.Context, ctrl string) ([]Entry, runtime.Status) {
-	if url, ok := lookup.Value("getEntriesByController"); ok {
-		return runtime.New[[]Entry](url)
+func getEntriesByController(ctx context.Context, ctrl string) ([]types.Entry, runtime.Status) {
+	if url1, ok := lookup.Value("getEntriesByController"); ok {
+		return runtime.New[[]types.Entry](url1)
 	}
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return []Entry{list[i]}, runtime.StatusOK()
+			return []types.Entry{list[i]}, runtime.StatusOK()
 		}
 	}
 	return nil, runtime.StatusOK()
 }
 
-func addEntries(ctx context.Context, e []Entry) runtime.Status {
-	if url, ok := lookup.Value("addEntries"); ok {
-		return runtime.NewStatusFrom(url)
+func addEntries(ctx context.Context, e []types.Entry) runtime.Status {
+	if url1, ok := lookup.Value("addEntries"); ok {
+		return runtime.NewStatusFrom(url1)
 	}
 	for _, item := range e {
 		if len(item.Id) == 0 {
@@ -49,15 +50,15 @@ func addEntries(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := lookup.Value("deleteEntries"); ok {
-		return runtime.NewStatusFrom(url)
+	if url1, ok := lookup.Value("deleteEntries"); ok {
+		return runtime.NewStatusFrom(url1)
 	}
-	list = []Entry{}
+	list = []types.Entry{}
 	return runtime.StatusOK()
 }
 
-func queryEntries(ctx context.Context, values url.Values) ([]Entry, runtime.Status) {
-	var result []Entry
+func queryEntries(ctx context.Context, values url.Values) ([]types.Entry, runtime.Status) {
+	var result []types.Entry
 	var status runtime.Status
 
 	name := ""

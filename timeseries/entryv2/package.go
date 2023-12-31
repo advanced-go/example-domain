@@ -24,10 +24,8 @@ const (
 	postLoc       = PkgPath + ":Post"
 )
 
-type Entry types.EntryV2
-
 // Get - get entries
-func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
+func Get(h http.Header, values url.Values) (entries []types.EntryV2, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), getRouteName, "", -1, "", &status)()
 	return getHandler[runtime.Log](nil, h, values)
@@ -35,7 +33,7 @@ func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Stat
 
 // PostConstraints - Post constraints
 type PostConstraints interface {
-	[]Entry | []byte | runtime.Nillable
+	[]types.EntryV2 | []byte | runtime.Nillable
 }
 
 // Post - exchange function for POST, PUT, DELETE...

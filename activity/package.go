@@ -13,8 +13,6 @@ import (
 	"strings"
 )
 
-type Entry types.Entry
-
 type pkg struct{}
 
 const (
@@ -31,7 +29,7 @@ const (
 )
 
 // GetEntry - get entries with headers and values
-func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
+func GetEntry(h http.Header, values url.Values) (entries []types.Entry, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", &status)()
 	return getEntryHandler[runtime.Log](nil, h, values)
@@ -39,7 +37,7 @@ func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
-	[]Entry | []byte | runtime.Nillable
+	[]types.Entry | []byte | runtime.Nillable
 }
 
 // PostEntry - exchange function

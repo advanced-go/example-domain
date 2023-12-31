@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/activity/types"
 	"net/http"
 )
 
@@ -31,7 +32,7 @@ func Example_postEntryHandler() {
 
 func Example_PostEntry() {
 	access.EnableTestLogger()
-	entries := []Entry{
+	entries := []types.Entry{
 		{
 			ActivityID:   "",
 			ActivityType: "trace",
@@ -54,8 +55,8 @@ func Example_PostEntry() {
 
 	h := make(http.Header)
 	h.Add(runtime.XRequestId, "123-456")
-	_, status := PostEntry[[]Entry](h, "PUT", nil, entries)
-	//_, status := PostEntry[[]Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
+	_, status := PostEntry[[]types.Entry](h, "PUT", nil, entries)
+	//_, status := PostEntry[[]types.Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
 
 	fmt.Printf("test: PostEntry() -> [status:%v]\n", status)
 

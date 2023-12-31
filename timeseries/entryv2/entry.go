@@ -3,6 +3,7 @@ package entryv2
 import (
 	"context"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/timeseries/types"
 	"net/url"
 )
 
@@ -30,18 +31,18 @@ const (
 	readEntryLoc = PkgPath + ":readEntry"
 )
 
-var list []Entry
+var list []types.EntryV2
 
-func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
-	if url, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]Entry](url)
+func getEntries(ctx context.Context) ([]types.EntryV2, runtime.Status) {
+	if url1, ok := lookup.Value("getEntries"); ok {
+		return runtime.New[[]types.EntryV2](url1)
 	}
 	return list, runtime.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []Entry) runtime.Status {
-	if url, ok := lookup.Value("addEntries"); ok {
-		return runtime.NewStatusFrom(url)
+func addEntry(ctx context.Context, e []types.EntryV2) runtime.Status {
+	if url1, ok := lookup.Value("addEntries"); ok {
+		return runtime.NewStatusFrom(url1)
 	}
 	for _, item := range e {
 		list = append(list, item)
@@ -50,13 +51,13 @@ func addEntry(ctx context.Context, e []Entry) runtime.Status {
 }
 
 func deleteEntries(ctx context.Context) runtime.Status {
-	if url, ok := lookup.Value("deleteEntries"); ok {
-		return runtime.NewStatusFrom(url)
+	if url1, ok := lookup.Value("deleteEntries"); ok {
+		return runtime.NewStatusFrom(url1)
 	}
-	list = []Entry{}
+	list = []types.EntryV2{}
 	return runtime.StatusOK()
 }
 
-func queryEntries(ctx context.Context, _ url.Values) ([]Entry, runtime.Status) {
+func queryEntries(ctx context.Context, _ url.Values) ([]types.EntryV2, runtime.Status) {
 	return getEntries(ctx)
 }

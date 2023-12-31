@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/timeseries/types"
 	"io"
 	"net/http"
 	"net/url"
@@ -46,21 +47,21 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 	}
 }
 
-func createEntries(body any) (entries []Entry, status runtime.Status) {
+func createEntries(body any) (entries []types.EntryV1, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 
 	switch ptr := body.(type) {
-	case []Entry:
+	case []types.EntryV1:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr) // json2.Unmarshal(ptr, &entries)
+		entries, status = runtime.New[[]types.EntryV1](ptr) // json2.Unmarshal(ptr, &entries)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]types.EntryV1](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

@@ -2,10 +2,11 @@ package entryv1
 
 import (
 	"fmt"
+	"github.com/advanced-go/example-domain/timeseries/types"
 )
 
-func createEntry(ctrl string) []Entry {
-	return []Entry{{
+func createEntry(ctrl string) []types.EntryV1 {
+	return []types.EntryV1{{
 		//CreatedTS  0
 		Traffic: "ingress",
 		//Start:      0),

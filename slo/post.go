@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/example-domain/slo/types"
 	"io"
 	"net/http"
 	"net/url"
@@ -46,21 +47,21 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 	}
 }
 
-func createEntries(body any) (entries []Entry, status runtime.Status) {
+func createEntries(body any) (entries []types.Entry, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 
 	switch ptr := body.(type) {
-	case []Entry:
+	case []types.Entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]types.Entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]types.Entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
