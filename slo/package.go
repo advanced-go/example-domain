@@ -7,10 +7,10 @@ import (
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
+	"github.com/advanced-go/example-domain/slo/types"
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 type pkg struct{}
@@ -27,6 +27,8 @@ const (
 	getRouteName = "get-entry"
 	getEntryLoc  = PkgPath + ":GetEntry"
 )
+
+type Entry types.Entry
 
 // GetEntry - get entries
 func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
@@ -70,17 +72,4 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
-}
-
-type Entry struct {
-	CreatedTS time.Time
-	Id        string
-	// What does this apply to
-	Controller string
-
-	// Types of SLOs
-	// percentage of traffic : 10% or 10
-	// latency percentile: 99/500ms
-	Threshold   string // Either percentage of traffic, or latency percentile
-	StatusCodes string // For percentage
 }

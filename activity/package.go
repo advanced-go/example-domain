@@ -7,10 +7,13 @@ import (
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
+	"github.com/advanced-go/example-domain/activity/types"
 	"net/http"
 	"net/url"
 	"strings"
 )
+
+type Entry types.Entry
 
 type pkg struct{}
 
@@ -71,6 +74,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+/*
 type Entry struct {
 	//CreatedTS    time.Time
 	ActivityID   string // Some form of UUID
@@ -83,3 +87,5 @@ type Entry struct {
 	Behavior    string
 	Description string
 }
+
+*/
