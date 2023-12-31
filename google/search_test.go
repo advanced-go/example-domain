@@ -9,7 +9,7 @@ import (
 
 func _Example_Get() {
 	req, _ := http.NewRequest("", "http://localhost:8080"+"/"+PkgPath+"/search?q=test", nil)
-	resp, status := Get(req)
+	resp, status := Search(req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -27,7 +27,7 @@ func Example_getHandler() {
 	if err != nil {
 		fmt.Printf("test: NewRequest() -> %v\n", err)
 	}
-	resp, status := getHandler[runtime.Output](req)
+	resp, status := searchHandler[runtime.Output](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -48,12 +48,12 @@ func getHandlerOverrideFail(id string) (string, string) {
 }
 
 func Example_getHandler_OverrideFail() {
-	setOverride(getHandlerOverrideFail, "")
+	resolver.SetOverride(getHandlerOverrideFail, "")
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080"+"/"+PkgPath+"/search?q=golang", nil)
 	if err != nil {
 		fmt.Printf("test: NewRequest() -> %v\n", err)
 	}
-	resp, status := getHandler[runtime.Output](req)
+	resp, status := searchHandler[runtime.Output](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}
@@ -63,7 +63,7 @@ func Example_getHandler_OverrideFail() {
 	//Output:
 	//{ "code":91, "status":"I/O Failure", "request-id":"invalid-change", "trace" : [ "github.com/advanced-go/example-domain/google:searchHandler","github.com/advanced-go/core/exchange:do","github.com/advanced-go/core/exchange:readResponse" ], "errors" : [ "open C:\Users\markb\GitHub\example-domain\google\resource\query-result.txt: The system cannot find the path specified." ] }
 	//test: getHandler(http://localhost:8080/github.com/advanced-go/example-domain/google/search?q=golang) -> [status:I/O Failure [open C:\Users\markb\GitHub\example-domain\google\resource\query-result.txt: The system cannot find the path specified.]]
-	
+
 }
 
 func getHandlerOverrideSuccess(id string) (string, string) {
@@ -75,12 +75,12 @@ func getHandlerOverrideSuccess(id string) (string, string) {
 }
 
 func Example_getHandler_OverrideSuccess() {
-	setOverride(getHandlerOverrideSuccess, "")
+	resolver.SetOverride(getHandlerOverrideSuccess, "")
 	req, err := http.NewRequest(http.MethodGet, "http://localhost:8080"+"/"+PkgPath+"/search?q=golang", nil)
 	if err != nil {
 		fmt.Printf("test: NewRequest() -> %v\n", err)
 	}
-	resp, status := getHandler[runtime.Output](req)
+	resp, status := searchHandler[runtime.Output](req)
 	if buf, ok := resp.([]byte); ok {
 		if buf != nil {
 		}

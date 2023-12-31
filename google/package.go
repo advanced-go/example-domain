@@ -24,9 +24,9 @@ const (
 	googleEndpoint = "https://www.google.com/search"
 )
 
-// Get - exchange handler
-func Get(r *http.Request) (any, runtime.Status) {
-	return getHandler[runtime.Log](r)
+// Search - search handler
+func Search(r *http.Request) (any, runtime.Status) {
+	return searchHandler[runtime.Log](r)
 }
 
 // HttpHandler - HTTP handler endpoint

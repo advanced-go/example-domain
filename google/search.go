@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
+func searchHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 	if r == nil {
 		return nil, runtime.NewStatus(http.StatusBadRequest)
 	}
@@ -17,7 +17,7 @@ func getHandler[E runtime.ErrorHandler](r *http.Request) (any, runtime.Status) {
 	switch r.Method {
 	case http.MethodGet:
 		var e E
-		newUrl := resolve(searchTag, r.URL.Query())
+		newUrl := resolver.Build(searchTag, r.URL.Query())
 		req, err := http.NewRequest(http.MethodGet, newUrl, nil)
 		if err != nil {
 			return nil, e.Handle(runtime.NewStatusError(http.StatusInternalServerError, searchLocation, err), requestId, "")

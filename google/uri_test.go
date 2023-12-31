@@ -7,13 +7,13 @@ import (
 
 func Example_Resolve_Default() {
 	id := searchTag
-	uri := resolve(id, nil)
+	uri := resolver.Build(id, nil)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	id = searchTag
 	v := make(url.Values)
 	v.Add("q", "golang")
-	uri = resolve(id, v)
+	uri = resolver.Build(id, v)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	//Output:
@@ -26,13 +26,13 @@ func Example_Override_Host() {
 	id := searchTag
 	v := make(url.Values)
 	v.Add("q", "golang")
-	setOverride(nil, "http://localhost:8080")
+	resolver.SetOverride(nil, "http://localhost:8080")
 
-	uri := resolve(id, nil)
+	uri := resolver.Build(id, nil)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	id = searchTag
-	uri = resolve(id, v)
+	uri = resolver.Build(id, v)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	//Output:
@@ -53,13 +53,13 @@ func Example_Override_URL() {
 	id := searchTag
 	v := make(url.Values)
 	v.Add("q", "golang")
-	setOverride(testOverrideURL, "")
+	resolver.SetOverride(testOverrideURL, "")
 
-	uri := resolve(id, nil)
+	uri := resolver.Build(id, nil)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	id = searchTag
-	uri = resolve(id, v)
+	uri = resolver.Build(id, v)
 	fmt.Printf("test: Resolve(\"%v\") -> %v\n", id, uri)
 
 	//Output:

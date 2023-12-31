@@ -7,7 +7,7 @@ import (
 )
 
 func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
-	result, status := Get(r)
+	result, status := Search(r)
 	http2.WriteResponse[E](w, result, status, status.ContentHeader())
 	return status
 }
