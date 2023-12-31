@@ -4,31 +4,31 @@ import (
 	"context"
 	"github.com/advanced-go/core/runtime"
 	"net/url"
-	"time"
 )
 
-type Entry struct {
-	CreatedTS time.Time `json:"created-ts"`
-	Traffic   string    `json:"traffic"`
-	Start     time.Time `json:"start-time"`
-	Duration  int
+/*
+	type Entry struct {
+		CreatedTS time.Time `json:"created-ts"`
+		Traffic   string    `json:"traffic"`
+		Start     time.Time `json:"start-time"`
+		Duration  int
 
-	RequestId string
+		RequestId string
 
-	// Request attributes
-	Url         string // {scheme}://{host}/{path} No query
-	Protocol    string
-	Host        string
-	Path        string
-	Method      string
-	StatusCode  int32
-	StatusFlags string
+		// Request attributes
+		Url         string // {scheme}://{host}/{path} No query
+		Protocol    string
+		Host        string
+		Path        string
+		Method      string
+		StatusCode  int32
+		StatusFlags string
 
-	Timeout   int32
-	RateLimit float64
-	RateBurst int32
-}
-
+		Timeout   int32
+		RateLimit float64
+		RateBurst int32
+	}
+*/
 const (
 	readEntryLoc = PkgPath + ":readEntry"
 )

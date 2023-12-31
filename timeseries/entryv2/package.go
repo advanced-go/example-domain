@@ -7,6 +7,7 @@ import (
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
+	"github.com/advanced-go/example-domain/timeseries/types"
 	"net/http"
 	"net/url"
 	"strings"
@@ -22,6 +23,8 @@ const (
 	postRouteName = "post"
 	postLoc       = PkgPath + ":Post"
 )
+
+type Entry types.EntryV2
 
 // Get - get entries
 func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
