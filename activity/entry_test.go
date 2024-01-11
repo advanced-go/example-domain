@@ -11,7 +11,7 @@ func Example_addEntries() {
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
-		Assignment:   "usa:west::test-service:0123456789",
+		Assignment:   "usa:west::test-search:0123456789",
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Analyzing observation",
@@ -22,7 +22,7 @@ func Example_addEntries() {
 
 	//Output:
 	//{ "activity": "trace" "agent": "agent-controller"  "controller": "host-controller"  "message": "Analyzing observation"  }
-	//test: addEntries() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Analyzing observation}]
+	//test: addEntries() -> [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-search:0123456789 host-controller RateLimiting Analyzing observation}]
 
 }
 
@@ -32,7 +32,7 @@ func Example_getEntriesByType() {
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
-		Assignment:   "usa:west::test-service:0123456789",
+		Assignment:   "usa:west::test-search:0123456789",
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Analyzing observation",
@@ -43,7 +43,7 @@ func Example_getEntriesByType() {
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
-		Assignment:   "usa:west::test-service:0123456789",
+		Assignment:   "usa:west::test-search:0123456789",
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Reduced rate limit",
@@ -53,7 +53,7 @@ func Example_getEntriesByType() {
 	addEntries(nil, []types.Entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
-		Assignment:   "usa:west::test-service:0123456789",
+		Assignment:   "usa:west::test-search:0123456789",
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Reduced rate burst",
@@ -89,8 +89,8 @@ func Example_getEntriesByType() {
 	//{ "activity": "action" "agent": "agent-controller"  "controller": "host-controller"  "message": "Reduced rate limit"  }
 	//{ "activity": "action" "agent": "agent-controller"  "controller": "host-controller"  "message": "Reduced rate burst"  }
 	//test: getEntriesByType() []
-	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Analyzing observation}]
-	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-service:0123456789 host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-service:0123456789 host-controller RateLimiting Reduced rate burst}]
+	//test: getEntriesByType(trace) [{0001-01-01 00:00:00 +0000 UTC activity-uuid trace agent-controller https://host/agent-path usa:west::test-search:0123456789 host-controller RateLimiting Analyzing observation} {0001-01-01 00:00:00 +0000 UTC urn:uuid:1 trace agent-controller https://host/agent-path usa:west::test-search:0123456789 host-controller RateLimiting Analyzing observation}]
+	//test: getEntriesByType(action) [{0001-01-01 00:00:00 +0000 UTC urn:uuid:2 action agent-controller https://host/agent-path usa:west::test-search:0123456789 host-controller RateLimiting Reduced rate limit} {0001-01-01 00:00:00 +0000 UTC urn:uuid:3 action agent-controller  usa:west::test-search:0123456789 host-controller RateLimiting Reduced rate burst}]
 
 }
 

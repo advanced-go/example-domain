@@ -25,7 +25,7 @@ func _Example_HttpHandler() {
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
-		Assignment:   "usa:west::test-service:0123456789",
+		Assignment:   "usa:west::test-search:0123456789",
 		Controller:   "host-controller",
 		Behavior:     "RateLimiting",
 		Description:  "Analyzing observation",
@@ -34,7 +34,6 @@ func _Example_HttpHandler() {
 
 	rec := httptest.NewRecorder()
 	req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
-	//req.Header.Add(http2.ContentLocation, EntryV1Variant)
 	HttpHandler(rec, req)
 	resp := rec.Result()
 	buf, status := runtime.NewBytes(resp)
