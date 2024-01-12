@@ -2,19 +2,18 @@ package slo
 
 import (
 	"fmt"
-	"github.com/advanced-go/example-domain/slo/types"
 )
 
 func Example_addEntries() {
-	addEntries(nil, []types.Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+	addEntries(nil, []entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
 	printEntries(list)
 	//fmt.Printf("test: addEntries() -> %v %v %v\n", list[0].Controller, list[0].Threshold, list[0].StatusCodes)
 
-	addEntries(nil, []types.Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntries(nil, []entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 	printEntries(list)
 	//fmt.Printf("test: addEntries() -> %v\n", list)
 
-	addEntries(nil, []types.Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntries(nil, []entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	printEntries(list)
 	//fmt.Printf("test: addEntries() -> %v\n", list)
 
@@ -25,7 +24,7 @@ func Example_addEntries() {
 
 }
 
-func printEntries(entries []types.Entry) {
+func printEntries(entries []entry) {
 	s := ""
 	for i, e := range entries {
 		if i == 0 {
@@ -42,8 +41,8 @@ func printEntries(entries []types.Entry) {
 }
 
 func ExampleGetEntryByController() {
-	addEntries(nil, []types.Entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
-	addEntries(nil, []types.Entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
+	addEntries(nil, []entry{{Controller: "percentile", Threshold: "99/1s", StatusCodes: ""}})
+	addEntries(nil, []entry{{Controller: "status-codes", Threshold: "10%", StatusCodes: "500,504"}})
 
 	ctrl := ""
 	s, _ := getEntriesByController(nil, ctrl)
@@ -63,7 +62,7 @@ func ExampleGetEntryByController() {
 	}
 	fmt.Printf("test: getEntriesByController(%s) -> %v\n", ctrl, s)
 
-	addEntries(nil, []types.Entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
+	addEntries(nil, []entry{{Controller: "percentile", Threshold: "95/500ms", StatusCodes: ""}})
 	ctrl = "percentile"
 	s, _ = getEntriesByController(nil, ctrl)
 	if len(s) > 0 {
