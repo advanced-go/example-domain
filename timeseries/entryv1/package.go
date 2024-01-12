@@ -3,28 +3,25 @@ package entryv1
 import (
 	"errors"
 	"fmt"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
-	"github.com/advanced-go/example-domain/timeseries/types"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/timeseries/entryv1"
+	PkgPath       = "github.com/advanced-go/example-domain/timeseries/entryv1"
+	entryResource = "v1/entry"
 
-	entryResource        = "v1/entry"
-	httpHandlerRouteName = "http-handler"
-	getRouteName         = "get"
-	getLoc               = PkgPath + ":Get"
-
-	postRouteName = "post"
-	postLoc       = PkgPath + ":Post"
+	//httpHandlerRouteName = "http-handler"
+	//getRouteName         = "get"
+	//getLoc               = PkgPath + ":Get"
+	//postRouteName = "post"
+	//postLoc       = PkgPath + ":Post"
 )
 
+/*
 // Get - get entries
 func Get(h http.Header, values url.Values) (entries []types.EntryV1, status runtime.Status) {
 	h = runtime.AddRequestId(h)
@@ -44,6 +41,8 @@ func Post[T PostConstraints](h http.Header, method string, values url.Values, bo
 	return postHandler[runtime.Log](nil, h, method, values, body)
 }
 
+*/
+
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if r == nil {
@@ -59,10 +58,10 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	runtime.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
-		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", &status)()
-			return httpHandler[runtime.Log](w, r)
-		}()
+		//func() (status runtime.Status) {
+		//	defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", &status)()
+		httpHandler[runtime.Log](w, r)
+		//}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)

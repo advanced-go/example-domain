@@ -2,7 +2,7 @@ package types
 
 import "time"
 
-type EntryV1 struct {
+type EntryV1T struct {
 	CreatedTS time.Time `json:"created-ts"`
 	Traffic   string    `json:"traffic"`
 	Start     time.Time `json:"start-time"`
