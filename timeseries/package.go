@@ -8,9 +8,7 @@ import (
 	"github.com/advanced-go/core/uri"
 	"github.com/advanced-go/example-domain/timeseries/entryv1"
 	"github.com/advanced-go/example-domain/timeseries/entryv2"
-	"github.com/advanced-go/example-domain/timeseries/types"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -20,6 +18,7 @@ const (
 	v2EntryResource = "v2/entry"
 )
 
+/*
 // GetEntryV1 - get entries
 func GetEntryV1(h http.Header, values url.Values) (entries []types.EntryV1, status runtime.Status) {
 	return entryv1.Get(h, values)
@@ -39,6 +38,9 @@ func PostEntryV1[T entryv1.PostConstraints](h http.Header, method string, values
 func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
 	return entryv2.Post[T](h, method, values, body)
 }
+
+
+*/
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
