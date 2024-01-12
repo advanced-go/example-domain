@@ -13,7 +13,7 @@ const (
 	getRouteName       = "get-entry"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []entry, status runtime.Status) {
 	var e E
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryHandlerLoc), getRouteName, "", -1, "", &status)()
 

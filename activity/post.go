@@ -23,7 +23,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
-		var entries []Entry
+		var entries []entry
 		entries, status = createEntries(body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
@@ -50,21 +50,21 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 	}
 }
 
-func createEntries(body any) (entries []Entry, status runtime.Status) {
+func createEntries(body any) (entries []entry, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 
 	switch ptr := body.(type) {
-	case []Entry:
+	case []entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

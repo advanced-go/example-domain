@@ -18,7 +18,7 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		var buf []Entry
+		var buf []entry
 		buf, status = getEntryHandler[E](r.Context(), r.Header, r.URL.Query())
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)

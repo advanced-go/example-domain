@@ -20,7 +20,7 @@ const (
 func _Example_HttpHandler() {
 	access.EnableTestLogger()
 
-	addEntries(nil, []Entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -84,9 +84,9 @@ func Test_httpHandler(t *testing.T) {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 				// test content size and unmarshal types
-				var gotT, wantT []Entry
+				var gotT, wantT []entry
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]Entry](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = http2test.Content[[]entry](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)

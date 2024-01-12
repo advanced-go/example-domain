@@ -6,7 +6,7 @@ import (
 
 func Example_addEntries() {
 
-	addEntries(nil, []Entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -27,7 +27,7 @@ func Example_addEntries() {
 
 func Example_getEntriesByType() {
 
-	addEntries(nil, []Entry{{ActivityID: "urn:uuid:1",
+	addEntries(nil, []entry{{ActivityID: "urn:uuid:1",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -38,7 +38,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntries(nil, []Entry{{ActivityID: "urn:uuid:2",
+	addEntries(nil, []entry{{ActivityID: "urn:uuid:2",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -49,7 +49,7 @@ func Example_getEntriesByType() {
 	}},
 	)
 
-	addEntries(nil, []Entry{{ActivityID: "urn:uuid:3",
+	addEntries(nil, []entry{{ActivityID: "urn:uuid:3",
 		ActivityType: "action",
 		Agent:        "agent-controller",
 		Assignment:   "usa:west::test-search:0123456789",
@@ -68,14 +68,14 @@ func Example_getEntriesByType() {
 	fmt.Printf("test: getEntriesByType(action) %v\n", e)
 
 	/*
-		e, err = getEntriesByActivityType[[]EntryV1]("trace")
-		fmt.Printf("test: getEntriesByActivityType[[]EntryV1](trace) [err:%v] [entry:%v]\n", err, e)
+		e, err = getEntriesByActivityType[[]entryV1]("trace")
+		fmt.Printf("test: getEntriesByActivityType[[]entryV1](trace) [err:%v] [entry:%v]\n", err, e)
 
 		buf, err2 = getEntriesByActivityType[[]byte]("trace")
 		fmt.Printf("test: getEntriesByActivityType[[]byte](trace) [err:%v] [entry:%v]\n", err2, string(buf))
 
-		e, err = getEntriesByActivityType[[]EntryV1]("action")
-		fmt.Printf("test: getEntriesByActivityType[[]EntryV1](action) [err:%v] [entry:%v]\n", err, e)
+		e, err = getEntriesByActivityType[[]entryV1]("action")
+		fmt.Printf("test: getEntriesByActivityType[[]entryV1](action) [err:%v] [entry:%v]\n", err, e)
 
 		buf, err2 = getEntriesByActivityType[[]byte]("action")
 		fmt.Printf("test: getEntriesByActivityType[[]byte](action) [err:%v] [entry:%v]\n", err2, string(buf))
@@ -94,7 +94,7 @@ func Example_getEntriesByType() {
 }
 
 func Example_Log() {
-	e := Entry{
+	e := entry{
 		//CreatedTS:    time.Time{},
 		ActivityID:   "",
 		ActivityType: "trace",
