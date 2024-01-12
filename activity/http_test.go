@@ -5,7 +5,6 @@ import (
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/example-domain/activity/types"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -21,7 +20,7 @@ const (
 func _Example_HttpHandler() {
 	access.EnableTestLogger()
 
-	addEntries(nil, []types.Entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []Entry{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -85,9 +84,9 @@ func Test_httpHandler(t *testing.T) {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 				// test content size and unmarshal types
-				var gotT, wantT []types.Entry
+				var gotT, wantT []Entry
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]types.Entry](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = http2test.Content[[]Entry](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)

@@ -3,33 +3,30 @@ package activity
 import (
 	"errors"
 	"fmt"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
-	"github.com/advanced-go/example-domain/activity/types"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/activity"
-	Pattern = "/" + PkgPath + "/"
+	PkgPath       = "github.com/advanced-go/example-domain/activity"
+	entryResource = "entry"
 
-	entryResource        = "entry"
-	httpHandlerRouteName = "http-handler"
-	postRouteName        = "post-entry"
-	postEntryLoc         = PkgPath + ":PostEntry"
-
-	getRouteName = "get-entry"
-	getEntryLoc  = PkgPath + ":GetEntry"
+	//Pattern = "/" + PkgPath + "/"
+	//httpHandlerRouteName = "http-handler"
+	//postRouteName        = "post-entry"
+	//postEntryLoc         = PkgPath + ":PostEntry"
+	//getRouteName = "get-entry"
+	//getEntryLoc  = PkgPath + ":GetEntry"
 )
 
+/*
 // GetEntry - get entries with headers and values
-func GetEntry(h http.Header, values url.Values) (entries []types.Entry, status runtime.Status) {
+func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", &status)()
 	return getEntryHandler[runtime.Log](nil, h, values)
@@ -37,7 +34,7 @@ func GetEntry(h http.Header, values url.Values) (entries []types.Entry, status r
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
-	[]types.Entry | []byte | runtime.Nillable
+	[]Entry | []byte | runtime.Nillable
 }
 
 // PostEntry - exchange function
@@ -46,6 +43,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", &status)()
 	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
+*/
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,10 +60,10 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	runtime.AddRequestId(r)
 	switch strings.ToLower(rsc) {
 	case entryResource:
-		func() (status runtime.Status) {
-			defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", &status)()
-			return httpEntryHandler[runtime.Log](w, r)
-		}()
+		//func() (status runtime.Status) {
+		//defer access.LogDeferred(access.InternalTraffic, r, httpHandlerRouteName, "", -1, "", &status)()
+		httpEntryHandler[runtime.Log](w, r)
+		//}()
 	default:
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
