@@ -11,7 +11,7 @@ import (
 
 func Example_Ping() {
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/service:ping", nil)
+	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/search:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	messaging.ProcessPing[runtime.Output](w, nid)
 	buf, status := runtime.NewBytes(w.Result())
