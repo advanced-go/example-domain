@@ -19,7 +19,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 	t, status = queryEntries(ctx, values)
 	if !status.OK() {
 		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
-		return t, status
+		return nil, status
 	}
 	if len(t) == 0 {
 		return t, runtime.NewStatus(http.StatusNotFound)

@@ -1,0 +1,18 @@
+PUT /github.com/advanced-go/example-domain/slo:entry HTTP/1.1
+Host: access-log.com
+Content-Type: application/json
+
+[
+  {
+    "Id": "1234-5678",
+    "Controller": "host",
+    "Threshold": "99.9/800ms",
+    "StatusCodes": "0"
+  },
+  {
+    "Id": "8765-4321",
+    "Controller": "egress",
+    "Threshold": "88.8/1000ms",
+    "StatusCodes": "500,504"
+  }
+]

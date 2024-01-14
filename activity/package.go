@@ -22,7 +22,7 @@ func GetEntry(h http.Header, values url.Values) (entries []EntryV1, status runti
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
-	[]EntryV1 | []byte | runtime.Nillable
+	[]EntryV1 | []byte | *http.Request | runtime.Nillable
 }
 
 // PostEntry - exchange function

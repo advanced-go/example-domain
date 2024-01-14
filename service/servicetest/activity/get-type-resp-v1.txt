@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+Date: Mon, 27 Jul 2009 12:28:53 GMT
+Server: Apache/2.2.14 (Win32)
+Content-Type: application/json
+Connection: Closed
+
+[
+  {
+    "ActivityID": "101010",
+    "ActivityType": "trace",
+    "Agent": "Controller2",
+    "AgentUri": "https://somehost.com/id2",
+    "Assignment": "case#5",
+    "FrameUri": "https://framehost.com/frame-id2",
+    "Controller": "",
+    "Behavior": "",
+    "Description": "created action"
+  }
+]

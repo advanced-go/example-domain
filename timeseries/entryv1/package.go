@@ -21,7 +21,7 @@ func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Stat
 
 // PostConstraints - Post constraints
 type PostConstraints interface {
-	[]Entry | []byte | runtime.Nillable
+	[]Entry | []byte | *http.Request | runtime.Nillable
 }
 
 // Post - exchange function

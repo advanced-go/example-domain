@@ -62,6 +62,11 @@ func createEntries(body any) (entries []EntryV1, status runtime.Status) {
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
+	case *http.Request:
+		entries, status = runtime.New[[]EntryV1](ptr)
+		if !status.OK() {
+			return nil, status.AddLocation(createEntriesLoc)
+		}
 	case io.ReadCloser:
 		entries, status = runtime.New[[]EntryV1](ptr)
 		if !status.OK() {

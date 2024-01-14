@@ -1,16 +1,11 @@
 package timeseries
 
 import (
-	"errors"
-	"fmt"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/uri"
 	"github.com/advanced-go/example-domain/timeseries/entryv1"
 	"github.com/advanced-go/example-domain/timeseries/entryv2"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 const (
@@ -39,6 +34,7 @@ func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values
 	return entryv2.Post[T](h, method, values, body)
 }
 
+/*
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	_, rsc, ok := uri.UprootUrn(r.URL.Path)
@@ -60,3 +56,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
 }
+
+
+*/

@@ -3,7 +3,6 @@ package activity
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
@@ -20,7 +19,6 @@ const (
 
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status runtime.Status) {
 	var e E
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryHandlerLoc), postRouteName, "", -1, "", &status)()
 
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
@@ -60,6 +58,11 @@ func createEntries(body any) (entries []EntryV1, status runtime.Status) {
 	case []EntryV1:
 		entries = ptr
 	case []byte:
+		entries, status = runtime.New[[]EntryV1](ptr)
+		if !status.OK() {
+			return nil, status.AddLocation(createEntriesLoc)
+		}
+	case *http.Request:
 		entries, status = runtime.New[[]EntryV1](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
