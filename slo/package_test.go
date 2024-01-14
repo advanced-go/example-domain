@@ -2,10 +2,6 @@ package slo
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/runtime"
-	"net/http"
-	"net/http/httptest"
 	"reflect"
 )
 
@@ -18,6 +14,7 @@ func Example_PkgUri() {
 
 }
 
+/*
 func Example_HttpHandler() {
 	access.EnableTestLogger()
 
@@ -56,3 +53,6 @@ func Example_HttpHandler() {
 	//test: HttpHandler() -> [status:404]
 
 }
+
+
+*/

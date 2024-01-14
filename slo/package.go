@@ -1,23 +1,17 @@
 package slo
 
 import (
-	"errors"
-	"fmt"
 	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/uri"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath       = "github.com/advanced-go/example-domain/slo"
-	entryResource = "entry"
-
+	PkgPath = "github.com/advanced-go/example-domain/slo"
+	//entryResource = "entry"
 	//Pattern = "/" + PkgPath + "/"
 
 )
@@ -41,6 +35,7 @@ func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.
 	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
 
+/*
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if r == nil {
@@ -65,3 +60,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
 }
+
+
+*/
