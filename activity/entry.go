@@ -12,7 +12,7 @@ const (
 	Type = "type"
 )
 
-type entry struct {
+type EntryV1 struct {
 	//CreatedTS    time.Time
 	ActivityID   string // Some form of UUID
 	ActivityType string // trace|action
@@ -25,11 +25,11 @@ type entry struct {
 	Description string
 }
 
-var list []entry
+var list []EntryV1
 
-func getEntries(ctx context.Context) (t []entry, status runtime.Status) {
+func getEntries(ctx context.Context) (t []EntryV1, status runtime.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]entry](url1)
+		return runtime.New[[]EntryV1](url1)
 	}
 	if len(list) == 0 {
 		return list, runtime.NewStatus(http.StatusNotFound)
@@ -37,10 +37,10 @@ func getEntries(ctx context.Context) (t []entry, status runtime.Status) {
 	return list, runtime.StatusOK()
 }
 
-func getEntriesByType(ctx context.Context, act string) (t []entry, status runtime.Status) {
-	var l []entry
+func getEntriesByType(ctx context.Context, act string) (t []EntryV1, status runtime.Status) {
+	var l []EntryV1
 	if url1, ok := lookup.Value("getEntriesByType"); ok {
-		return runtime.New[[]entry](url1)
+		return runtime.New[[]EntryV1](url1)
 	}
 	for _, v := range list {
 		if act == "" {
@@ -57,7 +57,7 @@ func getEntriesByType(ctx context.Context, act string) (t []entry, status runtim
 	return l, runtime.StatusOK()
 }
 
-func addEntries(ctx context.Context, e []entry) runtime.Status {
+func addEntries(ctx context.Context, e []EntryV1) runtime.Status {
 	var status runtime.Status
 
 	if url1, ok := lookup.Value("addEntries"); ok {
@@ -75,12 +75,12 @@ func deleteEntries(ctx context.Context) runtime.Status {
 	if url1, ok := lookup.Value("deleteEntries"); ok {
 		return runtime.NewStatusFrom(url1)
 	}
-	list = []entry{}
+	list = []EntryV1{}
 	return runtime.StatusOK()
 }
 
-func queryEntries(ctx context.Context, values url.Values) ([]entry, runtime.Status) {
-	var result []entry
+func queryEntries(ctx context.Context, values url.Values) ([]EntryV1, runtime.Status) {
+	var result []EntryV1
 	var status runtime.Status
 
 	name := ""
@@ -95,7 +95,7 @@ func queryEntries(ctx context.Context, values url.Values) ([]entry, runtime.Stat
 	return result, status
 }
 
-func logActivity(ctx context.Context, e entry) runtime.Status {
+func logActivity(ctx context.Context, e EntryV1) runtime.Status {
 	if url1, ok := lookup.Value("logActivity"); ok {
 		return runtime.NewStatusFrom(url1)
 	}

@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	httpEntryLoc = PkgPath + ":httpEntryHandler"
+	httpEntryLoc  = PkgPath + ":httpEntryHandler"
+	entryResource = "entry"
 )
 
 func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) (status runtime.Status) {
@@ -18,7 +19,7 @@ func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Req
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
-		var buf []entry
+		var buf []EntryV1
 		buf, status = getEntryHandler[E](r.Context(), r.Header, r.URL.Query())
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)

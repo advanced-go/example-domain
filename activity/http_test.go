@@ -2,7 +2,6 @@ package activity
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
@@ -17,10 +16,11 @@ const (
 	stateEmpty     = "file://[cwd]/activitytest/resource/empty.json"
 )
 
+/*
 func _Example_HttpHandler() {
 	access.EnableTestLogger()
 
-	addEntries(nil, []entry{{ActivityID: "activity-uuid",
+	addEntries(nil, []EntryV1{{ActivityID: "activity-uuid",
 		ActivityType: "trace",
 		Agent:        "agent-controller",
 		AgentUri:     "https://host/agent-path",
@@ -42,6 +42,7 @@ func _Example_HttpHandler() {
 	//test: HttpHandler() -> 404
 
 }
+*/
 
 func Test_httpHandler(t *testing.T) {
 	basePath := "file://[cwd]/activitytest/resource/"
@@ -84,9 +85,9 @@ func Test_httpHandler(t *testing.T) {
 				// test headers if needed - test2.Headers(w.Result(),resp,names... string) (failures []Args)
 
 				// test content size and unmarshal types
-				var gotT, wantT []entry
+				var gotT, wantT []EntryV1
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]entry](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = http2test.Content[[]EntryV1](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)

@@ -1,32 +1,20 @@
 package activity
 
 import (
-	"errors"
-	"fmt"
-	"github.com/advanced-go/core/http2"
+	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/runtime"
-	"github.com/advanced-go/core/uri"
 	"net/http"
-	"strings"
+	"net/url"
 )
 
 type pkg struct{}
 
 const (
-	PkgPath       = "github.com/advanced-go/example-domain/activity"
-	entryResource = "entry"
-
-	//Pattern = "/" + PkgPath + "/"
-	//httpHandlerRouteName = "http-handler"
-	//postRouteName        = "post-entry"
-	//postEntryLoc         = PkgPath + ":PostEntry"
-	//getRouteName = "get-entry"
-	//getEntryLoc  = PkgPath + ":GetEntry"
+	PkgPath = "github.com/advanced-go/example-domain/activity"
 )
 
-/*
 // GetEntry - get entries with headers and values
-func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
+func GetEntry(h http.Header, values url.Values) (entries []EntryV1, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", &status)()
 	return getEntryHandler[runtime.Log](nil, h, values)
@@ -34,7 +22,7 @@ func GetEntry(h http.Header, values url.Values) (entries []Entry, status runtime
 
 // PostEntryConstraints - Post constraints
 type PostEntryConstraints interface {
-	[]Entry | []byte | runtime.Nillable
+	[]EntryV1 | []byte | runtime.Nillable
 }
 
 // PostEntry - exchange function
@@ -43,8 +31,8 @@ func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", &status)()
 	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
-*/
 
+/*
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	if r == nil {
@@ -68,20 +56,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 		status := runtime.NewStatusWithContent(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
 		http2.WriteResponse[runtime.Log](w, nil, status, nil)
 	}
-}
-
-/*
-type Entry struct {
-	//CreatedTS    time.Time
-	ActivityID   string // Some form of UUID
-	ActivityType string // trace|action
-	Agent        string
-	AgentUri     string // {host}:{agent}
-
-	Assignment  string
-	Controller  string
-	Behavior    string
-	Description string
 }
 
 */

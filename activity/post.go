@@ -15,6 +15,7 @@ const (
 	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
 	createEntriesLoc    = PkgPath + ":createEntries"
 	postRouteName       = "post-entry"
+	postEntryLoc        = PkgPath + ":PostEntry"
 )
 
 func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status runtime.Status) {
@@ -23,7 +24,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
-		var entries []entry
+		var entries []EntryV1
 		entries, status = createEntries(body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
@@ -50,21 +51,21 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 	}
 }
 
-func createEntries(body any) (entries []entry, status runtime.Status) {
+func createEntries(body any) (entries []EntryV1, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 
 	switch ptr := body.(type) {
-	case []entry:
+	case []EntryV1:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]entry](ptr)
+		entries, status = runtime.New[[]EntryV1](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]entry](ptr)
+		entries, status = runtime.New[[]EntryV1](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
