@@ -2,7 +2,6 @@ package slo
 
 import (
 	"context"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/url"
@@ -11,11 +10,11 @@ import (
 const (
 	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
 	getRouteName       = "get-entry"
+	getEntryLoc        = PkgPath + ":GetEntry"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []entry, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status runtime.Status) {
 	var e E
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryHandlerLoc), getRouteName, "", -1, "", &status)()
 
 	t, status = queryEntries(ctx, values)
 	if !status.OK() {
