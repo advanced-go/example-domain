@@ -3,27 +3,22 @@ package entryv1
 import (
 	"errors"
 	"fmt"
+	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 const (
 	PkgPath       = "github.com/advanced-go/example-domain/timeseries/entryv1"
 	entryResource = "v1/entry"
-
-	//httpHandlerRouteName = "http-handler"
-	//getRouteName         = "get"
-	//getLoc               = PkgPath + ":Get"
-	//postRouteName = "post"
-	//postLoc       = PkgPath + ":Post"
 )
 
-/*
 // Get - get entries
-func Get(h http.Header, values url.Values) (entries []types.EntryV1, status runtime.Status) {
+func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), getRouteName, "", -1, "", &status)()
 	return getHandler[runtime.Log](nil, h, values)
@@ -31,7 +26,7 @@ func Get(h http.Header, values url.Values) (entries []types.EntryV1, status runt
 
 // PostConstraints - Post constraints
 type PostConstraints interface {
-	[]types.EntryV1 | []byte | runtime.Nillable
+	[]Entry | []byte | runtime.Nillable
 }
 
 // Post - exchange function
@@ -40,8 +35,6 @@ func Post[T PostConstraints](h http.Header, method string, values url.Values, bo
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), postRouteName, "", -1, "", &status)()
 	return postHandler[runtime.Log](nil, h, method, values, body)
 }
-
-*/
 
 // HttpHandler - http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {

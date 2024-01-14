@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type entry struct {
+type Entry struct {
 	CreatedTS time.Time `json:"created-ts"`
 	Traffic   string    `json:"traffic"`
 	Start     time.Time `json:"start-time"`
@@ -30,16 +30,16 @@ const (
 	readEntryLoc = PkgPath + ":readEntry"
 )
 
-var list []entry
+var list []Entry
 
-func getEntries(ctx context.Context) ([]entry, runtime.Status) {
+func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]entry](url1)
+		return runtime.New[[]Entry](url1)
 	}
 	return list, runtime.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []entry) runtime.Status {
+func addEntry(ctx context.Context, e []Entry) runtime.Status {
 	if url1, ok := lookup.Value("addEntries"); ok {
 		return runtime.NewStatusFrom(url1)
 	}
@@ -53,10 +53,10 @@ func deleteEntries(ctx context.Context) runtime.Status {
 	if url1, ok := lookup.Value("deleteEntries"); ok {
 		return runtime.NewStatusFrom(url1)
 	}
-	list = []entry{}
+	list = []Entry{}
 	return runtime.StatusOK()
 }
 
-func queryEntries(ctx context.Context, _ url.Values) ([]entry, runtime.Status) {
+func queryEntries(ctx context.Context, _ url.Values) ([]Entry, runtime.Status) {
 	return getEntries(ctx)
 }

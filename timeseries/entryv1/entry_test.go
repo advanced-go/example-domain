@@ -4,8 +4,8 @@ import (
 	"fmt"
 )
 
-func createEntry(ctrl string) []entry {
-	return []entry{{
+func createEntry(ctrl string) []Entry {
+	return []Entry{{
 		//CreatedTS  0
 		Traffic: "ingress",
 		//Start:      0),

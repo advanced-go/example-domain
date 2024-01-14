@@ -3,7 +3,6 @@ package entryv1
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
@@ -15,15 +14,15 @@ const (
 	postHandlerLoc   = PkgPath + ":postHandler"
 	createEntriesLoc = PkgPath + ":createEntries"
 	postRouteName    = "post"
+	postLoc          = PkgPath + ":Post"
 )
 
 func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status runtime.Status) {
 	var e E
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postHandlerLoc), postRouteName, "", -1, "", &status)()
 
 	switch strings.ToUpper(method) {
 	case http.MethodPut:
-		var entries []entry
+		var entries []Entry
 		entries, status = createEntries(body)
 		if !status.OK() {
 			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
@@ -50,21 +49,21 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 	}
 }
 
-func createEntries(body any) (entries []entry, status runtime.Status) {
+func createEntries(body any) (entries []Entry, status runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
 
 	switch ptr := body.(type) {
-	case []entry:
+	case []Entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
