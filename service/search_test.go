@@ -12,7 +12,7 @@ func ExampleSearchHandler() {
 	access.EnableTestLogger()
 
 	rec := httptest.NewRecorder()
-	req, _ := http.NewRequest("", "http://localhost:8080/github.com/advanced-go/example-domain/service:search?q=golang", nil)
+	req, _ := http.NewRequest("", "http://localhost:8080/github/advanced-go/example-domain/service:search?q=golang", nil)
 	searchHandler[runtime.Output](rec, req)
 	resp := rec.Result()
 	buf, status := runtime.NewBytes(resp)
