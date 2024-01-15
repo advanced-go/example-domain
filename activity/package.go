@@ -10,7 +10,7 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/activity"
+	PkgPath = "github/advanced-go/example-domain/activity"
 )
 
 // GetEntry - get entries with headers and values

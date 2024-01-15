@@ -10,7 +10,7 @@ import (
 type pkg struct{}
 
 const (
-	PkgPath = "github.com/advanced-go/example-domain/slo"
+	PkgPath = "github/advanced-go/example-domain/slo"
 	//entryResource = "entry"
 	//Pattern = "/" + PkgPath + "/"
 

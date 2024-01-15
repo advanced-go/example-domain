@@ -1,2 +1,2 @@
-DELETE /github.com/advanced-go/example-domain/timeseries/entryv1:entry HTTP/1.1
+DELETE /github/advanced-go/example-domain/timeseries/entryv1:entry HTTP/1.1
 

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	PkgPath         = "github.com/advanced-go/example-domain/timeseries"
+	PkgPath         = "github/advanced-go/example-domain/timeseries"
 	v1EntryResource = "v1/entry"
 	v2EntryResource = "v2/entry"
 )

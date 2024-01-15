@@ -14,5 +14,5 @@ var (
 )
 
 func init() {
-	resolver.SetOverrides([]runtime.Pair{{searchTemplate, "http://localhost:8081/github.com/advanced-go/search/provider:search?%v"}})
+	resolver.SetOverrides([]runtime.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
 }

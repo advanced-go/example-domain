@@ -1,4 +1,4 @@
-PUT /github.com/advanced-go/example-domain/activity:entry HTTP/1.1
+PUT /github/advanced-go/example-domain/activity:entry HTTP/1.1
 Host: access-log.com
 Content-Type: application/json
 

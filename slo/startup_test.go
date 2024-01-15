@@ -11,7 +11,7 @@ import (
 
 func Example_Ping() {
 	w := httptest.NewRecorder()
-	r, _ := http.NewRequest("", "github.com/advanced-go/example-domain/slo:ping", nil)
+	r, _ := http.NewRequest("", "github/advanced-go/example-domain/slo:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	messaging.ProcessPing[runtime.Output](w, nid)
 	buf, status := runtime.NewBytes(w.Result())
@@ -21,6 +21,6 @@ func Example_Ping() {
 	fmt.Printf("test: Ping() -> [nid:%v] [nss:%v] [ok:%v] [status:%v] [content:%v]\n", nid, rsc, ok, w.Result().StatusCode, string(buf))
 
 	//Output:
-	//test: Ping() -> [nid:github.com/advanced-go/example-domain/slo] [nss:ping] [ok:true] [status:200] [content:Ping status: OK, resource: github.com/advanced-go/example-domain/slo]
+	//test: Ping() -> [nid:github/advanced-go/example-domain/slo] [nss:ping] [ok:true] [status:200] [content:Ping status: OK, resource: github/advanced-go/example-domain/slo]
 
 }
