@@ -1,2 +1,2 @@
-GET /github.com/advanced-go/example-domain/activity:entry HTTP/1.1
+GET /github/advanced-go/example-domain/activity:entry HTTP/1.1
 
