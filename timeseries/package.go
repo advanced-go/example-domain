@@ -9,9 +9,7 @@ import (
 )
 
 const (
-	PkgPath         = "github/advanced-go/example-domain/timeseries"
-	v1EntryResource = "v1/entry"
-	v2EntryResource = "v2/entry"
+	PkgPath = "github/advanced-go/example-domain/timeseries"
 )
 
 // GetEntryV1 - get entries
@@ -33,29 +31,3 @@ func PostEntryV1[T entryv1.PostConstraints](h http.Header, method string, values
 func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
 	return entryv2.Post[T](h, method, values, body)
 }
-
-/*
-// HttpHandler - http endpoint
-func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	_, rsc, ok := uri.UprootUrn(r.URL.Path)
-	if !ok {
-		status := runtime.NewStatus(http.StatusBadRequest)
-		status.SetContent(errors.New(fmt.Sprintf("error invalid path, not a valid URN: %v", r.URL.Path)), false)
-		http2.WriteResponse[runtime.Log](w, nil, status, nil)
-		return
-	}
-	runtime.AddRequestId(r)
-	switch strings.ToLower(rsc) {
-	case v1EntryResource:
-		entryv1.HttpHandler(w, r)
-	case v2EntryResource:
-		entryv2.HttpHandler(w, r)
-	default:
-		status := runtime.NewStatus(http.StatusNotFound)
-		status.SetContent(errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", rsc)), false)
-		http2.WriteResponse[runtime.Log](w, nil, status, nil)
-	}
-}
-
-
-*/
