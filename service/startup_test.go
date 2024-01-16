@@ -14,7 +14,7 @@ func Example_Ping() {
 	r, _ := http.NewRequest("", "github/advanced-go/example-domain/activity:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
 	messaging.ProcessPing[runtime.Output](w, nid)
-	buf, status := runtime.NewBytes(w.Result())
+	buf, status := runtime.ReadAll(w.Result().Body)
 	if !status.OK() {
 		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
 	}
