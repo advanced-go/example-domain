@@ -58,17 +58,17 @@ func createEntries(body any) (entries []Entry, status runtime.Status) {
 	case []Entry:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case *http.Request:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]Entry](ptr)
+		entries, status = runtime.New[[]Entry](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

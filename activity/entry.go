@@ -29,7 +29,7 @@ var list []EntryV1
 
 func getEntries(ctx context.Context) (t []EntryV1, status runtime.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]EntryV1](url1)
+		return runtime.New[[]EntryV1](url1, nil)
 	}
 	if len(list) == 0 {
 		return list, runtime.NewStatus(http.StatusNotFound)
@@ -40,7 +40,7 @@ func getEntries(ctx context.Context) (t []EntryV1, status runtime.Status) {
 func getEntriesByType(ctx context.Context, act string) (t []EntryV1, status runtime.Status) {
 	var l []EntryV1
 	if url1, ok := lookup.Value("getEntriesByType"); ok {
-		return runtime.New[[]EntryV1](url1)
+		return runtime.New[[]EntryV1](url1, nil)
 	}
 	for _, v := range list {
 		if act == "" {

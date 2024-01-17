@@ -30,14 +30,14 @@ var list []EntryV1
 
 func getEntries(ctx context.Context) ([]EntryV1, runtime.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]EntryV1](url1)
+		return runtime.New[[]EntryV1](url1, nil)
 	}
 	return list, runtime.StatusOK()
 }
 
 func getEntriesByController(ctx context.Context, ctrl string) ([]EntryV1, runtime.Status) {
 	if url1, ok := lookup.Value("getEntriesByController"); ok {
-		return runtime.New[[]EntryV1](url1)
+		return runtime.New[[]EntryV1](url1, nil)
 	}
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {

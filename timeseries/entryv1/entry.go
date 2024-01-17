@@ -37,7 +37,7 @@ var list []Entry
 
 func getEntries(ctx context.Context) ([]Entry, runtime.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return runtime.New[[]Entry](url1)
+		return runtime.New[[]Entry](url1, nil)
 	}
 	return list, runtime.StatusOK()
 }

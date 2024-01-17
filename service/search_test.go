@@ -15,7 +15,7 @@ func ExampleSearchHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080/github/advanced-go/example-domain/service:search?q=golang", nil)
 	searchHandler[runtime.Output](rec, req)
 	resp := rec.Result()
-	buf, status := runtime.ReadAll(resp.Body)
+	buf, status := runtime.ReadAll(resp.Body, nil)
 	fmt.Printf("test: searchHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
 
 	//Output:
