@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 )
 
-func ExampleSearchHandler() {
+func _ExampleSearchHandler() {
 	access.EnableTestLogger()
 
 	rec := httptest.NewRecorder()

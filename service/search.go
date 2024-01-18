@@ -25,7 +25,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 		} else {
-			http2.WriteResponse[E](w, resp, status, resp.Header)
+			http2.WriteResponse[E](w, resp.Body, status, resp.Header)
 		}
 		return status
 	default:
