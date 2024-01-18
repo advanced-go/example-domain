@@ -40,9 +40,6 @@ func Test_httpHandler(t *testing.T) {
 			// ignoring returned status as any errors will be reflected in the response StatusCode
 			httpEntryHandler[runtime.Output](w, req)
 
-			// kludge for BUG in response recorder
-			w.Result().Header = w.Header()
-
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {
 				t.Errorf("StatusCode got = %v, want %v", w.Result().StatusCode, resp.StatusCode)

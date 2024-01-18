@@ -41,9 +41,6 @@ func Test_timeseriesV1Handler(t *testing.T) {
 			// ignoring returned status as any errors will be reflected in the response StatusCode
 			timeseriesHandlerV1[runtime.Output](w, req)
 
-			// kludge for BUG in response recorder
-			w.Result().Header = w.Header()
-
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {
 				t.Errorf("StatusCode got = %v, want %v", w.Result().StatusCode, resp.StatusCode)
