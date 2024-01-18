@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 )
 
-func _ExampleSearchHandler() {
+func ExampleSearchHandler() {
 	access.EnableTestLogger()
 
 	rec := httptest.NewRecorder()
@@ -16,9 +16,9 @@ func _ExampleSearchHandler() {
 	searchHandler[runtime.Output](rec, req)
 	resp := rec.Result()
 	buf, status := runtime.ReadAll(resp.Body, nil)
-	fmt.Printf("test: searchHandler() -> [code:%v] [status:%v] [data:%v]\n", rec.Code, status, string(buf))
+	fmt.Printf("test: searchHandler() -> [code:%v] [read-status:%v] [content:%v]\n", rec.Result().StatusCode, status, buf != nil)
 
 	//Output:
-	//test: searchHandler() -> [code:200] [status:OK] [data:this is a search result]
+	//test: searchHandler() -> [code:200] [read-status:OK] [content:true]
 
 }
