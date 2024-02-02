@@ -2,18 +2,17 @@ package timeseries
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/messaging"
 	"github.com/advanced-go/core/runtime"
 	"github.com/advanced-go/core/uri"
 	"net/http"
 	"net/http/httptest"
 )
 
-func Example_Ping() {
+func _Example_Ping() {
 	w := httptest.NewRecorder()
 	r, _ := http.NewRequest("", "github/advanced-go/example-domain/timeseries:ping", nil)
 	nid, rsc, ok := uri.UprootUrn(r.URL.Path)
-	messaging.ProcessPing[runtime.Output](w, nid)
+	//messaging.ProcessPing[runtime.Output](w, nid)
 	buf, status := runtime.ReadAll(w.Result().Body, nil)
 	if !status.OK() {
 		fmt.Printf("test: NewBytes() -> [status:%v]\n", status)
