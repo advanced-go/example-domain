@@ -26,9 +26,9 @@ func messageHandler(msg messaging.Message) {
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
 	switch msg.Event {
 	case messaging.StartupEvent:
-		messaging.SendReply(msg, messaging.Status{Code: http.StatusOK, Duration: time.Since(start)})
+		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
 	case messaging.ShutdownEvent:
 	case messaging.PingEvent:
-		messaging.SendReply(msg, messaging.Status{Code: http.StatusOK, Duration: time.Since(start)})
+		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
 	}
 }

@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/advanced-go/core/runtime"
 	uri2 "github.com/advanced-go/core/uri"
 )
 
@@ -14,5 +13,5 @@ var (
 )
 
 func init() {
-	resolver.SetOverrides([]runtime.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
+	resolver.SetOverrides([]uri2.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
 }
