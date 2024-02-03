@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
+func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)

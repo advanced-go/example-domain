@@ -3,6 +3,7 @@ package slo
 import (
 	"context"
 	"errors"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"io"
 	"net/http"
@@ -17,7 +18,7 @@ const (
 	postEntryLoc        = PkgPath + ":PostEntry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status runtime.Status) {
+func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status *runtime.Status) {
 	var e E
 
 	switch strings.ToUpper(method) {
@@ -49,7 +50,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 	}
 }
 
-func createEntries(body any) (entries []EntryV1, status runtime.Status) {
+func createEntries(body any) (entries []EntryV1, status *runtime.Status) {
 	if body == nil {
 		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
 	}
@@ -58,17 +59,17 @@ func createEntries(body any) (entries []EntryV1, status runtime.Status) {
 	case []EntryV1:
 		entries = ptr
 	case []byte:
-		entries, status = runtime.New[[]EntryV1](ptr, nil)
+		entries, status = io2.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case *http.Request:
-		entries, status = runtime.New[[]EntryV1](ptr.Body, nil)
+		entries, status = io2.New[[]EntryV1](ptr.Body, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}
 	case io.ReadCloser:
-		entries, status = runtime.New[[]EntryV1](ptr, nil)
+		entries, status = io2.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation(createEntriesLoc)
 		}

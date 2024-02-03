@@ -12,7 +12,7 @@ const (
 	entryResource = "entry"
 )
 
-func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) (status runtime.Status) {
+func httpEntryHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) (status *runtime.Status) {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)

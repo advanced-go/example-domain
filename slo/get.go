@@ -13,7 +13,7 @@ const (
 	getEntryLoc        = PkgPath + ":GetEntry"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status runtime.Status) {
+func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status *runtime.Status) {
 	var e E
 
 	t, status = queryEntries(ctx, values)
