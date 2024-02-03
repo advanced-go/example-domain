@@ -23,11 +23,11 @@ func GetEntryV2(h http.Header, values url.Values) (entries []entryv2.Entry, stat
 }
 
 // PostEntryV1 - exchange function
-func PostEntryV1[T entryv1.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+func PostEntryV1[T entryv1.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status *runtime.Status) {
 	return entryv1.Post[T](h, method, values, body)
 }
 
 // PostEntryV2 - exchange function
-func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+func PostEntryV2[T entryv2.PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status *runtime.Status) {
 	return entryv2.Post[T](h, method, values, body)
 }
