@@ -13,11 +13,11 @@ const (
 	getLoc        = PkgPath + ":Get"
 )
 
-func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status *runtime.Status) {
 	var e E
 
 	t, status = queryEntries(ctx, values)
-	if !status.OK() && !status.NotFound() {
+	if !status.OK() && status.Code != http.StatusNotFound {
 		e.Handle(status, runtime.RequestId(h), getHandlerLoc)
 	}
 	if len(t) == 0 {

@@ -13,7 +13,7 @@ const (
 	getLoc        = PkgPath + ":Get"
 )
 
-func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status runtime.Status) {
+func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status *runtime.Status) {
 	var e E
 
 	t, status = queryEntries(ctx, values)

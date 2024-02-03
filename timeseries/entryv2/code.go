@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func statusCode(s *runtime.Status) access.StatusCodeFunc {
+func statusCode(s **runtime.Status) access.StatusCodeFunc {
 	return func() int {
 		if s == nil || *s == nil {
 			return http.StatusOK
 		}
-		return (*(s)).Code()
+		return (*(s)).Code
 	}
 }

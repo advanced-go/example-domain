@@ -13,7 +13,7 @@ const (
 )
 
 // Get - get entries
-func Get(h http.Header, values url.Values) (entries []Entry, status runtime.Status) {
+func Get(h http.Header, values url.Values) (entries []Entry, status *runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getLoc), getRouteName, "", -1, "", statusCode(&status))()
 	return getHandler[runtime.Log](nil, h, values)
@@ -25,7 +25,7 @@ type PostConstraints interface {
 }
 
 // Post - exchange function
-func Post[T PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status runtime.Status) {
+func Post[T PostConstraints](h http.Header, method string, values url.Values, body T) (t any, status *runtime.Status) {
 	h = runtime.AddRequestId(h)
 	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postLoc), postRouteName, "", -1, "", statusCode(&status))()
 	return postHandler[runtime.Log](nil, h, method, values, body)

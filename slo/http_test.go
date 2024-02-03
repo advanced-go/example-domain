@@ -2,6 +2,7 @@ package slo
 
 import (
 	"github.com/advanced-go/core/http2/http2test"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -24,7 +25,7 @@ func Test_httpHandler(t *testing.T) {
 		name string
 		args args
 	}{
-		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{"addEntries": runtime.StatusOKUri}}},
+		{"put-entries", args{req: "put-req-v1.txt", resp: "put-resp-v1.txt", result: map[string]string{"addEntries": io2.StatusOKUri}}},
 		{"get-entries", args{req: "get-req-v1.txt", resp: "get-resp-v1.txt", result: map[string]string{"getEntries": validEntry}}},
 		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string]string{"deleteEntries": ""}}},
 	}
