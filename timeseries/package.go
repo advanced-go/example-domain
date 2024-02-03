@@ -13,12 +13,12 @@ const (
 )
 
 // GetEntryV1 - get entries
-func GetEntryV1(h http.Header, values url.Values) (entries []entryv1.Entry, status runtime.Status) {
+func GetEntryV1(h http.Header, values url.Values) (entries []entryv1.Entry, status *runtime.Status) {
 	return entryv1.Get(h, values)
 }
 
 // GetEntryV2 - get entries
-func GetEntryV2(h http.Header, values url.Values) (entries []entryv2.Entry, status runtime.Status) {
+func GetEntryV2(h http.Header, values url.Values) (entries []entryv2.Entry, status *runtime.Status) {
 	return entryv2.Get(h, values)
 }
 

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	agent messaging.Agent
+	agent *messaging.Agent
 )
 
 func init() {
