@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func activityHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) (status runtime.Status) {
+func activityHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) (status *runtime.Status) {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)

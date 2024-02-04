@@ -13,7 +13,7 @@ const (
 // http://localhost:8081/github.com/advanced-go/search/provider:search?q=golang
 )
 
-func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) runtime.Status {
+func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return runtime.NewStatus(http.StatusBadRequest)

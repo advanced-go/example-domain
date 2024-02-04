@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/advanced-go/core/access"
+	"github.com/advanced-go/core/io2"
 	"github.com/advanced-go/core/runtime"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +16,7 @@ func ExampleSearchHandler() {
 	req, _ := http.NewRequest("", "http://localhost:8080/github/advanced-go/example-domain/service:search?q=golang", nil)
 	status := searchHandler[runtime.Output](rec, req)
 	resp := rec.Result()
-	buf, status0 := runtime.ReadAll(resp.Body, nil)
+	buf, status0 := io2.ReadAll(resp.Body, nil)
 	fmt.Printf("test: searchHandler() -> [code:%v] [read-status:%v] [status:%v] [content:%v]\n", rec.Result().StatusCode, status0, status, buf != nil && len(buf) > 0)
 
 	//Output:
