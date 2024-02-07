@@ -20,7 +20,7 @@ func init() {
 	agent.Run()
 }
 
-func messageHandler(msg messaging.Message) {
+func messageHandler(msg *messaging.Message) {
 	start := time.Now()
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
 	switch msg.Event {

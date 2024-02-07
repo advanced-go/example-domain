@@ -21,7 +21,7 @@ func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Reques
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
 		newUrl := resolver.Build(searchTemplate, r.URL.Query().Encode())
-		resp, status := exchange.Get(newUrl, r.Header)
+		resp, status := exchange.Get(nil, newUrl, r.Header)
 		if !status.OK() {
 			http2.WriteResponse[E](w, nil, status, nil)
 		} else {

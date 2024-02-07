@@ -16,7 +16,7 @@ const (
 // GetEntry - get entries with headers and values
 func GetEntry(h http.Header, values url.Values) (entries []EntryV1, status *runtime.Status) {
 	h = runtime.AddRequestId(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", statusCode(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, http.MethodGet, getEntryLoc), getRouteName, "", -1, "", access.StatusCode(&status))()
 	return getEntryHandler[runtime.Log](nil, h, values)
 }
 
@@ -28,6 +28,6 @@ type PostEntryConstraints interface {
 // PostEntry - exchange function
 func PostEntry[T PostEntryConstraints](h http.Header, method string, values url.Values, body T) (t any, status *runtime.Status) {
 	h = runtime.AddRequestId(h)
-	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", statusCode(&status))()
+	defer access.LogDeferred(access.InternalTraffic, access.NewRequest(h, method, postEntryLoc), postRouteName, "", -1, "", access.StatusCode(&status))()
 	return postEntryHandler[runtime.Log](nil, h, method, values, body)
 }
