@@ -24,7 +24,7 @@ func messageHandler(msg *messaging.Message) {
 	start := time.Now()
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
-	switch msg.Event {
+	switch msg.Event() {
 	case messaging.StartupEvent:
 		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
 	case messaging.ShutdownEvent:
