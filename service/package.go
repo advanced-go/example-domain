@@ -18,7 +18,6 @@ const (
 	timeseriesPathV1 = "timeseries/v1/entry"
 	timeseriesPathV2 = "timeseries/v2/entry"
 	searchPath       = "search"
-	httpHandlerLoc   = PkgPath + ":HttpHandler"
 )
 
 // HttpHandler - Http endpoint
@@ -41,7 +40,7 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 	case searchPath:
 		searchHandler[runtime.Log](w, r)
 	default:
-		status := runtime.NewStatusError(http.StatusNotFound, httpHandlerLoc, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", path)))
+		status := runtime.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", path)), nil)
 		http2.WriteResponse[runtime.Log](w, status.Error(), status, nil)
 	}
 }

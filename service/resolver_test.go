@@ -32,12 +32,12 @@ func ExampleBuild_Override() {
 	uri := resolver.Build(searchTemplate, v.Encode())
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)
 
-	resolver.SetOverrides([]uri2.Pair{{searchTemplate, "https://www.google.com/search?q=Pascal"}})
+	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "https://www.google.com/search?q=Pascal"}})
 	s := v.Encode()
 	uri = resolver.Build(searchTemplate, s)
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)
 
-	resolver.SetOverrides([]uri2.Pair{{searchTemplate, "file://[cwd]/providertest/resource/query-result.txt"}})
+	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "file://[cwd]/providertest/resource/query-result.txt"}})
 	s = v.Encode()
 	uri = resolver.Build(searchTemplate, s)
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)

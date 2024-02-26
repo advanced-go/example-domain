@@ -13,5 +13,5 @@ var (
 )
 
 func init() {
-	resolver.SetOverrides([]uri2.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
+	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
 }
