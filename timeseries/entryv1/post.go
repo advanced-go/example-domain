@@ -12,10 +12,8 @@ import (
 )
 
 const (
-	postHandlerLoc   = PkgPath + ":postHandler"
-	createEntriesLoc = PkgPath + ":createEntries"
-	postRouteName    = "post"
-	postLoc          = PkgPath + ":Post"
+	postRouteName = "post"
+	postLoc       = PkgPath + ":Post"
 )
 
 func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status *runtime.Status) {
@@ -26,23 +24,23 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 		var entries []Entry
 		entries, status = createEntries(body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 			return nil, status
 		}
 		if len(entries) == 0 {
-			status = runtime.NewStatusError(runtime.StatusInvalidContent, postHandlerLoc, errors.New("error: no entries found"))
-			e.Handle(status, runtime.RequestId(h), "")
+			status = runtime.NewStatusError(runtime.StatusInvalidContent, errors.New("error: no entries found"), nil)
+			e.Handle(status, runtime.RequestId(h))
 			return nil, status
 		}
 		status = addEntries(ctx, entries)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 		}
 		return nil, status
 	case http.MethodDelete:
 		status = deleteEntries(ctx)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 		}
 		return nil, status
 	default:
@@ -52,7 +50,7 @@ func postHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, met
 
 func createEntries(body any) (entries []Entry, status *runtime.Status) {
 	if body == nil {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation()
 	}
 
 	switch ptr := body.(type) {
@@ -61,20 +59,20 @@ func createEntries(body any) (entries []Entry, status *runtime.Status) {
 	case []byte:
 		entries, status = io2.New[[]Entry](ptr, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	case *http.Request:
 		entries, status = io2.New[[]Entry](ptr.Body, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	case io.ReadCloser:
 		entries, status = io2.New[[]Entry](ptr, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	default:
-		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntriesLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, runtime.NewInvalidBodyTypeError(body), nil)
 	}
 	return entries, runtime.StatusOK()
 }
