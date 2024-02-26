@@ -23,7 +23,8 @@ func Example_postEntryHandler() {
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	//Output:
-	//test: postEntryHandler() -> [status:Invalid Content [invalid body type: <nil>]]
+	//test: postEntryHandler() -> [status:Invalid Content]
+	//{ "code":90, "status":"Invalid Content", "request-id":"8765-4321", "errors" : [ "invalid body type: string" ], "trace" : [ "https://github.com/advanced-go/example-domain/tree/main/activity#postEntryHandler[...]","https://github.com/advanced-go/example-domain/tree/main/activity#createEntries" ] }
 	//test: postEntryHandler() -> [status:Invalid Content [invalid body type: string]]
 
 }

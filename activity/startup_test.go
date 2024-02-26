@@ -9,9 +9,9 @@ import (
 func ExamplePing() {
 	r, _ := http.NewRequest("", PkgPath+":ping", nil)
 	status := messaging.Ping(nil, r.URL)
-	fmt.Printf("test: Ping() -> [status-code:%v]\n", status.Code)
+	fmt.Printf("test: Ping() -> [status:%v]\n", status)
 
 	//Output:
-	//test: Ping() -> [status-code:200]
+	//test: Ping() -> [status:OK]
 
 }

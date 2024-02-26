@@ -8,9 +8,8 @@ import (
 )
 
 const (
-	getEntryHandlerLoc = PkgPath + ":getEntryHandler"
-	getRouteName       = "get-entry"
-	getEntryLoc        = PkgPath + ":GetEntry"
+	getRouteName = "get-entry"
+	getEntryLoc  = PkgPath + ":GetEntry"
 )
 
 func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status *runtime.Status) {
@@ -18,7 +17,7 @@ func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header,
 
 	t, status = queryEntries(ctx, values)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h), getEntryHandlerLoc)
+		e.Handle(status, runtime.RequestId(h))
 		return nil, status
 	}
 	if len(t) == 0 {

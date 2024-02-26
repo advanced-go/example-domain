@@ -26,23 +26,23 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 		var entries []EntryV1
 		entries, status = createEntries(body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 			return nil, status
 		}
 		if len(entries) == 0 {
-			status = runtime.NewStatusError(runtime.StatusInvalidContent, postEntryHandlerLoc, errors.New("error: no entries found"))
-			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			status = runtime.NewStatusError(runtime.StatusInvalidContent, errors.New("error: no entries found"), nil)
+			e.Handle(status, runtime.RequestId(h))
 			return nil, status
 		}
 		status = addEntries(ctx, entries)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 		}
 		return nil, status
 	case http.MethodDelete:
 		status = deleteEntries(ctx)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h), postEntryHandlerLoc)
+			e.Handle(status, runtime.RequestId(h))
 		}
 		return nil, status
 	default:
@@ -52,7 +52,7 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 
 func createEntries(body any) (entries []EntryV1, status *runtime.Status) {
 	if body == nil {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation(createEntriesLoc)
+		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation()
 	}
 
 	switch ptr := body.(type) {
@@ -61,20 +61,20 @@ func createEntries(body any) (entries []EntryV1, status *runtime.Status) {
 	case []byte:
 		entries, status = io2.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	case *http.Request:
 		entries, status = io2.New[[]EntryV1](ptr.Body, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	case io.ReadCloser:
 		entries, status = io2.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
-			return nil, status.AddLocation(createEntriesLoc)
+			return nil, status.AddLocation()
 		}
 	default:
-		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, createEntriesLoc, runtime.NewInvalidBodyTypeError(body))
+		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, runtime.NewInvalidBodyTypeError(body), nil)
 	}
 	return entries, runtime.StatusOK()
 }
