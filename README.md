@@ -24,7 +24,9 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 }
 ~~~
 
-Package service provides the following uniform interfaces, and has tests for the supporting packages. Also included is a search endpoint.
+Package service is the resource that handles incoming HTTP requests. There are seperate handlers for each package plus a search endpoint. Testing is implemented via the uniform HttpHandler interface in each handler.
+
+The following uniform interfaces are provided:
 
 ~~~
 // Resource identifier
