@@ -1,6 +1,6 @@
 # example-domain
 
-Provides common functionality utilized by an AI agent managing service resiliency. The packages provide 2 interfaces for integration, with a package.go file providing the implementations and any additional type declarations:
+Provides common functionality utilized by an AI agent managing service resiliency. The packages provide uniform interfaces for integration, with a package.go file providing the implementations and any additional type declarations:
 
   1. Direct exchange functions - Get and Post, with generic constraints for a Post body.
 ~~~
@@ -97,9 +97,6 @@ func messageHandler(msg core.Message) {
 
 ## timeseries
 [Timeseries][timeseriespkg] implements versioned access log events. 
-
-## timeseriesvar
-[Timeseriesvar][timeseriesvarpkg] implements versioned access log events via [variants][rfc2626]. 
 
 
 
