@@ -1,6 +1,6 @@
 # example-domain
 
-Provides common functionality utilized by an AI agent managing service resiliency. The packages, activity, slo, and timeseries, provide uniform interfaces in their respective package.go.
+Provides common functionality utilized by an AI agent managing service resiliency. The packages, activity, slo, and timeseries, provide resources used by the agent, and have uniform interfaces in their respective package.go.
 
 ~~~
 // Resource identifier
@@ -24,7 +24,7 @@ func Post[T PostConstraints](h http.Header, method, uri string, body T) (t any, 
 }
 ~~~
 
-The service package service is the resource that handles incoming HTTP requests. There are seperate handlers for each supporting package plus a search endpoint. Testing is implemented via the uniform HttpHandler interface in each handler.
+The service package is the resource that handles incoming HTTP requests. There are seperate handlers for each resource package plus a search endpoint. Testing is implemented via the uniform HttpHandler interface in each handler.
 
 The following uniform interfaces are provided:
 
@@ -40,7 +40,6 @@ func HttpHandler(w http.ResponseWriter, r *http.Request) {
 }
 ~~~
    
-
 
 Access logging is implemented by a call to a uniform logging interface in core/access
 ~~~
