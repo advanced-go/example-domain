@@ -13,19 +13,6 @@ const (
 	Type = "type"
 )
 
-type EntryV1 struct {
-	//CreatedTS    time.Time
-	ActivityID   string // Some form of UUID
-	ActivityType string // trace|action
-	Agent        string
-	AgentUri     string // {host}:{agent}
-
-	Assignment  string
-	Controller  string
-	Behavior    string
-	Description string
-}
-
 var list []EntryV1
 
 func getEntries(ctx context.Context) (t []EntryV1, status *runtime.Status) {
