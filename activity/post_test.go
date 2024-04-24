@@ -2,7 +2,8 @@ package activity
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 )
 
@@ -12,14 +13,14 @@ func Example_postEntryHandler() {
 	//	fmt.Printf("test: NewRequest() -> [status%v]\n", status)
 	//}
 
-	req.Header.Set(runtime.XRequestId, "1234-5678")
-	_, status := postEntryHandler[runtime.Output](nil, req.Header, req.Method, nil, nil)
+	req.Header.Set(httpx.XRequestId, "1234-5678")
+	_, status := postEntryHandler[core.Output](nil, req.Header, req.Method, nil, nil)
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	req, _ = http.NewRequest("PUT", "https://www.google.com", nil)
 	//req.Header.Set(ContentLocation, EntryV1Variant)
-	req.Header.Set(runtime.XRequestId, "8765-4321")
-	_, status = postEntryHandler[runtime.Output](nil, req.Header, req.Method, nil, "invalid string type")
+	req.Header.Set(httpx.XRequestId, "8765-4321")
+	_, status = postEntryHandler[core.Output](nil, req.Header, req.Method, nil, "invalid string type")
 	fmt.Printf("test: postEntryHandler() -> [status:%v]\n", status)
 
 	//Output:
@@ -55,7 +56,7 @@ func Example_PostEntry() {
 		}}
 
 	h := make(http.Header)
-	h.Add(runtime.XRequestId, "123-456")
+	h.Add(core.XRequestId, "123-456")
 	_, status := PostEntry[[]Entry](h, "PUT", nil, entries)
 	//_, status := PostEntry[[]Entry](h, "PUT", "http://localhost:8080/advanced-go/example-domain/activity", entries)
 
