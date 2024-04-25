@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/runtime"
-	uri2 "github.com/advanced-go/core/uri"
+	"github.com/advanced-go/stdlib/core"
+	uri2 "github.com/advanced-go/stdlib/uri"
 	"net/url"
 )
 
@@ -24,7 +24,7 @@ func ExampleBuild() {
 }
 
 func ExampleBuild_Override() {
-	runtime.SetProdEnvironment()
+	core.SetProdEnvironment()
 
 	v := make(url.Values)
 	v.Add(queryArg, "golang")
@@ -32,12 +32,12 @@ func ExampleBuild_Override() {
 	uri := resolver.Build(searchTemplate, v.Encode())
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)
 
-	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "https://www.google.com/search?q=Pascal"}})
+	resolver.SetTemplates([]uri2.Attr{{searchTemplate, "https://www.google.com/search?q=Pascal"}})
 	s := v.Encode()
 	uri = resolver.Build(searchTemplate, s)
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)
 
-	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "file://[cwd]/providertest/resource/query-result.txt"}})
+	resolver.SetTemplates([]uri2.Attr{{searchTemplate, "file://[cwd]/providertest/resource/query-result.txt"}})
 	s = v.Encode()
 	uri = resolver.Build(searchTemplate, s)
 	fmt.Printf("test: resolver.Build(\"%v\") -> [uri:%v]\n", searchTemplate, uri)

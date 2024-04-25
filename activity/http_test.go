@@ -2,8 +2,8 @@ package activity
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -64,7 +64,7 @@ func Test_httpHandler(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v1.txt", resp: "delete-resp-v1.txt", result: map[string]string{"deleteEntries": ""}}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp(basePath, tt.args.req, tt.args.resp)
+		failures, req, resp := httpxtest.ReadHttp(basePath, tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
@@ -84,7 +84,7 @@ func Test_httpHandler(t *testing.T) {
 				// test content size and unmarshal types
 				var gotT, wantT []EntryV1
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]EntryV1](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = httpxtest.Content[[]EntryV1](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)
@@ -102,13 +102,13 @@ func Test_httpHandler(t *testing.T) {
 	fmt.Printf("test: End Entries -> %v\n", len(list))
 }
 
-func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []http2test.Args {
+func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []httpxtest.Args {
 	//fmt.Printf("got = %v\n[len:%v]\n", string(gotBytes), len(gotBytes))
 	//fmt.Printf("want = %v\n[len:%v]\n", string(wantBytes), len(wantBytes))
 	return nil
 }
 
-func Errorf(t *testing.T, failures []http2test.Args) {
+func Errorf(t *testing.T, failures []httpxtest.Args) {
 	for _, arg := range failures {
 		t.Errorf("%v got = %v want = %v", arg.Item, arg.Got, arg.Want)
 	}

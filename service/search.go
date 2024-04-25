@@ -1,9 +1,8 @@
 package service
 
 import (
-	"github.com/advanced-go/core/exchange"
-	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"strings"
 )
@@ -13,23 +12,23 @@ const (
 // http://localhost:8081/github.com/advanced-go/search/provider:search?q=golang
 )
 
-func searchHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+func searchHandler[E core.ErrorHandler](w http.ResponseWriter, r *http.Request) *core.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return runtime.NewStatus(http.StatusBadRequest)
+		return core.NewStatus(http.StatusBadRequest)
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
 		newUrl := resolver.Build(searchTemplate, r.URL.Query().Encode())
-		resp, status := exchange.Get(nil, newUrl, r.Header)
+		resp, status := httpx.Get(nil, newUrl, r.Header)
 		if !status.OK() {
-			http2.WriteResponse[E](w, nil, status, nil)
+			httpx.WriteResponse[E](w, nil, status.HttpCode(), nil)
 		} else {
-			http2.WriteResponse[E](w, resp.Body, status, resp.Header)
+			httpx.WriteResponse[E](w, resp.Header, status.HttpCode(), resp.Body)
 		}
 		return status
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		return runtime.NewStatus(http.StatusMethodNotAllowed)
+		return core.NewStatus(http.StatusMethodNotAllowed)
 	}
 }

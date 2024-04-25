@@ -1,7 +1,7 @@
 package service
 
 import (
-	uri2 "github.com/advanced-go/core/uri"
+	uri2 "github.com/advanced-go/stdlib/uri"
 )
 
 const (
@@ -13,5 +13,5 @@ var (
 )
 
 func init() {
-	resolver.SetTemplates([]uri2.Pair{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
+	resolver.SetTemplates([]uri2.Attr{{searchTemplate, "http://localhost:8081/github/advanced-go/search/provider:search?%v"}})
 }

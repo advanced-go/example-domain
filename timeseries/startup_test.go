@@ -2,7 +2,7 @@ package timeseries
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/messaging"
+	"github.com/advanced-go/stdlib/messaging"
 	"net/http"
 )
 
@@ -12,6 +12,6 @@ func ExamplePing() {
 	fmt.Printf("test: Ping() -> [status:%v]\n", status)
 
 	//Output:
-	//test: Ping() -> [status:200]
+	//test: Ping() -> [status:OK]
 
 }

@@ -1,7 +1,6 @@
 package slo
 
 import (
-	"github.com/advanced-go/core/http2"
 	"github.com/advanced-go/stdlib/core"
 	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
@@ -20,7 +19,7 @@ func httpEntryHandler[E core.ErrorHandler](w http.ResponseWriter, r *http.Reques
 			httpx.WriteResponse[E](w, nil, status.HttpCode(), nil)
 			return status
 		}
-		httpx.WriteResponse[E](w, []httpx.Attr{{http2.ContentType, http2.ContentTypeJson}}, status.HttpCode(), buf)
+		httpx.WriteResponse[E](w, []httpx.Attr{{httpx.ContentType, httpx.ContentTypeJson}}, status.HttpCode(), buf)
 		return status
 	case http.MethodPut:
 		_, status := postEntryHandler[E](r.Context(), r.Header, r.Method, r.URL.Query(), r.Body)

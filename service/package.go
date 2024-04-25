@@ -3,13 +3,13 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"strings"
 )
 
-type pkg struct{}
+//type pkg struct{}
 
 const (
 	PkgPath          = "github/advanced-go/example-domain/service"
@@ -22,25 +22,25 @@ const (
 
 // HttpHandler - Http endpoint
 func HttpHandler(w http.ResponseWriter, r *http.Request) {
-	path, status0 := http2.ValidateRequest(r, PkgPath)
+	path, status0 := httpx.ValidateRequest(r, PkgPath)
 	if !status0.OK() {
-		http2.WriteResponse[runtime.Log](w, status0.Error(), status0, nil)
+		httpx.WriteResponse[core.Log](w, nil, status0.HttpCode(), status0.Err)
 		return
 	}
-	runtime.AddRequestId(r)
+	core.AddRequestId(r)
 	switch strings.ToLower(path) {
 	case activityPath:
-		activityHandler[runtime.Log](w, r)
+		activityHandler[core.Log](w, r)
 	case sloPath:
-		sloHandler[runtime.Log](w, r)
+		sloHandler[core.Log](w, r)
 	case timeseriesPathV1:
-		timeseriesHandlerV1[runtime.Log](w, r)
+		timeseriesHandlerV1[core.Log](w, r)
 	case timeseriesPathV2:
-		timeseriesHandlerV2[runtime.Log](w, r)
+		timeseriesHandlerV2[core.Log](w, r)
 	case searchPath:
-		searchHandler[runtime.Log](w, r)
+		searchHandler[core.Log](w, r)
 	default:
-		status := runtime.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", path)), nil)
-		http2.WriteResponse[runtime.Log](w, status.Error(), status, nil)
+		status := core.NewStatusError(http.StatusNotFound, errors.New(fmt.Sprintf("error invalid URI, resource was not found: %v", path)))
+		httpx.WriteResponse[core.Log](w, nil, status.HttpCode(), status.Err)
 	}
 }

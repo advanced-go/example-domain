@@ -2,9 +2,8 @@ package entryv2
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/access"
-	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx/httpxtest"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -17,7 +16,7 @@ const (
 )
 
 func _Example_HttpHandler() {
-	access.EnableTestLogger()
+	//access.EnableTestLogger()
 
 	rec := httptest.NewRecorder()
 	//req, _ := http.NewRequest("", "https://localhost:8080/advanced-go/example-domain/timeseries/entry", nil)
@@ -48,7 +47,7 @@ func Test_httpHandler(t *testing.T) {
 		{"delete-entries", args{req: "delete-req-v2.txt", resp: "delete-resp-v2.txt", result: map[string]string{"deleteEntries": ""}}},
 	}
 	for _, tt := range tests {
-		failures, req, resp := http2test.ReadHttp("file://[cwd]/entryv2test/resource/", tt.args.req, tt.args.resp)
+		failures, req, resp := httpxtest.ReadHttp("file://[cwd]/entryv2test/resource/", tt.args.req, tt.args.resp)
 		if failures != nil {
 			t.Errorf("ReadHttp() failures = %v", failures)
 			continue
@@ -68,7 +67,7 @@ func Test_httpHandler(t *testing.T) {
 				// test content size and unmarshal types
 				var gotT, wantT []Entry
 				var content bool
-				failures, content, gotT, wantT = http2test.Content[[]Entry](w.Result(), resp, testBytes)
+				failures, content, gotT, wantT = httpxtest.Content[[]Entry](w.Result(), resp, testBytes)
 				if failures != nil {
 					//t.Errorf("Content() failures = %v", failures)
 					Errorf(t, failures)
@@ -86,13 +85,13 @@ func Test_httpHandler(t *testing.T) {
 	//fmt.Printf("test: End Entries -> %v\n", len(listV2))
 }
 
-func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []http2test.Args {
+func testBytes(got *http.Response, gotBytes []byte, want *http.Response, wantBytes []byte) []httpxtest.Args {
 	//fmt.Printf("got = %v\n[len:%v]\n", string(gotBytes), len(gotBytes))
 	//fmt.Printf("want = %v\n[len:%v]\n", string(wantBytes), len(wantBytes))
 	return nil
 }
 
-func Errorf(t *testing.T, failures []http2test.Args) {
+func Errorf(t *testing.T, failures []httpxtest.Args) {
 	for _, arg := range failures {
 		t.Errorf("%v got = %v want = %v", arg.Item, arg.Got, arg.Want)
 	}
