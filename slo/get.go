@@ -2,7 +2,7 @@ package slo
 
 import (
 	"context"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
 	"net/http"
 	"net/url"
 )
@@ -12,16 +12,16 @@ const (
 	getEntryLoc  = PkgPath + ":GetEntry"
 )
 
-func getEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status *runtime.Status) {
+func getEntryHandler[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []EntryV1, status *core.Status) {
 	var e E
 
 	t, status = queryEntries(ctx, values)
 	if !status.OK() {
-		e.Handle(status, runtime.RequestId(h))
+		e.Handle(status, core.RequestId(h))
 		return nil, status
 	}
 	if len(t) == 0 {
-		status = runtime.NewStatus(http.StatusNotFound)
+		status = core.NewStatus(http.StatusNotFound)
 	}
 	return
 }

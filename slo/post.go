@@ -3,8 +3,8 @@ package slo
 import (
 	"context"
 	"errors"
-	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/json"
 	"io"
 	"net/http"
 	"net/url"
@@ -12,13 +12,10 @@ import (
 )
 
 const (
-	postEntryHandlerLoc = PkgPath + ":postEntryHandler"
-	createEntriesLoc    = PkgPath + ":createEntries"
-	postRouteName       = "post-entry"
-	postEntryLoc        = PkgPath + ":PostEntry"
+	postRouteName = "post-entry"
 )
 
-func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status *runtime.Status) {
+func postEntryHandler[E core.ErrorHandler](ctx context.Context, h http.Header, method string, _ url.Values, body any) (t any, status *core.Status) {
 	var e E
 
 	switch strings.ToUpper(method) {
@@ -26,55 +23,55 @@ func postEntryHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header
 		var entries []EntryV1
 		entries, status = createEntries(body)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h))
+			e.Handle(status, core.RequestId(h))
 			return nil, status
 		}
 		if len(entries) == 0 {
-			status = runtime.NewStatusError(runtime.StatusInvalidContent, errors.New("error: no entries found"), nil)
-			e.Handle(status, runtime.RequestId(h))
+			status = core.NewStatusError(core.StatusInvalidContent, errors.New("error: no entries found"))
+			e.Handle(status, core.RequestId(h))
 			return nil, status
 		}
 		status = addEntries(ctx, entries)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h))
+			e.Handle(status, core.RequestId(h))
 		}
 		return nil, status
 	case http.MethodDelete:
 		status = deleteEntries(ctx)
 		if !status.OK() {
-			e.Handle(status, runtime.RequestId(h))
+			e.Handle(status, core.RequestId(h))
 		}
 		return nil, status
 	default:
-		return nil, runtime.NewStatus(http.StatusMethodNotAllowed)
+		return nil, core.NewStatus(http.StatusMethodNotAllowed)
 	}
 }
 
-func createEntries(body any) (entries []EntryV1, status *runtime.Status) {
+func createEntries(body any) (entries []EntryV1, status *core.Status) {
 	if body == nil {
-		return nil, runtime.NewStatus(runtime.StatusInvalidContent).AddLocation()
+		return nil, core.NewStatus(core.StatusInvalidContent).AddLocation()
 	}
 
 	switch ptr := body.(type) {
 	case []EntryV1:
 		entries = ptr
 	case []byte:
-		entries, status = io2.New[[]EntryV1](ptr, nil)
+		entries, status = json.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation()
 		}
 	case *http.Request:
-		entries, status = io2.New[[]EntryV1](ptr.Body, nil)
+		entries, status = json.New[[]EntryV1](ptr.Body, nil)
 		if !status.OK() {
 			return nil, status.AddLocation()
 		}
 	case io.ReadCloser:
-		entries, status = io2.New[[]EntryV1](ptr, nil)
+		entries, status = json.New[[]EntryV1](ptr, nil)
 		if !status.OK() {
 			return nil, status.AddLocation()
 		}
 	default:
-		return nil, runtime.NewStatusError(runtime.StatusInvalidContent, runtime.NewInvalidBodyTypeError(body), nil)
+		return nil, core.NewStatusError(core.StatusInvalidContent, core.NewInvalidBodyTypeError(body))
 	}
-	return entries, runtime.StatusOK()
+	return entries, core.StatusOK()
 }

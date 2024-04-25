@@ -2,8 +2,8 @@ package slo
 
 import (
 	"context"
-	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/json"
 	"github.com/google/uuid"
 	"net/url"
 	"time"
@@ -29,28 +29,28 @@ type EntryV1 struct {
 
 var list []EntryV1
 
-func getEntries(ctx context.Context) ([]EntryV1, *runtime.Status) {
+func getEntries(ctx context.Context) ([]EntryV1, *core.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return io2.New[[]EntryV1](url1, nil)
+		return json.New[[]EntryV1](url1, nil)
 	}
-	return list, runtime.StatusOK()
+	return list, core.StatusOK()
 }
 
-func getEntriesByController(ctx context.Context, ctrl string) ([]EntryV1, *runtime.Status) {
+func getEntriesByController(ctx context.Context, ctrl string) ([]EntryV1, *core.Status) {
 	if url1, ok := lookup.Value("getEntriesByController"); ok {
-		return io2.New[[]EntryV1](url1, nil)
+		return json.New[[]EntryV1](url1, nil)
 	}
 	for i := len(list) - 1; i >= 0; i-- {
 		if list[i].Controller == ctrl {
-			return []EntryV1{list[i]}, runtime.StatusOK()
+			return []EntryV1{list[i]}, core.StatusOK()
 		}
 	}
-	return nil, runtime.StatusOK()
+	return nil, core.StatusOK()
 }
 
-func addEntries(ctx context.Context, e []EntryV1) *runtime.Status {
+func addEntries(ctx context.Context, e []EntryV1) *core.Status {
 	if url1, ok := lookup.Value("addEntries"); ok {
-		return io2.NewStatusFrom(url1)
+		return json.NewStatusFrom(url1)
 	}
 	for _, item := range e {
 		if len(item.Id) == 0 {
@@ -60,20 +60,20 @@ func addEntries(ctx context.Context, e []EntryV1) *runtime.Status {
 		//item.CreatedTS = time.Now().UTC()
 		list = append(list, item)
 	}
-	return runtime.StatusOK()
+	return core.StatusOK()
 }
 
-func deleteEntries(ctx context.Context) *runtime.Status {
+func deleteEntries(ctx context.Context) *core.Status {
 	if url1, ok := lookup.Value("deleteEntries"); ok {
-		return io2.NewStatusFrom(url1)
+		return json.NewStatusFrom(url1)
 	}
 	list = []EntryV1{}
-	return runtime.StatusOK()
+	return core.StatusOK()
 }
 
-func queryEntries(ctx context.Context, values url.Values) ([]EntryV1, *runtime.Status) {
+func queryEntries(ctx context.Context, values url.Values) ([]EntryV1, *core.Status) {
 	var result []EntryV1
-	var status *runtime.Status
+	var status *core.Status
 
 	name := ""
 	if values != nil {
