@@ -5,7 +5,7 @@ import (
 	"github.com/advanced-go/core/access"
 	"github.com/advanced-go/core/http2/http2test"
 	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -57,7 +57,7 @@ func Test_httpHandler(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			// ignoring returned status as any errors will be reflected in the response StatusCode
-			httpHandler[runtime.Output](w, req)
+			httpHandler[core.Output](w, req)
 
 			// test status code
 			if w.Result().StatusCode != resp.StatusCode {

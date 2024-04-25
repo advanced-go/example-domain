@@ -2,8 +2,8 @@ package entryv2
 
 import (
 	"context"
-	"github.com/advanced-go/core/io2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/json"
 	"net/url"
 	"time"
 )
@@ -33,31 +33,31 @@ const (
 
 var list []Entry
 
-func getEntries(ctx context.Context) ([]Entry, *runtime.Status) {
+func getEntries(ctx context.Context) ([]Entry, *core.Status) {
 	if url1, ok := lookup.Value("getEntries"); ok {
-		return io2.New[[]Entry](url1, nil)
+		return json.New[[]Entry](url1, nil)
 	}
-	return list, runtime.StatusOK()
+	return list, core.StatusOK()
 }
 
-func addEntry(ctx context.Context, e []Entry) *runtime.Status {
+func addEntry(ctx context.Context, e []Entry) *core.Status {
 	if url1, ok := lookup.Value("addEntries"); ok {
-		return io2.NewStatusFrom(url1)
+		return json.NewStatusFrom(url1)
 	}
 	for _, item := range e {
 		list = append(list, item)
 	}
-	return runtime.StatusOK()
+	return core.StatusOK()
 }
 
-func deleteEntries(ctx context.Context) *runtime.Status {
+func deleteEntries(ctx context.Context) *core.Status {
 	if url1, ok := lookup.Value("deleteEntries"); ok {
-		return io2.NewStatusFrom(url1)
+		return json.NewStatusFrom(url1)
 	}
 	list = []Entry{}
-	return runtime.StatusOK()
+	return core.StatusOK()
 }
 
-func queryEntries(ctx context.Context, _ url.Values) ([]Entry, *runtime.Status) {
+func queryEntries(ctx context.Context, _ url.Values) ([]Entry, *core.Status) {
 	return getEntries(ctx)
 }

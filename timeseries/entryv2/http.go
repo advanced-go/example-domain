@@ -2,41 +2,42 @@ package entryv2
 
 import (
 	"github.com/advanced-go/core/http2"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/httpx"
 	"net/http"
 	"strings"
 )
 
-func httpHandler[E runtime.ErrorHandler](w http.ResponseWriter, r *http.Request) *runtime.Status {
+func httpHandler[E core.ErrorHandler](w http.ResponseWriter, r *http.Request) *core.Status {
 	if r == nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return runtime.NewStatus(http.StatusBadRequest)
+		return core.NewStatus(http.StatusBadRequest)
 	}
 	switch strings.ToUpper(r.Method) {
 	case http.MethodGet:
 		buf, status := getHandler[E](r.Context(), r.Header, r.URL.Query())
 		if !status.OK() {
-			http2.WriteResponse[E](w, nil, status, nil)
+			httpx.WriteResponse[E](w, nil, status.HttpCode(), nil)
 			return status
 		}
-		http2.WriteResponse[E](w, buf, status, []http2.Attr{{http2.ContentType, http2.ContentTypeJson}})
+		httpx.WriteResponse[E](w, []httpx.Attr{{http2.ContentType, http2.ContentTypeJson}}, status.HttpCode(), buf)
 		return status
 	case http.MethodPut:
 		_, status := postHandler[E](r.Context(), r.Header, r.Method, r.URL.Query(), r.Body)
-		http2.WriteResponse[E](w, nil, status, nil)
+		httpx.WriteResponse[E](w, nil, status.HttpCode(), nil)
 		return status
 	case http.MethodDelete:
 		_, status := postHandler[E](r.Context(), r.Header, r.Method, r.URL.Query(), nil)
-		http2.WriteResponse[E](w, nil, status, nil)
+		httpx.WriteResponse[E](w, nil, status.HttpCode(), nil)
 		return status
 	default:
 	}
 	w.WriteHeader(http.StatusMethodNotAllowed)
-	return runtime.NewStatus(http.StatusMethodNotAllowed)
+	return core.NewStatus(http.StatusMethodNotAllowed)
 }
 
 //if buf == nil {
-//	nc := runtime.NewStatus(runtime.StatusInvalidContent)
+//	nc := core.NewStatus(core.StatusInvalidContent)
 //	http2.WriteResponse[E](w, nil, nc, nil)
 //	return nc
 //}

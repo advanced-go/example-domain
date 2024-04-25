@@ -2,25 +2,24 @@ package entryv2
 
 import (
 	"context"
-	"github.com/advanced-go/core/runtime"
+	"github.com/advanced-go/stdlib/core"
 	"net/http"
 	"net/url"
 )
 
 const (
 	getRouteName = "get"
-	getLoc       = PkgPath + ":Get"
 )
 
-func getHandler[E runtime.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status *runtime.Status) {
+func getHandler[E core.ErrorHandler](ctx context.Context, h http.Header, values url.Values) (t []Entry, status *core.Status) {
 	var e E
 
 	t, status = queryEntries(ctx, values)
 	if !status.OK() && status.Code != http.StatusNotFound {
-		e.Handle(status, runtime.RequestId(h))
+		e.Handle(status, core.RequestId(h))
 	}
 	if len(t) == 0 {
-		return nil, runtime.NewStatus(http.StatusNotFound)
+		return nil, core.NewStatus(http.StatusNotFound)
 	}
 	return
 }

@@ -2,7 +2,8 @@ package timeseries
 
 import (
 	"fmt"
-	"github.com/advanced-go/core/messaging"
+	"github.com/advanced-go/stdlib/core"
+	"github.com/advanced-go/stdlib/messaging"
 	"net/http"
 	"time"
 )
@@ -25,9 +26,9 @@ func messageHandler(msg *messaging.Message) {
 	//fmt.Printf("messageHandler() -> [msg%v]\n", msg)
 	switch msg.Event() {
 	case messaging.StartupEvent:
-		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
+		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
 	case messaging.ShutdownEvent:
 	case messaging.PingEvent:
-		messaging.SendReply(msg, messaging.NewStatusDuration(http.StatusOK, time.Since(start)))
+		messaging.SendReply(msg, core.NewStatusDuration(http.StatusOK, time.Since(start)))
 	}
 }
